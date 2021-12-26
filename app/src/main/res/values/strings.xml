@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">Gymber</string>
+
+    <string name="image_view_content_desc">Image View Content Description</string>
+    <string name="floating_button_content_desc">Floating Button Content Description</string>
+
+    <!-- Error messages -->
+    <string name="global_service_error">Unexpected service error. Please try again later....</string>
+
+    <!-- Lottie files -->
+    <string name="lottie_gymber">gymber.json</string>
+
+
+    <!--  Splash Fragment   -->
+    <string name="title_splash">Splash</string>
+
+
+    <!--  Dashboard Fragment   -->
+    <string name="title_dashboard">Available Gyms</string>
+    <string name="image_transition">ImageTransition</string>
+
+    <!--  Detail Fragment   -->
+    <string name="title_detail">Gym Details</string>
+
 </resources>
