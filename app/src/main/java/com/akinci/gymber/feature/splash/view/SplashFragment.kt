@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.NavHostFragment
 import com.akinci.gymber.R
 import com.akinci.gymber.databinding.FragmentSplashBinding
@@ -18,7 +19,7 @@ import timber.log.Timber
 class SplashFragment : Fragment() {
 
     lateinit var binding: FragmentSplashBinding
-    private val animationTime = 100L
+    private val animationTime = 2000L
   //  private val animationTime = 15000L  // TODO update time later
 
     override fun onCreateView(
@@ -53,9 +54,19 @@ class SplashFragment : Fragment() {
     }
 
     private fun navigateToDashboard(){
-        Timber.d("Navigated to  DashboardFragment..")
         /** Navigate to Dashboard Page **/
-        NavHostFragment.findNavController(this).navigate(R.id.action_splashFragment_to_dashboardFragment)
+        val imageTransition = resources.getString(R.string.image_transition)
+        val extras = FragmentNavigatorExtras(binding.animation to imageTransition)
+
+        Timber.d("Navigated to  DashboardFragment..")
+
+        /** Navigate to Dashboard Page **/
+        NavHostFragment.findNavController(this).navigate(
+            R.id.action_splashFragment_to_dashboardFragment,
+            null,
+            null,
+            extras
+        )
     }
 
 }

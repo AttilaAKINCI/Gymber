@@ -6,6 +6,7 @@
 
     <!-- Error messages -->
     <string name="global_service_error">Unexpected service error. Please try again later....</string>
+    <string name="network_still_unavailable">Network still unavailable</string>
 
     <!-- Lottie files -->
     <string name="lottie_gymber">gymber.json</string>
@@ -18,8 +19,19 @@
     <!--  Dashboard Fragment   -->
     <string name="title_dashboard">Available Gyms</string>
     <string name="image_transition">ImageTransition</string>
+    <string name="dashboard_welcome_info_text">Welcome, I am Gymber :) I have find best gyms for you. Swipe left or right and try to catch a match.</string>
 
     <!--  Detail Fragment   -->
     <string name="title_detail">Gym Details</string>
+    <string name="drop_in">Drop in</string>
+    <string name="reservable">Reservable</string>
+    <string name="first_come_first_serve">In Order</string>
+    <string name="gym_detail_info">%1$s is a sport center that operates in the field of %2$s. And also it has been working since %3$s after the institution.</string>
+    <string name="gym_detail_surplus">%1$s allows people to make some overtime in exchange for %2$s</string>
+
+    <!--  Alert dialog  -->
+    <string name="alert_title">Upppss..</string>
+    <string name="alert_message">We couldn\'t any data :( Please check your internet connection </string>
+    <string name="retry">Retry</string>
 
 </resources>

@@ -13,6 +13,7 @@ data class Partner(
     val review_count: Int,
     val review_rating: Double,
     val header_image: Map<String, String>,
+    val surplus: Surplus,
     val locations: List<Location>,
     val category: Category,
     val settlement_options: SettlementOption

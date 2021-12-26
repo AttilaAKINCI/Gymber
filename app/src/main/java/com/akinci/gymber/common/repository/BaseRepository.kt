@@ -41,6 +41,7 @@ class BaseRepository @Inject constructor(
         }else{
             // not connected to internet
             emit(NetworkResponse.Error(message = "BaseRepository: Couldn't reached to server. Please check your internet connection"))
+            emit(NetworkResponse.NetworkError)
         }
     }.catch { e ->
         Timber.d(e)
