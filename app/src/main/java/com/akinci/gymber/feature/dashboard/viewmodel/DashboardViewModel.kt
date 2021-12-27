@@ -40,16 +40,16 @@ class DashboardViewModel @Inject constructor(
         Timber.d("SharedViewModel created..")
     }
 
-    fun resetUIState(){ _uiState.value = UIState.None }
     fun getTopItem(): Partner{ return partnerList[0] }
-    fun getLastSwipedItem(): Partner{ return swipedItems.last() }
+    fun getLastSwipedItem(): Partner? { return if(swipedItems.isNotEmpty()) { swipedItems.last() } else { null } }
     fun removeItem(){
+        if(partnerList.isNotEmpty()) {
+            swipedItems.add(partnerList[0])
+            partnerList.removeAt(0)
+        }
+
         viewModelScope.launch(coroutineContext.IO) {
-            if(partnerList.isNotEmpty()){
-                swipedItems.add(partnerList[0])
-                partnerList.removeAt(0)
-                _partnerListData.emit(ListState.OnData(partnerList))
-            }
+            _partnerListData.emit(ListState.OnData(partnerList))
         }
     }
 

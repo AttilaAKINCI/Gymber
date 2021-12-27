@@ -93,7 +93,7 @@ class DashboardFragment : Fragment() {
             override fun onRightCardExit(p0: Any?) {
                 Timber.d("Gym swiped to right..")
 
-                viewModel.getLastSwipedItem().let {
+                viewModel.getLastSwipedItem()?.let {
                     // start Match animation
                     if(it.isAMatch){
                         /** setup visuals **/
@@ -116,6 +116,7 @@ class DashboardFragment : Fragment() {
                             matchAnimation(false)
                         }
 
+                        binding.matchLayout.visibility = View.VISIBLE
                         binding.confettiAnimation.playAnimation()
                         matchAnimation(true)
                     }
@@ -240,6 +241,9 @@ class DashboardFragment : Fragment() {
             interpolator = AccelerateDecelerateInterpolator()
             startDelay = sDelay
             duration = 500
+            doOnEnd {
+                if(!show){ binding.matchLayout.visibility = View.GONE }
+            }
         }.start()
     }
 
