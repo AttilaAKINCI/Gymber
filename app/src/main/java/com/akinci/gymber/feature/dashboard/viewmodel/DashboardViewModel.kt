@@ -3,8 +3,8 @@ package com.akinci.gymber.feature.dashboard.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akinci.gymber.common.coroutine.CoroutineContextProvider
-import com.akinci.gymber.common.helper.NetworkResponse
-import com.akinci.gymber.common.helper.PartnerMatchSimulator
+import com.akinci.gymber.common.network.NetworkResponse
+import com.akinci.gymber.common.helper.PartnerMatchProvider
 import com.akinci.gymber.common.helper.state.ListState
 import com.akinci.gymber.common.helper.state.UIState
 import com.akinci.gymber.common.network.NetworkChecker
@@ -63,7 +63,7 @@ class DashboardViewModel @Inject constructor(
                         is NetworkResponse.NetworkError -> { _uiState.emit(UIState.OnNetworkError) }
                         is NetworkResponse.Success -> {
                             networkResponse.data?.let {
-                                partnerList = PartnerMatchSimulator.createAMatchPattern(it.data)
+                                partnerList = PartnerMatchProvider.createAMatchPattern(it.data)
                                 _partnerListData.emit(ListState.OnData(partnerList))
                                 _uiState.emit(UIState.None) // clears previous error and network errors
                             }

@@ -1,4 +1,4 @@
-package com.akinci.gymber.common.activity
+package com.akinci.gymber.common.base
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

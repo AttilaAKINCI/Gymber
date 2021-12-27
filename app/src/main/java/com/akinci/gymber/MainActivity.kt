@@ -1,6 +1,6 @@
 package com.akinci.gymber
 
-import com.akinci.gymber.common.activity.RootActivity
+import com.akinci.gymber.common.base.RootActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

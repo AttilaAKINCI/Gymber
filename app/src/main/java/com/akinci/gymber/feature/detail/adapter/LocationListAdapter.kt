@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.akinci.gymber.R
-import com.akinci.gymber.common.helper.DistanceCalculator
+import com.akinci.gymber.common.helper.LocationProvider
 import com.akinci.gymber.data.output.Location
 import com.akinci.gymber.databinding.RowLocationBinding
 
@@ -28,7 +28,7 @@ class LocationListAdapter: ListAdapter<Location, LocationListAdapter.LocationVie
 
             binding.locationDistance.text = binding.root.context.
                 resources.getString(R.string.distance,
-                    DistanceCalculator.calculateDistanceByKm(
+                    LocationProvider.calculateDistanceByKm(
                         data.latitude,
                         data.longitude,
                         41.119452,

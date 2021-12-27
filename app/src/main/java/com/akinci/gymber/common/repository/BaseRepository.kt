@@ -1,6 +1,6 @@
 package com.akinci.gymber.common.repository
 
-import com.akinci.gymber.common.helper.NetworkResponse
+import com.akinci.gymber.common.network.NetworkResponse
 import com.akinci.gymber.common.network.NetworkChecker
 import com.akinci.gymber.common.network.NetworkState
 import kotlinx.coroutines.flow.catch

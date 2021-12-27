@@ -4,7 +4,7 @@ import timber.log.Timber
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 
-object DateTimeHelper {
+object DateTimeProvider {
 
     fun findOpeningTime(time: String): String{
         //2019-03-25T14:10:12+01:00

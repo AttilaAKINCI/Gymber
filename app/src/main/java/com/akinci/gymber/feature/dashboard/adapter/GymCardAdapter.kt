@@ -2,7 +2,6 @@ package com.akinci.gymber.feature.dashboard.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.location.Location
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,7 @@ import coil.load
 import coil.request.ImageRequest
 import coil.request.ImageResult
 import com.akinci.gymber.R
-import com.akinci.gymber.common.helper.DistanceCalculator
+import com.akinci.gymber.common.helper.LocationProvider
 import com.akinci.gymber.data.output.Partner
 import com.akinci.gymber.databinding.RowGymBinding
 import timber.log.Timber
@@ -39,7 +38,7 @@ class GymCardAdapter(
                 override fun onSuccess(request: ImageRequest, metadata: ImageResult.Metadata) {
                     super.onSuccess(request, metadata)
 
-                    val distance = DistanceCalculator.calculateDistanceByKm(
+                    val distance = LocationProvider.calculateDistanceByKm(
                         data.locations[0].latitude,
                         data.locations[0].longitude,
                         41.119452,

@@ -53,6 +53,9 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.0'
 
+    // location
+    implementation 'com.google.android.gms:play-services-location:19.0.0'
+
     // Coroutines
     def coroutine_version = "1.5.2"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutine_version}"

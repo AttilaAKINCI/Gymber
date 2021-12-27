@@ -7,6 +7,20 @@ import com.akinci.gymber.R
 
 object DialogProvider {
 
+    fun createLocationPermissionAlertDialog(
+        context: Context,
+        positiveAction: ()->Unit
+    ) {
+        with(context){
+            AlertDialog.Builder(this)
+                .setTitle(resources.getString(R.string.permission_dialog_title))
+                .setMessage(resources.getString(R.string.permission_message))
+                .setPositiveButton(resources.getString(R.string.permission_button_text)) { _, _ ->
+                    positiveAction.invoke()
+                }.show()
+        }
+    }
+
     fun createNetworkProblemAlertDialog(
         context: Context,
         positiveAction: (DialogInterface)->Unit

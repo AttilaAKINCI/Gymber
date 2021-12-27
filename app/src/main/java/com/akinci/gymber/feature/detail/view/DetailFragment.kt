@@ -10,7 +10,7 @@ import androidx.navigation.fragment.NavHostFragment
 import coil.load
 import com.akinci.gymber.R
 import com.akinci.gymber.common.components.SnackBar
-import com.akinci.gymber.common.helper.DateTimeHelper
+import com.akinci.gymber.common.helper.DateTimeProvider
 import com.akinci.gymber.databinding.FragmentDetailBinding
 import com.akinci.gymber.feature.dashboard.viewmodel.DashboardViewModel
 import com.akinci.gymber.feature.detail.adapter.LocationListAdapter
@@ -55,7 +55,7 @@ class DetailFragment : Fragment() {
 
             binding.ratingView.rating = review_rating.toFloat()
 
-            var detailText = resources.getString(R.string.gym_detail_info, name, category.name, DateTimeHelper.findOpeningTime(first_live_at))
+            var detailText = resources.getString(R.string.gym_detail_info, name, category.name, DateTimeProvider.findOpeningTime(first_live_at))
             if(surplus.surplus_allowed){
                 detailText += resources.getString(R.string.gym_detail_surplus, name, surplus.formatted_price)
             }

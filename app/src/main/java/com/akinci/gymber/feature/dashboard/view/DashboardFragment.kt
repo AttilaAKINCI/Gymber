@@ -1,14 +1,16 @@
 package com.akinci.gymber.feature.dashboard.view
 
 import android.animation.ObjectAnimator
+import android.content.Intent
 import android.graphics.Shader
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.animation.doOnEnd
-import androidx.core.animation.doOnStart
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -19,14 +21,15 @@ import androidx.transition.TransitionInflater
 import androidx.transition.TransitionSet
 import coil.load
 import coil.transform.RoundedCornersTransformation
+import com.akinci.gymber.MainActivity
 import com.akinci.gymber.R
+import com.akinci.gymber.common.base.BaseFragment
 import com.akinci.gymber.common.components.DialogProvider
 import com.akinci.gymber.common.components.SnackBar
 import com.akinci.gymber.common.components.TileDrawable
 import com.akinci.gymber.common.helper.state.ListState
 import com.akinci.gymber.common.helper.state.UIState
 import com.akinci.gymber.common.network.NetworkState
-import com.akinci.gymber.data.output.Partner
 import com.akinci.gymber.databinding.FragmentDashboardBinding
 import com.akinci.gymber.feature.dashboard.adapter.GymCardAdapter
 import com.akinci.gymber.feature.dashboard.viewmodel.DashboardViewModel
@@ -36,7 +39,7 @@ import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
 @AndroidEntryPoint
-class DashboardFragment : Fragment() {
+class DashboardFragment : BaseFragment() {
 
     lateinit var binding: FragmentDashboardBinding
     private val viewModel : DashboardViewModel by activityViewModels()
@@ -63,22 +66,34 @@ class DashboardFragment : Fragment() {
 
         binding.dislikeButton.setOnClickListener {
             Timber.d("dislikeButton clicked..")
-            swipeGymLeft()
+            checkLocationPermission {
+                // permission already granted.
+                swipeGymLeft()
+            }
         }
 
         binding.selectButton.setOnClickListener {
             Timber.d("selectButton clicked..")
-            checkGymDetails()
+            checkLocationPermission {
+                // permission already granted.
+                checkGymDetails()
+            }
         }
 
         binding.likeButton.setOnClickListener {
             Timber.d("likeButton clicked..")
-            swipeGymRight()
+            checkLocationPermission {
+                // permission already granted.
+                swipeGymRight()
+            }
         }
 
         binding.flingContainer.setOnItemClickListener { _, _ ->
             Timber.d("Gym card selected... Navigate to Detail page")
-            checkGymDetails()
+            checkLocationPermission {
+                // permission already granted.
+                checkGymDetails()
+            }
         }
 
         binding.flingContainer.setFlingListener(object : SwipeFlingAdapterView.onFlingListener{
@@ -210,6 +225,32 @@ class DashboardFragment : Fragment() {
         }
     }
 
+    override fun onLocationPermissionResponse(granted: Boolean) {
+        if(granted){
+            getInitialData()
+        }else{
+            // for negative response show location permission dialog.
+            DialogProvider.createLocationPermissionAlertDialog(
+                requireContext(),
+                positiveAction = {
+                    // open app permission settings
+                    openAppPermissionSettings()
+                }
+            )
+        }
+    }
+
+    override fun onReturnFromAppPermission() {
+        getInitialData()
+    }
+
+    private fun getInitialData(){
+        checkLocationPermission {
+            // fetch initial partner data
+            viewModel.getPartnerList()
+        }
+    }
+
     private fun checkGymDetails(){
         /** Navigate user to gym detail page. **/
         Timber.d("Navigated to  DetailFragment..")
@@ -219,18 +260,17 @@ class DashboardFragment : Fragment() {
     private fun swipeGymRight(){
         // programmatically swipe right
         // automatically triggers OnFlingListener.onRightCardExit
-        binding.flingContainer.topCardListener.selectRight()
+        checkLocationPermission {
+            binding.flingContainer?.topCardListener?.selectRight()
+        }
     }
 
     private fun swipeGymLeft(){
         // programmatically swipe left
         // automatically triggers OnFlingListener.onLeftCardExit
-        binding.flingContainer.topCardListener.selectLeft()
-    }
-
-    private fun getInitialData(){
-        // fetch initial partner data
-        viewModel.getPartnerList()
+        checkLocationPermission {
+            binding.flingContainer?.topCardListener?.selectLeft()
+        }
     }
 
     // Match Animation

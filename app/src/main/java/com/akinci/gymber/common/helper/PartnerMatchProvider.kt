@@ -2,7 +2,7 @@ package com.akinci.gymber.common.helper
 
 import com.akinci.gymber.data.output.Partner
 
-object PartnerMatchSimulator {
+object PartnerMatchProvider {
 
     /** this function simulates create a match pattern for user  **/
     fun createAMatchPattern(partnerList: List<Partner>): MutableList<Partner> {
