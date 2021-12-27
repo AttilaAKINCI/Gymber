@@ -31,19 +31,25 @@
                 android:contentDescription="@string/image_view_content_desc" />
 
             <LinearLayout
+                android:id="@+id/gymHeaderLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white_40"
                 android:layout_gravity="bottom"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:gravity="center"
+                android:alpha="0"
+                tools:alpha="1">
 
                 <TextView
                     android:id="@+id/gymInfoTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:textColor="@color/black"
-                    tools:text="GYM info"/>
+                    tools:text="GYM info"
+                    android:fontFamily="monospace"
+                    android:textStyle="bold"
+                    android:typeface="normal"/>
             </LinearLayout>
 
             <ImageView

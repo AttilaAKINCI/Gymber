@@ -3,6 +3,7 @@ package com.akinci.gymber.feature.dashboard.view
 import android.animation.ObjectAnimator
 import android.content.Intent
 import android.graphics.Shader
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
@@ -27,6 +28,7 @@ import com.akinci.gymber.common.base.BaseFragment
 import com.akinci.gymber.common.components.DialogProvider
 import com.akinci.gymber.common.components.SnackBar
 import com.akinci.gymber.common.components.TileDrawable
+import com.akinci.gymber.common.helper.LocationProvider
 import com.akinci.gymber.common.helper.state.ListState
 import com.akinci.gymber.common.helper.state.UIState
 import com.akinci.gymber.common.network.NetworkState
@@ -180,7 +182,8 @@ class DashboardFragment : BaseFragment() {
                                             binding.shimmerContainer.visibility = View.GONE
                                         }
                                         binding.flingContainer.alpha = 1f
-                                    }
+                                    },
+                                    lastKnownLocation = LocationProvider.lastKnownLocation
                                 ).also { adapter ->
                                     binding.flingContainer.adapter = adapter
                                 }.notifyDataSetChanged()
@@ -246,6 +249,9 @@ class DashboardFragment : BaseFragment() {
 
     private fun getInitialData(){
         checkLocationPermission {
+            // update last known location
+            LocationProvider.findLastLocation(requireContext())
+
             // fetch initial partner data
             viewModel.getPartnerList()
         }

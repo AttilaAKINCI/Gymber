@@ -2,6 +2,7 @@ package com.akinci.gymber.feature.dashboard.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.location.Location
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +20,8 @@ class GymCardAdapter(
     context: Context,
     var items: MutableList<Partner>,
     val onDataLoaded :(()->Unit)?,
-    var flingAngleProvider: ((Float)->Unit)? = null
+    var flingAngleProvider: ((Float)->Unit)? = null,
+    var lastKnownLocation: Location?
 ): ArrayAdapter<Partner>(context, R.layout.row_gym, items) {
 
     override fun getCount() = items.size
@@ -31,6 +33,20 @@ class GymCardAdapter(
 
         val data = items[position]
 
+        lastKnownLocation?.let {
+            val distance = LocationProvider.calculateDistanceByKm(
+                data.locations[0].latitude,
+                data.locations[0].longitude,
+                it.latitude,
+                it.longitude
+            )
+            binding.gymInfoTextView.text = binding.root.context
+                .resources.getString(R.string.gym_header_title,data.name,distance)
+
+        }?: run {
+            binding.gymInfoTextView.text = data.name
+        }
+
         // set data fields to row binding.
         binding.gymImageView.load(data.header_image["desktop"]) {
             crossfade(true)
@@ -38,13 +54,7 @@ class GymCardAdapter(
                 override fun onSuccess(request: ImageRequest, metadata: ImageResult.Metadata) {
                     super.onSuccess(request, metadata)
 
-                    val distance = LocationProvider.calculateDistanceByKm(
-                        data.locations[0].latitude,
-                        data.locations[0].longitude,
-                        41.119452,
-                        28.954410
-                    )
-                    binding.gymInfoTextView.text = "${data.name} -- Distance: $distance"
+                    binding.gymHeaderLayout.alpha = 1f
                     onDataLoaded?.invoke()
                 }
             })

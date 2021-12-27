@@ -26,15 +26,21 @@ class LocationListAdapter: ListAdapter<Location, LocationListAdapter.LocationVie
         fun bind(data: Location) {
             binding.data = data
 
-            binding.locationDistance.text = binding.root.context.
-                resources.getString(R.string.distance,
-                    LocationProvider.calculateDistanceByKm(
-                        data.latitude,
-                        data.longitude,
-                        41.119452,
-                        28.954410
-                    ).toString()
-                )
+            with(binding.root.context){
+                // we have location info that acquired before
+                LocationProvider.lastKnownLocation?.let {
+                    binding.locationDistance.text = resources.getString(R.string.distance,
+                        LocationProvider.calculateDistanceByKm(
+                            data.latitude,
+                            data.longitude,
+                            it.latitude,
+                            it.longitude
+                        ).toString()
+                    )
+                }?: run {
+                    binding.locationDistance.text = resources.getString(R.string.distance_unknown)
+                }
+            }
 
             binding.executePendingBindings()
         }
