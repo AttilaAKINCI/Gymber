@@ -6,11 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.NavHostFragment
 import coil.load
 import com.akinci.gymber.R
+import com.akinci.gymber.common.components.SnackBar
 import com.akinci.gymber.common.helper.DateTimeHelper
 import com.akinci.gymber.databinding.FragmentDetailBinding
 import com.akinci.gymber.feature.dashboard.viewmodel.DashboardViewModel
+import com.akinci.gymber.feature.detail.adapter.LocationListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -22,6 +25,8 @@ class DetailFragment : Fragment() {
 
     private val detailFragmentData by lazy { viewModel.getTopItem() }
 
+    private val locationListAdapter = LocationListAdapter()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -30,6 +35,16 @@ class DetailFragment : Fragment() {
         binding = FragmentDetailBinding.inflate(layoutInflater)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.data = detailFragmentData
+
+        binding.backButton.setOnClickListener {
+            // trigger back action of navigation component
+            NavHostFragment.findNavController(this).popBackStack()
+        }
+
+        binding.openMapButton.setOnClickListener {
+            // show locations of the Gym in map with pins
+            SnackBar.make(binding.root, resources.getString(R.string.open_map_message)).show()
+        }
 
         // UI related setups.
         with(detailFragmentData){
@@ -46,10 +61,18 @@ class DetailFragment : Fragment() {
             }
             binding.informationTextView.text = detailText
 
+            binding.locationListRecyclerList.adapter = locationListAdapter
         }
 
         Timber.d("DetailFragment created..")
         // Inflate the layout for this fragment
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // set location list data
+        locationListAdapter.submitList(detailFragmentData.locations)
     }
 }

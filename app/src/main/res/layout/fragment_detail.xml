@@ -25,6 +25,23 @@
             android:scaleType="centerCrop"
             android:contentDescription="@string/image_view_content_desc" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/backButton"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            app:cornerRadius="21dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:backgroundTint="@color/white_60"
+            app:icon="@drawable/ic_arrow_back"
+            app:iconTint="@color/back_button_color"
+            style="?attr/materialButtonOutlinedStyle"
+            app:strokeWidth="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
         <LinearLayout
             android:id="@+id/gymNameContainer"
             android:layout_width="match_parent"
@@ -64,125 +81,233 @@
             android:scaleX="0.5"
             android:scaleY="0.5"/>
 
-        <TextView
-            android:id="@+id/informationTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            app:layout_constraintStart_toStartOf="parent"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/openMapButton"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            app:cornerRadius="18dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:insetLeft="0dp"
+            android:insetRight="0dp"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            android:layout_marginEnd="25dp"
+            android:backgroundTint="@color/teal_200"
+            app:icon="@drawable/ic_pin"
+            app:iconTint="@color/white_90"
+            style="?attr/materialButtonOutlinedStyle"
+            app:strokeWidth="0dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/ratingView"
+            app:layout_constraintBottom_toBottomOf="@+id/ratingView"
+            app:layout_constraintLeft_toRightOf="@+id/ratingView"/>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ratingView"
-            android:fontFamily="monospace"
-            android:textStyle="bold"
-            android:typeface="normal"
-            android:lineSpacingExtra="5dp"
-            android:padding="10dp"
-            tools:text="@string/gym_detail_info"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:overScrollMode="never">
 
-        <LinearLayout
-            android:id="@+id/settlementOptionsContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/informationTextView"
-            android:orientation="horizontal">
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/dropInCardView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_margin="5dp"
-                android:minWidth="60dp"
-                android:clickable="true"
-                android:focusable="true"
-                app:cardCornerRadius="18dp"
-                app:rippleColor="@android:color/transparent"
-                app:cardBackgroundColor="@{data.settlement_options.drop_in_enabled ? @color/teal_200 : @color/settlement_normal_bg }"
-                app:strokeColor="@color/card_border"
-                app:strokeWidth="@dimen/dp_1">
-
-            <TextView
-                android:id="@+id/dropInTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:text="@string/drop_in"
-                android:textColor="@{data.settlement_options.drop_in_enabled ? @color/white : @color/card_border}"
-                android:fontFamily="monospace"
-                android:textStyle="bold"
-                android:typeface="normal"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"/>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/reservableCardView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_margin="5dp"
-                android:minWidth="60dp"
-                android:clickable="true"
-                android:focusable="true"
-                app:cardCornerRadius="18dp"
-                app:rippleColor="@android:color/transparent"
-                app:cardBackgroundColor="@{data.settlement_options.reservable_workouts ? @color/teal_200 : @color/settlement_normal_bg }"
-                app:strokeColor="@color/card_border"
-                app:strokeWidth="@dimen/dp_1">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/reservableTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="@string/reservable"
-                    android:textColor="@{data.settlement_options.reservable_workouts ? @color/white : @color/card_border}"
+                    android:id="@+id/informationTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     android:fontFamily="monospace"
                     android:textStyle="bold"
                     android:typeface="normal"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"/>
-            </com.google.android.material.card.MaterialCardView>
+                    android:lineSpacingExtra="5dp"
+                    android:padding="10dp"
+                    tools:text="@string/gym_detail_info"/>
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/fifoCardView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_margin="5dp"
-                android:minWidth="60dp"
-                android:clickable="true"
-                android:focusable="true"
-                app:cardCornerRadius="18dp"
-                app:rippleColor="@android:color/transparent"
-                app:cardBackgroundColor="@{data.settlement_options.first_come_first_serve ? @color/teal_200 : @color/settlement_normal_bg }"
-                app:strokeColor="@color/card_border"
-                app:strokeWidth="@dimen/dp_1">
+                <LinearLayout
+                    android:id="@+id/settlementOptionsContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/informationTextView"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/dropInCardView"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:minWidth="60dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:cardCornerRadius="18dp"
+                        app:rippleColor="@android:color/transparent"
+                        app:cardBackgroundColor="@{data.settlement_options.drop_in_enabled ? @color/teal_200 : @color/settlement_normal_bg }"
+                        app:strokeColor="@color/card_border"
+                        app:strokeWidth="@dimen/dp_1">
+
+                        <TextView
+                            android:id="@+id/dropInTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="@string/drop_in"
+                            android:textColor="@{data.settlement_options.drop_in_enabled ? @color/white : @color/card_border}"
+                            android:fontFamily="monospace"
+                            android:textStyle="bold"
+                            android:typeface="normal"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"/>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/reservableCardView"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:minWidth="60dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:cardCornerRadius="18dp"
+                        app:rippleColor="@android:color/transparent"
+                        app:cardBackgroundColor="@{data.settlement_options.reservable_workouts ? @color/teal_200 : @color/settlement_normal_bg }"
+                        app:strokeColor="@color/card_border"
+                        app:strokeWidth="@dimen/dp_1">
+
+                        <TextView
+                            android:id="@+id/reservableTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="@string/reservable"
+                            android:textColor="@{data.settlement_options.reservable_workouts ? @color/white : @color/card_border}"
+                            android:fontFamily="monospace"
+                            android:textStyle="bold"
+                            android:typeface="normal"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"/>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/fifoCardView"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:minWidth="60dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:cardCornerRadius="18dp"
+                        app:rippleColor="@android:color/transparent"
+                        app:cardBackgroundColor="@{data.settlement_options.first_come_first_serve ? @color/teal_200 : @color/settlement_normal_bg }"
+                        app:strokeColor="@color/card_border"
+                        app:strokeWidth="@dimen/dp_1">
+
+                        <TextView
+                            android:id="@+id/fifoTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="@string/first_come_first_serve"
+                            android:textColor="@{data.settlement_options.first_come_first_serve ? @color/white : @color/card_border}"
+                            android:fontFamily="monospace"
+                            android:textStyle="bold"
+                            android:typeface="normal"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"/>
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
 
                 <TextView
-                    android:id="@+id/fifoTextView"
+                    android:id="@+id/locationTitle"
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="@string/first_come_first_serve"
-                    android:textColor="@{data.settlement_options.first_come_first_serve ? @color/white : @color/card_border}"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/settlementOptionsContainer"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="20dp"
+                    android:textAlignment="center"
                     android:fontFamily="monospace"
                     android:textStyle="bold"
                     android:typeface="normal"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"/>
-            </com.google.android.material.card.MaterialCardView>
+                    android:textAllCaps="true"
+                    android:text="@string/gym_address"/>
 
-        </LinearLayout>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/locationTableHeaders"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/locationTitle"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp">
+
+                    <TextView
+                        android:id="@+id/locationNameTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintWidth_percent="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:textAlignment="center"
+                        android:fontFamily="monospace"
+                        android:textStyle="bold"
+                        android:typeface="normal"
+                        android:text="@string/gym_location"/>
+
+                    <TextView
+                        android:id="@+id/locationDistance"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintWidth_percent="0.5"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/locationNameTextView"
+                        android:textAlignment="center"
+                        android:fontFamily="monospace"
+                        android:textStyle="bold"
+                        android:typeface="normal"
+                        android:text="@string/gym_distance"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!-- Location List -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/locationListRecyclerList"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="20dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/locationTableHeaders"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:overScrollMode="never"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

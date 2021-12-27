@@ -28,6 +28,11 @@
     <string name="first_come_first_serve">In Order</string>
     <string name="gym_detail_info">%1$s is a sport center that operates in the field of %2$s. And also it has been working since %3$s after the institution.</string>
     <string name="gym_detail_surplus">%1$s allows people to make some overtime in exchange for %2$s</string>
+    <string name="distance">%1$s KM</string>
+    <string name="gym_address">Gym Addresses:</string>
+    <string name="gym_location">Location</string>
+    <string name="gym_distance">Distance</string>
+    <string name="open_map_message">Map view developments are in progress. This feature is coming soon :)</string>
 
     <!--  Alert dialog  -->
     <string name="alert_title">Upppss..</string>

@@ -21,6 +21,7 @@
 
     <!--  Detail Screen  -->
     <color name="card_border">#222222</color>
+    <color name="back_button_color">#757575</color>
     <color name="settlement_normal_bg">#eaeaea</color>
     <color name="lightGrey">#C3C3C3</color>
     <color name="duskYellow">#FFC107</color>
