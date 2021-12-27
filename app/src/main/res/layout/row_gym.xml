@@ -20,6 +20,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:cardCornerRadius="18dp"
+            android:elevation="0dp"
             tools:cardBackgroundColor="@color/teal_200">
 
             <ImageView
