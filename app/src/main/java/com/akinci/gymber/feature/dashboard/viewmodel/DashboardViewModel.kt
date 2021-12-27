@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akinci.gymber.common.coroutine.CoroutineContextProvider
 import com.akinci.gymber.common.helper.NetworkResponse
+import com.akinci.gymber.common.helper.PartnerMatchSimulator
 import com.akinci.gymber.common.helper.state.ListState
 import com.akinci.gymber.common.helper.state.UIState
 import com.akinci.gymber.common.network.NetworkChecker
@@ -25,6 +26,7 @@ class DashboardViewModel @Inject constructor(
 ): ViewModel() {
 
     private var partnerList = mutableListOf<Partner>()
+    private var swipedItems = mutableListOf<Partner>()
 
     /** Fragments are driven with states **/
     private var _partnerListData = MutableStateFlow<ListState<List<Partner>>>(ListState.None)
@@ -40,10 +42,11 @@ class DashboardViewModel @Inject constructor(
 
     fun resetUIState(){ _uiState.value = UIState.None }
     fun getTopItem(): Partner{ return partnerList[0] }
-
+    fun getLastSwipedItem(): Partner{ return swipedItems.last() }
     fun removeItem(){
         viewModelScope.launch(coroutineContext.IO) {
             if(partnerList.isNotEmpty()){
+                swipedItems.add(partnerList[0])
                 partnerList.removeAt(0)
                 _partnerListData.emit(ListState.OnData(partnerList))
             }
@@ -60,8 +63,8 @@ class DashboardViewModel @Inject constructor(
                         is NetworkResponse.NetworkError -> { _uiState.emit(UIState.OnNetworkError) }
                         is NetworkResponse.Success -> {
                             networkResponse.data?.let {
-                                partnerList = it.data.toMutableList()
-                                _partnerListData.emit(ListState.OnData(it.data))
+                                partnerList = PartnerMatchSimulator.createAMatchPattern(it.data)
+                                _partnerListData.emit(ListState.OnData(partnerList))
                                 _uiState.emit(UIState.None) // clears previous error and network errors
                             }
                         }

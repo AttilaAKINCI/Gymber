@@ -18,6 +18,7 @@
     <color name="shimmerColor">#AAAAAA</color>
     <color name="likeColor">#03AA1D</color>
     <color name="dislikeColor">#EC3838</color>
+    <color name="match_layout_color">#D9000000</color>
 
     <!--  Detail Screen  -->
     <color name="card_border">#222222</color>

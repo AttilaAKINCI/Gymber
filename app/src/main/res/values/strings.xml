@@ -10,16 +10,22 @@
 
     <!-- Lottie files -->
     <string name="lottie_gymber">gymber.json</string>
-
+    <string name="lottie_confetti">confetti.json</string>
 
     <!--  Splash Fragment   -->
     <string name="title_splash">Splash</string>
-
 
     <!--  Dashboard Fragment   -->
     <string name="title_dashboard">Available Gyms</string>
     <string name="image_transition">ImageTransition</string>
     <string name="dashboard_welcome_info_text">Welcome, I am Gymber :) I have find best gyms for you. Swipe left or right and try to catch a match.</string>
+    <string name="match_title">It\'s a match</string>
+    <string name="match_sub_title">You and %1$s have decide on each other!!</string>
+    <string name="match_button_text_call">Take a call</string>
+    <string name="match_button_text_call_warning">Take a call feature is under development. Coming soon :)</string>
+    <string name="match_button_text_message">Leave a message</string>
+    <string name="match_button_text_message_warning">Messaging feature is under development. Coming soon :)</string>
+    <string name="match_button_text_swipe">Keep swiping</string>
 
     <!--  Detail Fragment   -->
     <string name="title_detail">Gym Details</string>

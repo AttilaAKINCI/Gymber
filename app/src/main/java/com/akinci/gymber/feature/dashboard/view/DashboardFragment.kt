@@ -1,10 +1,14 @@
 package com.akinci.gymber.feature.dashboard.view
 
+import android.animation.ObjectAnimator
 import android.graphics.Shader
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
+import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -13,6 +17,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.transition.TransitionInflater
 import androidx.transition.TransitionSet
+import coil.load
+import coil.transform.RoundedCornersTransformation
 import com.akinci.gymber.R
 import com.akinci.gymber.common.components.DialogProvider
 import com.akinci.gymber.common.components.SnackBar
@@ -20,6 +26,7 @@ import com.akinci.gymber.common.components.TileDrawable
 import com.akinci.gymber.common.helper.state.ListState
 import com.akinci.gymber.common.helper.state.UIState
 import com.akinci.gymber.common.network.NetworkState
+import com.akinci.gymber.data.output.Partner
 import com.akinci.gymber.databinding.FragmentDashboardBinding
 import com.akinci.gymber.feature.dashboard.adapter.GymCardAdapter
 import com.akinci.gymber.feature.dashboard.viewmodel.DashboardViewModel
@@ -85,6 +92,34 @@ class DashboardFragment : Fragment() {
 
             override fun onRightCardExit(p0: Any?) {
                 Timber.d("Gym swiped to right..")
+
+                viewModel.getLastSwipedItem().let {
+                    // start Match animation
+                    if(it.isAMatch){
+                        /** setup visuals **/
+                        binding.matchSubTitleTextView.text = resources.getString(R.string.match_sub_title, it.name)
+                        binding.matchGymImageView.load(it.header_image["desktop"]) {
+                            crossfade(true)
+                            transformations(RoundedCornersTransformation(25f))
+                        }
+
+                        binding.matchCallButton.setOnClickListener{
+                            SnackBar.make(binding.matchLayout, resources.getString(R.string.match_button_text_call_warning)).show()
+                        }
+
+                        binding.matchMessageButton.setOnClickListener{
+                            SnackBar.make(binding.matchLayout, resources.getString(R.string.match_button_text_message_warning)).show()
+                        }
+
+                        binding.matchSkipButton.setOnClickListener{
+                            binding.confettiAnimation.pauseAnimation()
+                            matchAnimation(false)
+                        }
+
+                        binding.confettiAnimation.playAnimation()
+                        matchAnimation(true)
+                    }
+                }
             }
 
             override fun onAdapterAboutToEmpty(p0: Int) {
@@ -182,17 +217,30 @@ class DashboardFragment : Fragment() {
 
     private fun swipeGymRight(){
         // programmatically swipe right
+        // automatically triggers OnFlingListener.onRightCardExit
         binding.flingContainer.topCardListener.selectRight()
     }
 
     private fun swipeGymLeft(){
         // programmatically swipe left
+        // automatically triggers OnFlingListener.onLeftCardExit
         binding.flingContainer.topCardListener.selectLeft()
     }
 
     private fun getInitialData(){
         // fetch initial partner data
         viewModel.getPartnerList()
+    }
+
+    // Match Animation
+    private fun matchAnimation(show: Boolean){
+        val alpha = if(show) { 1f } else { 0f }
+        val sDelay = if(show) { 500L } else { 0L }
+        ObjectAnimator.ofFloat(binding.matchLayout, "alpha", alpha).apply {
+            interpolator = AccelerateDecelerateInterpolator()
+            startDelay = sDelay
+            duration = 500
+        }.start()
     }
 
     private fun handleSharedElementTransitionAnimation(){

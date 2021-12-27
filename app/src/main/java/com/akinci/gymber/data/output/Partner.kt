@@ -7,6 +7,7 @@ data class Partner(
     val id: Int,
     val name: String,
     val slug: String,
+    var isAMatch: Boolean = false, // this parameter simulates match info provided by backend
     val waitlist_enabled: Boolean,
     val check_in_radius: Int,
     val first_live_at: String,
