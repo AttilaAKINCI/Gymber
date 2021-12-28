@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/gymCardView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintWidth_percent="0.9"
+            app:layout_constraintHeight_percent="0.6"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:cardCornerRadius="18dp"
+            android:elevation="0dp"
+            tools:cardBackgroundColor="@color/teal_200">
+
+            <ImageView
+                android:id="@+id/gymImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/image_view_content_desc" />
+
+            <LinearLayout
+                android:id="@+id/gymHeaderLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white_40"
+                android:layout_gravity="bottom"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:alpha="0"
+                tools:alpha="1">
+
+                <TextView
+                    android:id="@+id/gymInfoTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    tools:text="GYM info"
+                    android:fontFamily="monospace"
+                    android:textStyle="bold"
+                    android:typeface="normal"/>
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/likeHooverImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contentDescription="@string/image_view_content_desc"
+                android:src="@drawable/ic_like"
+                app:tint="@color/likeColor"
+                android:rotation="-30"
+                android:alpha="0"
+                tools:alpha="1"/>
+
+            <ImageView
+                android:id="@+id/dislikeHooverImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contentDescription="@string/image_view_content_desc"
+                android:src="@drawable/ic_nope"
+                app:tint="@color/dislikeColor"
+                android:alpha="0"
+                tools:alpha="1"/>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

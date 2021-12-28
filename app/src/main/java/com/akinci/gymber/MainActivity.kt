@@ -1,11 +1,10 @@
 package com.akinci.gymber
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
+import com.akinci.gymber.common.base.RootActivity
+import dagger.hilt.android.AndroidEntryPoint
 
-class MainActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-    }
+@AndroidEntryPoint
+class MainActivity : RootActivity() {
+    override fun getNavigationGraph(): Int = R.navigation.navigation_root
+    override fun getFragmentsThatHidesBackButton(): Set<Int> = setOf(R.id.splashFragment, R.id.dashboardFragment)
 }
