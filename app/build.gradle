@@ -17,6 +17,7 @@ android {
         versionName "1.0"
 
         // Req header params.
+        buildConfigField("String", "BASE_URL", BASE_URL)
         buildConfigField("String", "AGENT", AGENT)
         buildConfigField("String", "AGENT_VAL", AGENT_VAL)
 
