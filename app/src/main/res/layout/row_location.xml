@@ -5,7 +5,7 @@
     <data>
         <variable
             name="data"
-            type="com.akinci.gymber.data.output.Location"/>
+            type="com.akinci.gymber.data.output.Address"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

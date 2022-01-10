@@ -33,16 +33,8 @@ class GymCardAdapter(
 
         val data = items[position]
 
-        lastKnownLocation?.let {
-            val distance = LocationProvider.calculateDistanceByKm(
-                data.locations[0].latitude,
-                data.locations[0].longitude,
-                it.latitude,
-                it.longitude
-            )
-            binding.gymInfoTextView.text = binding.root.context
-                .resources.getString(R.string.gym_header_title,data.name,distance)
-
+        LocationProvider.findClosest(data.locations)?.let {
+            binding.gymInfoTextView.text = binding.root.context.resources.getString(R.string.gym_header_title,data.name, it.distance)
         }?: run {
             binding.gymInfoTextView.text = data.name
         }

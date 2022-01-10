@@ -1,12 +1,8 @@
 package com.akinci.gymber.feature.dashboard.view
 
 import android.animation.ObjectAnimator
-import android.content.Intent
 import android.graphics.Shader
-import android.location.Location
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +10,6 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
@@ -22,7 +17,6 @@ import androidx.transition.TransitionInflater
 import androidx.transition.TransitionSet
 import coil.load
 import coil.transform.RoundedCornersTransformation
-import com.akinci.gymber.MainActivity
 import com.akinci.gymber.R
 import com.akinci.gymber.common.base.BaseFragment
 import com.akinci.gymber.common.components.DialogProvider
@@ -68,34 +62,22 @@ class DashboardFragment : BaseFragment() {
 
         binding.dislikeButton.setOnClickListener {
             Timber.d("dislikeButton clicked..")
-            checkLocationPermission {
-                // permission already granted.
-                swipeGymLeft()
-            }
+            swipeGymLeft()
         }
 
         binding.selectButton.setOnClickListener {
             Timber.d("selectButton clicked..")
-            checkLocationPermission {
-                // permission already granted.
-                checkGymDetails()
-            }
+            checkGymDetails()
         }
 
         binding.likeButton.setOnClickListener {
             Timber.d("likeButton clicked..")
-            checkLocationPermission {
-                // permission already granted.
-                swipeGymRight()
-            }
+            swipeGymRight()
         }
 
         binding.flingContainer.setOnItemClickListener { _, _ ->
             Timber.d("Gym card selected... Navigate to Detail page")
-            checkLocationPermission {
-                // permission already granted.
-                checkGymDetails()
-            }
+            checkGymDetails()
         }
 
         binding.flingContainer.setFlingListener(object : SwipeFlingAdapterView.onFlingListener{
@@ -266,17 +248,13 @@ class DashboardFragment : BaseFragment() {
     private fun swipeGymRight(){
         // programmatically swipe right
         // automatically triggers OnFlingListener.onRightCardExit
-        checkLocationPermission {
-            binding.flingContainer?.topCardListener?.selectRight()
-        }
+        binding.flingContainer?.topCardListener?.selectRight()
     }
 
     private fun swipeGymLeft(){
         // programmatically swipe left
         // automatically triggers OnFlingListener.onLeftCardExit
-        checkLocationPermission {
-            binding.flingContainer?.topCardListener?.selectLeft()
-        }
+        binding.flingContainer?.topCardListener?.selectLeft()
     }
 
     // Match Animation

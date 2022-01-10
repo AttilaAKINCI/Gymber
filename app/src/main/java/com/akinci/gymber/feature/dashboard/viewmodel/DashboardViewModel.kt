@@ -3,6 +3,7 @@ package com.akinci.gymber.feature.dashboard.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akinci.gymber.common.coroutine.CoroutineContextProvider
+import com.akinci.gymber.common.helper.LocationProvider
 import com.akinci.gymber.common.network.NetworkResponse
 import com.akinci.gymber.common.helper.PartnerMatchProvider
 import com.akinci.gymber.common.helper.state.ListState
@@ -63,7 +64,13 @@ class DashboardViewModel @Inject constructor(
                         is NetworkResponse.NetworkError -> { _uiState.emit(UIState.OnNetworkError) }
                         is NetworkResponse.Success -> {
                             networkResponse.data?.let {
+
+                                // match info inserted.
                                 partnerList = PartnerMatchProvider.createAMatchPattern(it.data)
+
+                                // distance calculations inserted.
+                                partnerList = LocationProvider.calculateDistances(partnerList)
+
                                 _partnerListData.emit(ListState.OnData(partnerList))
                                 _uiState.emit(UIState.None) // clears previous error and network errors
                             }
