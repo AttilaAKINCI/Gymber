@@ -13,13 +13,9 @@ object PartnerMatchProvider {
      * --> For this case it means %20 of items will be matched by default
      * **/
     fun createAMatchPattern(partnerList: List<Partner>, matchPercent: Float = 0.2f): MutableList<Partner> {
-        val percentage = when{
-            matchPercent < 0.2f -> { 0f }
-            matchPercent > 1f -> { 1f }
-            else -> { matchPercent }
-        }
+        val percentage = matchPercent.coerceIn(0f, 1f)
 
-        val countOfItemShouldBeMatched = (partnerList.size * percentage).toInt()
+        val countOfItemShouldBeMatched =(partnerList.size * percentage).toInt()
         val indexs = (partnerList.indices).toMutableList()
 
         for (turn in (0 until countOfItemShouldBeMatched)){
