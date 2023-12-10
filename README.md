@@ -1,4 +1,4 @@
-# GymberCompose
+# GymberCompose -- under development 
 GymberCompose is a searcher app for sports clubs using Jetpack compose way
 
 ## Brief Description
