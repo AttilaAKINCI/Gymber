@@ -1,4 +1,4 @@
-# Gymber
+# Gymber - Discontinued support on legacy branch(deprecated), Checkout master
 Gymber is a POC project that offers a search on sports clubs in certain area
 
 ## Brief Description
