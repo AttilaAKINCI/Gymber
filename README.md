@@ -1,8 +1,8 @@
-# GymberCompose -- under development 
-GymberCompose is a searcher app for sports clubs using Jetpack compose way
+# Gymber -- under development 
+Gymber is a searcher app for sports clubs using Jetpack compose way
 
 ## Brief Description
-GymberCompose is a similar repository to [Gymber](https://github.com/AttilaAKINCI/Gymber) that wraps UI development part with Jetpack Compose!! 
+Gymber is a similar repository to [Gymber](https://github.com/AttilaAKINCI/Gymber) that wraps UI development part with Jetpack Compose!! 
 
 [APK Link (https://drive.google.com/file/d/1YVQSlhfMWlEnrI48xwL1XqOLeE0T2Z92/view?usp=sharing)](https://drive.google.com/file/d/1YVQSlhfMWlEnrI48xwL1XqOLeE0T2Z92/view?usp=sharing)
 

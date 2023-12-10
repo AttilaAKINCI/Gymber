@@ -1,0 +1,78 @@
+package com.akinci.gymber.data.repository
+
+import com.akinci.gymber.common.network.NetworkChecker
+import com.akinci.gymber.common.network.NetworkResponse
+import com.akinci.gymber.common.network.NetworkState
+import com.akinci.gymber.common.repository.BaseRepository
+import com.akinci.gymber.data.PartnerRepository
+import com.akinci.gymber.data.api.PartnerServiceDao
+import com.akinci.gymber.data.remote.PartnerListServiceResponse
+import com.akinci.gymber.jsonresponses.GetPartnerListResponse
+import com.google.common.truth.Truth
+import com.squareup.moshi.Moshi
+import io.mockk.*
+import io.mockk.impl.annotations.MockK
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.runBlockingTest
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import retrofit2.Response
+
+class PartnerResponseRepositoryTest {
+
+    @MockK
+    lateinit var partnerServiceDao: PartnerServiceDao
+
+    @MockK
+    lateinit var networkChecker: NetworkChecker
+
+    private lateinit var repository : PartnerRepository
+    private val moshi = Moshi.Builder().build()
+
+    @BeforeEach
+    fun setUp() {
+        MockKAnnotations.init(this, relaxUnitFun = true)
+        repository = PartnerRepository(
+            partnerServiceDao,
+            BaseRepository(networkChecker)
+        )
+    }
+
+    @AfterEach
+    fun tearDown() { unmockkAll() }
+
+    @Test
+    fun `Network is ok, getPartnerList function is called, returns NetworkResponse-Success for success`() = runBlockingTest {
+        val data =  moshi.adapter(PartnerListServiceResponse::class.java).fromJson(GetPartnerListResponse.partnerList)
+
+        every { networkChecker.networkState.value } returns NetworkState.Connected
+        coEvery { partnerServiceDao.getPartnerList() } returns Response.success(data)
+
+        val flowResponse = repository.getPartnerList()
+
+        launch {
+            flowResponse.collect { response ->
+                /** ignore first loading state **/
+                if(response is NetworkResponse.Loading){ return@collect }
+
+                /** repository function response type should be NetworkResponse.Success **/
+                Truth.assertThat(response).isInstanceOf(NetworkResponse.Success::class.java)
+
+                val fetchedResponse = (response as NetworkResponse.Success).data
+                Truth.assertThat(fetchedResponse).isInstanceOf(PartnerListServiceResponse::class.java)
+
+                Truth.assertThat(
+                    (fetchedResponse as PartnerListServiceResponse).data.size
+                ).isEqualTo(
+                    data?.data?.size
+                )
+
+                /** call back should be fired. **/
+                coVerify (exactly = 1) { partnerServiceDao.getPartnerList() }
+                confirmVerified(partnerServiceDao)
+            }
+        }
+    }
+
+}
