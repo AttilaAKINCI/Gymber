@@ -1,0 +1,65 @@
+<resources>
+    <string name="app_name">GymberCompose</string>
+    <string name="app_name_2">Gymber</string>
+
+    <string name="splash_page">Splash Page</string>
+    <string name="dashboard_page">Dashboard Page</string>
+    <string name="detail_page">Detail Page</string>
+
+    <string name="image_view_content_desc">Image View Content Description</string>
+    <string name="floating_button_content_desc">Floating Button Content Description</string>
+
+    <!-- Error messages -->
+    <string name="global_service_error">Unexpected service error. Please try again later....</string>
+    <string name="network_still_unavailable">Network still unavailable</string>
+
+
+    <!--  Dashboard Fragment   -->
+    <string name="title_dashboard">Available Gyms</string>
+    <string name="image_transition">ImageTransition</string>
+    <string name="dashboard_welcome_info_text">Welcome, I am Gymber :) I have find best gyms for you. Swipe left or right and try to catch a match.</string>
+    <string name="gym_header_title">%1$s - only %2$s km away</string>
+    <string name="match_title">It\'s a match</string>
+    <string name="match_sub_title">You and %1$s have decide on each other!!</string>
+    <string name="match_button_text_call">Take a call</string>
+    <string name="match_button_text_call_warning">Take a call feature is under development. Coming soon :)</string>
+    <string name="match_button_text_message">Leave a message</string>
+    <string name="match_button_text_message_warning">Messaging feature is under development. Coming soon :)</string>
+    <string name="match_button_text_swipe">Keep swiping</string>
+    <string name="rationale_message">In order to use the app, we need to take your permission. You can change it in settings</string>
+    <string name="rationale_button_text">Grand Access</string>
+
+
+    <!--  Detail Fragment   -->
+    <string name="title_detail">Gym Details</string>
+    <string name="partner_data_empty">Gym details could not be acquired....</string>
+    <string name="drop_in">Drop in</string>
+    <string name="reservable">Reservable</string>
+    <string name="first_come_first_serve">In Order</string>
+    <string name="gym_detail_info">%1$s is a sport center that operates in the field of %2$s. And also it has been working since %3$s after the institution.</string>
+    <string name="gym_detail_surplus">%1$s allows people to make some overtime in exchange for %2$s</string>
+    <string name="distance">%1$s KM</string>
+    <string name="distance_unknown">unavailable</string>
+    <string name="gym_address">Gym Addresses:</string>
+    <string name="gym_location">Location</string>
+    <string name="gym_distance">Distance</string>
+    <string name="open_map_message">Map view developments are in progress. This feature is coming soon :)</string>
+
+    <!--  Alert dialog  -->
+    <string name="alert_title">Upppss..</string>
+    <string name="alert_message">We couldn\'t any data :( Please check your internet connection </string>
+    <string name="retry">Retry</string>
+
+
+    <!-- COMPONENTS -->
+    <!-- Offline Dialog -->
+    <string name="connection_error_title">Network Connection Error</string>
+    <string name="connection_error_message">This page requires network connection and we detect that your connection is lost. Please try again  </string>
+    <string name="retry_label">Retry</string>
+
+    <!-- Page Navigator -->
+    <string name="welcome_message">....Welcome....</string>
+    <string name="button_next_page">Navigate to Next Page</string>
+    <string name="button_prev_page">Navigate to Previous Page</string>
+
+</resources>
