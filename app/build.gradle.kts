@@ -97,7 +97,7 @@ dependencies {
     // CORE
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.6")
+    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
 
     // IMAGE LOADING
     implementation("io.coil-kt:coil-compose:$coilVersion")
@@ -124,17 +124,16 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycleVersion")
 
     // COMPOSE
-    implementation("androidx.activity:activity-compose:1.8.1")
+    implementation("androidx.activity:activity-compose:1.8.2")
     implementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     debugImplementation("androidx.compose.ui:ui-tooling")
     implementation("androidx.compose.material3:material3")
-    implementation("io.github.a914-gowtham:compose-ratingbar:1.2.0") // TODO verify this ?
 
     // NAVIGATION
-    implementation("androidx.navigation:navigation-compose:2.7.5")
+    implementation("androidx.navigation:navigation-compose:2.7.6")
     implementation("io.github.raamcosta.compose-destinations:core:$composeDestinationsVersion")
     implementation("io.github.raamcosta.compose-destinations:animations-core:$composeDestinationsVersion")
     ksp("io.github.raamcosta.compose-destinations:ksp:$composeDestinationsVersion")

@@ -5,7 +5,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,7 +18,6 @@ fun TiledBackground(
     painter: Painter,
     content: @Composable BoxScope.() -> Unit
 ) {
-    // TODO define colors.
     val tintColor = if (isSystemInDarkTheme()) {
         Color(0xFF444444)
     } else {

@@ -5,112 +5,118 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.sp
 import com.akinci.gymber.R
 
-
-private val Roboto = FontFamily(
-    Font(resId = R.font.roboto_regular)
+val bangers = TextStyle(
+    fontFamily = FontFamily(Font(resId = R.font.bangers_regular)),
 )
 
-val textStyle = TextStyle(
-    fontFamily = Roboto,
-    lineHeightStyle = LineHeightStyle(
-        alignment = LineHeightStyle.Alignment.Center,
-        trim = LineHeightStyle.Trim.None,
-    ),
+val roboto = TextStyle(
+    fontFamily = FontFamily(Font(resId = R.font.roboto_regular)),
+)
+
+private val BangersTypography = Typography(
+    displayMedium = bangers.copy(
+        lineHeight = 52.sp,
+        fontSize = 45.sp,
+        letterSpacing = 0.sp,
+        fontWeight = FontWeight.W700,
+    )
 )
 
 val AppTypography = Typography(
-    displayLarge = textStyle.copy(
+    displayLarge = roboto.copy(
         lineHeight = 62.sp,
         fontSize = 56.sp,
         letterSpacing = 0.sp,
         fontWeight = FontWeight.W700,
     ),
-    displayMedium = textStyle.copy(
+    displayMedium = roboto.copy(
         lineHeight = 52.sp,
         fontSize = 45.sp,
         letterSpacing = 0.sp,
         fontWeight = FontWeight.W700,
     ),
-    displaySmall = textStyle.copy(
+    displaySmall = roboto.copy(
         lineHeight = 45.sp,
         fontSize = 39.sp,
         letterSpacing = 0.sp,
         fontWeight = FontWeight.W700,
     ),
-    headlineLarge = textStyle.copy(
+    headlineLarge = roboto.copy(
         lineHeight = 40.sp,
         fontSize = 32.sp,
         letterSpacing = 0.sp,
         fontWeight = FontWeight.W700,
     ),
-    headlineMedium = textStyle.copy(
+    headlineMedium = roboto.copy(
         lineHeight = 36.sp,
         fontSize = 28.sp,
         letterSpacing = 0.sp,
         fontWeight = FontWeight.W700,
     ),
-    headlineSmall = textStyle.copy(
+    headlineSmall = roboto.copy(
         lineHeight = 32.sp,
         fontSize = 26.sp,
         letterSpacing = 0.sp,
         fontWeight = FontWeight.W700,
     ),
-    titleLarge = textStyle.copy(
+    titleLarge = roboto.copy(
         lineHeight = 27.sp,
         fontSize = 20.sp,
         letterSpacing = 0.sp,
         fontWeight = FontWeight.W700,
     ),
-    titleMedium = textStyle.copy(
+    titleMedium = roboto.copy(
         lineHeight = 24.sp,
         fontSize = 17.sp,
         letterSpacing = 0.sp,
         fontWeight = FontWeight.W700,
     ),
-    titleSmall = textStyle.copy(
+    titleSmall = roboto.copy(
         lineHeight = 22.sp,
         fontSize = 15.sp,
         letterSpacing = 0.sp,
         fontWeight = FontWeight.W400,
     ),
-    labelLarge = textStyle.copy(
+    labelLarge = roboto.copy(
         lineHeight = 20.sp,
         fontSize = 14.sp,
         letterSpacing = 0.sp,
         fontWeight = FontWeight.W400,
     ),
-    labelMedium = textStyle.copy(
+    labelMedium = roboto.copy(
         lineHeight = 19.sp,
         fontSize = 12.sp,
         letterSpacing = 0.sp,
         fontWeight = FontWeight.W400,
     ),
-    labelSmall = textStyle.copy(
+    labelSmall = roboto.copy(
         lineHeight = 16.sp,
         fontSize = 11.sp,
         letterSpacing = (0.5).sp,
         fontWeight = FontWeight.W400,
     ),
-    bodyLarge = textStyle.copy(
+    bodyLarge = roboto.copy(
         lineHeight = 24.sp,
         fontSize = 17.sp,
         letterSpacing = 0.sp,
         fontWeight = FontWeight.W400,
     ),
-    bodyMedium = textStyle.copy(
+    bodyMedium = roboto.copy(
         lineHeight = 22.sp,
         fontSize = 15.sp,
         letterSpacing = 0.sp,
         fontWeight = FontWeight.W400,
     ),
-    bodySmall = textStyle.copy(
+    bodySmall = roboto.copy(
         lineHeight = 19.sp,
         fontSize = 12.sp,
         letterSpacing = 0.sp,
         fontWeight = FontWeight.W400,
     ),
 )
+
+val Typography.displayMedium_bangers: TextStyle
+    get() = BangersTypography.displayMedium

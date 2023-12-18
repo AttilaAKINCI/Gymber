@@ -1,8 +1,33 @@
 package com.akinci.gymber.ui.features.splash
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.akinci.gymber.R
 import com.akinci.gymber.core.compose.UIModePreviews
+import com.akinci.gymber.ui.ds.components.InfiniteLottieAnimation
 import com.akinci.gymber.ui.ds.theme.GymberTheme
+import com.akinci.gymber.ui.ds.theme.displayMedium_bangers
+import com.akinci.gymber.ui.features.NavGraphs
+import com.akinci.gymber.ui.features.destinations.DashboardScreenDestination
+import com.akinci.gymber.ui.features.splash.SplashViewContract.State
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -13,50 +38,49 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Composable
 fun SplashScreen(
     navigator: DestinationsNavigator,
+    vm: SplashViewModel = hiltViewModel(),
 ) {
+    val uiState: State by vm.stateFlow.collectAsStateWithLifecycle()
+
+    if (uiState.isCompleted) {
+        navigator.navigate(DashboardScreenDestination) {
+            popUpTo(NavGraphs.root.route) {
+                inclusive = true
+            }
+        }
+    }
 
     SplashScreenContent()
 }
 
 @Composable
-private fun SplashScreenContent(
-
-) {
-    /*Surface(modifier) {
+private fun SplashScreenContent() {
+    Surface {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            val currentOnTimeout by rememberUpdatedState(onTimeout)
-            LaunchedEffect(true) {
-                delay(SplashWaitTime) // Simulates loading things
-                currentOnTimeout()
-            }
-
             Column(
-                modifier = Modifier
-                    .wrapContentHeight()
-                    .padding(0.dp,0.dp,0.dp,100.dp),
-                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                */
-    /** Lottie animation **//*
-                val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.gymber))
-                LottieAnimation(
-                    composition,
+                InfiniteLottieAnimation(
                     modifier = Modifier
-                        .height(300.dp),
-                    iterations = Int.MAX_VALUE
+                        .fillMaxWidth(0.7f)
+                        .aspectRatio(1f)
+                        .testTag("lottie_animation"),
+                    animationId = R.raw.gymber
                 )
-
+                Spacer(modifier = Modifier.height(64.dp))
                 Text(
-                    text = stringResource(R.string.app_name_2),
-                    style = MaterialTheme.typography.h2
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(id = R.string.app_name),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.displayMedium_bangers,
                 )
             }
         }
-    }*/
+    }
 }
 
 @UIModePreviews

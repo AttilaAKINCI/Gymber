@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">GymberCompose</string>
-    <string name="app_name_2">Gymber</string>
+    <string name="app_name">Gymber</string>
 
     <string name="splash_page">Splash Page</string>
     <string name="dashboard_page">Dashboard Page</string>

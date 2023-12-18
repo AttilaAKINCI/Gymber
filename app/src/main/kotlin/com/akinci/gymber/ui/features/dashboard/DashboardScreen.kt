@@ -1,11 +1,14 @@
 package com.akinci.gymber.ui.features.dashboard
 
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.akinci.gymber.R
+import com.akinci.gymber.core.compose.UIModePreviews
+import com.akinci.gymber.ui.ds.components.TiledBackground
 import com.akinci.gymber.ui.ds.theme.GymberTheme
 import com.akinci.gymber.ui.features.dashboard.DashboardScreenViewContract.State
 import com.ramcosta.composedestinations.annotation.Destination
@@ -32,6 +35,14 @@ private fun DashboardScreenContent(
     uiState: State,
     openPartnerDetail: () -> Unit,
 ) {
+    Surface {
+        TiledBackground(
+            painter = painterResource(id = R.drawable.ic_pattern_bg)
+        ) {
+
+        }
+    }
+
     /* val scaffoldState = rememberScaffoldState()
      val scope = rememberCoroutineScope()
 
@@ -290,8 +301,7 @@ private fun DashboardScreenContent(
     }*/
 }
 
-@ExperimentalAnimationApi
-@Preview(showBackground = true)
+@UIModePreviews
 @Composable
 fun DashboardScreenPreview() {
     GymberTheme {

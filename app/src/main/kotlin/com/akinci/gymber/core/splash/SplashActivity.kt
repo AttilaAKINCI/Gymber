@@ -7,8 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-//TODO import com.akinci.gymber.ui.features.splash.SplashScreen
-
+import com.akinci.gymber.ui.features.splash.SplashScreen
 
 /**
  * Wrap Native SplashActivity with transparent one and directly skip it.
