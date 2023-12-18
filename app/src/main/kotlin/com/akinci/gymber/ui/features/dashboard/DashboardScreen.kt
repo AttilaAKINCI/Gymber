@@ -1,16 +1,44 @@
 package com.akinci.gymber.ui.features.dashboard
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.akinci.gymber.R
 import com.akinci.gymber.core.compose.UIModePreviews
+import com.akinci.gymber.ui.ds.components.ActionButton
+import com.akinci.gymber.ui.ds.components.InfiniteLottieAnimation
 import com.akinci.gymber.ui.ds.components.TiledBackground
 import com.akinci.gymber.ui.ds.theme.GymberTheme
+import com.akinci.gymber.ui.ds.theme.Purple
+import com.akinci.gymber.ui.ds.theme.RedDark
+import com.akinci.gymber.ui.ds.theme.Teal
+import com.akinci.gymber.ui.ds.theme.titleLarge_bangers
 import com.akinci.gymber.ui.features.dashboard.DashboardScreenViewContract.State
+import com.akinci.gymber.ui.features.destinations.DetailScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -26,279 +54,130 @@ fun DashboardScreen(
 
     DashboardScreenContent(
         uiState = uiState,
-        openPartnerDetail = {},
+        onDetailButtonClick = {
+            // TODO pass data ?
+            navigator.navigate(DetailScreenDestination)
+        },
     )
 }
 
 @Composable
 private fun DashboardScreenContent(
     uiState: State,
-    openPartnerDetail: () -> Unit,
+    onDetailButtonClick: () -> Unit,
 ) {
     Surface {
         TiledBackground(
             painter = painterResource(id = R.drawable.ic_pattern_bg)
         ) {
-
-        }
-    }
-
-    /* val scaffoldState = rememberScaffoldState()
-     val scope = rememberCoroutineScope()
-
-     Scaffold(
-         scaffoldState = scaffoldState,
-     ) {
-         */
-    /** For a trial Dashboard Screen is marked as "Network Dependent Screen" (NDS) **//*
-        */
-    /** NOP **//*
-        NetworkDependentScreen(retryAction = { }) {
-            */
-    /** NOP **//*
-            TiledBackground(
-                tiledDrawableId = R.drawable.ic_pattern_bg
+            Column(
+                modifier = Modifier
+                    .windowInsetsPadding(WindowInsets.systemBars)
+                    .fillMaxWidth()
             ) {
-                Box {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                    ) {
+                // Top welcome bar
+                DashboardScreen.TopBar()
 
-                        */
-    /** Welcome section **//*
-                        */
-    /** Welcome section **//*
-                        */
-    /** Welcome section **//*
+                // Gym Cards
+                DashboardScreen.Cards(modifier = Modifier.weight(1f))
 
-                        */
-    /** Welcome section **//*
-                        Row(
-                            modifier = Modifier
-                                .padding(20.dp, 20.dp, 20.dp, 10.dp)
-                                .height(100.dp)
-                                .clip(RoundedCornerShape(10.dp))
-                                .border(
-                                    BorderStroke(1.dp, colorResource(R.color.black)),
-                                    RoundedCornerShape(10.dp)
-                                )
-                                .background(color = colorResource(R.color.white_90)),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-
-                            val composition by rememberLottieComposition(
-                                LottieCompositionSpec.RawRes(
-                                    R.raw.gymber
-                                )
-                            )
-                            LottieAnimation(
-                                composition,
-                                modifier = Modifier
-                                    .width(100.dp)
-                                    .height(100.dp),
-                                iterations = animationCount
-                            )
-
-                            Text(
-                                text = stringResource(R.string.dashboard_welcome_info_text),
-                                modifier = Modifier.padding(0.dp, 0.dp, 5.dp, 0.dp),
-                                style = MaterialTheme.typography.body1
-                            )
-                        }
-
-                        // swipe gym image
-                        vm.getTopElement()?.let {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .fillMaxHeight(fraction = 0.8f)
-                                    .padding(20.dp, 20.dp, 20.dp, 20.dp)
-                                    .clip(RoundedCornerShape(18.dp))
-                            ) {
-                                Image(
-                                    painter = rememberImagePainter(
-                                        data = it.header_image["desktop"],
-                                        builder = {
-                                            crossfade(true)
-                                        }
-                                    ),
-                                    contentDescription = "",
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                )
-
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .background(colorResource(R.color.white_60))
-                                        .align(Alignment.BottomCenter),
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.Center
-                                ) {
-                                    val closestLoc = vm.findClosestLocation(it)
-                                    Text(
-                                        text = if (closestLoc.isNotBlank()) {
-                                            stringResource(
-                                                R.string.gym_header_title,
-                                                it.name,
-                                                closestLoc
-                                            )
-                                        } else {
-                                            it.name
-                                        },
-                                        color = colorResource(R.color.black_60),
-                                        modifier = Modifier
-                                            .padding(10.dp, 0.dp, 10.dp, 10.dp),
-                                        style = MaterialTheme.typography.h2
-                                    )
-                                }
-                            }
-                        } ?: run {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .fillMaxHeight(fraction = 0.8f)
-                                    .padding(20.dp)
-                                    .clip(RoundedCornerShape(18.dp))
-                                    .alpha(0.8f)
-                                    .background(colorResource(R.color.gray_99))
-                            ) { */
-    /** NOP **//* }
-                        }
-                    }
-
-                    */
-    /** Bottom Button Section **//*
-
-                    */
-    /** Bottom Button Section **//*
-
-                    */
-    /** Bottom Button Section **//*
-
-                    */
-    /** Bottom Button Section **//*
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .padding(0.dp, 0.dp, 0.dp, 50.dp)
-                            .align(alignment = Alignment.BottomCenter),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        */
-    /** disLike Button **//*
-                        */
-    /** disLike Button **//*
-                        */
-    /** disLike Button **//*
-
-                        */
-    /** disLike Button **//*
-                        FloatingActionButton(
-                            onClick = { scope.launch { vm.dislike() } },
-                            backgroundColor = colorResource(R.color.red_dark)
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_cancel),
-                                contentDescription = stringResource(R.string.floating_button_content_desc),
-                                modifier = Modifier.scale(1f),
-                                tint = colorResource(R.color.white)
-                            )
-                        }
-
-                        */
-    /** select Button **//*
-
-                        */
-    /** select Button **//*
-
-                        */
-    /** select Button **//*
-
-                        */
-    /** select Button **//*
-                        FloatingActionButton(
-                            onClick = {
-                                scope.launch {
-                                    vm.select()
-                                    onNavigateToDetail.invoke()
-                                }
-                            },
-                            backgroundColor = colorResource(R.color.purple_500)
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_bag),
-                                contentDescription = stringResource(R.string.floating_button_content_desc),
-                                modifier = Modifier.scale(1f),
-                                tint = colorResource(R.color.white)
-                            )
-                        }
-
-                        */
-    /** like Button **//*
-
-                        */
-    /** like Button **//*
-
-                        */
-    /** like Button **//*
-
-                        */
-    /** like Button **//*
-                        FloatingActionButton(
-                            onClick = { scope.launch { vm.like() } }
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_check),
-                                contentDescription = stringResource(R.string.floating_button_content_desc),
-                                modifier = Modifier.scale(1f),
-                                tint = colorResource(R.color.white)
-                            )
-                        }
-                    }
-
-                    */
-    /** in case of any match make it visible **//*
-
-                    */
-    /** in case of any match make it visible **//*
-
-                    */
-    /** in case of any match make it visible **//*
-
-                    */
-    /** in case of any match make it visible **//*
-                    AnimatedVisibility(
-                        visible = vm.matchState,
-                        enter = fadeIn(
-                            initialAlpha = 0f
-                        ),
-                        exit = fadeOut(
-                            targetAlpha = 0f
-                        )
-                    ) {
-                        MatchScreen(
-                            partner = vm.partnerState,
-                            onClose = { vm.dismissMatchState() },
-                            onSnackBarMessage = { message ->
-                                scope.launch {
-                                    scaffoldState.snackbarHostState.showSnackbar(
-                                        message = message,
-                                        duration = SnackbarDuration.Short
-                                    )
-                                }
-                            }
-                        )
-                    }
-
-                }
+                // Action Buttons
+                DashboardScreen.Actions(
+                    onDetailButtonClick = {},
+                    onDislikeButtonClick = {},
+                    onLikeButtonClick = {},
+                )
             }
         }
-    }*/
+    }
+}
+
+typealias DashboardScreen = Unit
+
+@Composable
+fun DashboardScreen.TopBar(
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .background(
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                shape = MaterialTheme.shapes.extraLarge,
+            )
+            .border(
+                border = BorderStroke(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                ),
+                shape = MaterialTheme.shapes.extraLarge,
+            ),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        InfiniteLottieAnimation(
+            modifier = Modifier
+                .width(100.dp)
+                .aspectRatio(1f),
+            animationId = R.raw.gymber
+        )
+
+        Text(
+            modifier = Modifier
+                .padding(vertical = 8.dp)
+                .padding(end = 8.dp)
+                .weight(1f),
+            text = stringResource(id = R.string.dashboard_screen_welcome_text),
+            style = MaterialTheme.typography.titleLarge_bangers,
+        )
+    }
+}
+
+@Composable
+fun DashboardScreen.Cards(
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier) {
+
+    }
+}
+
+@Composable
+fun DashboardScreen.Actions(
+    modifier: Modifier = Modifier,
+    onDetailButtonClick: () -> Unit,
+    onLikeButtonClick: () -> Unit,
+    onDislikeButtonClick: () -> Unit,
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 32.dp)
+            .padding(bottom = 64.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceEvenly,
+    ) {
+        ActionButton(
+            containerColor = Color.RedDark,
+            painter = painterResource(id = R.drawable.ic_cancel),
+            tintColor = Color.White,
+            onClick = onDislikeButtonClick
+        )
+
+        ActionButton(
+            containerColor = Color.Purple,
+            painter = painterResource(id = R.drawable.ic_bag),
+            tintColor = Color.White,
+            onClick = onDetailButtonClick
+        )
+
+        ActionButton(
+            containerColor = Color.Teal,
+            painter = painterResource(id = R.drawable.ic_check),
+            tintColor = Color.White,
+            onClick = onLikeButtonClick
+        )
+    }
 }
 
 @UIModePreviews
@@ -307,7 +186,7 @@ fun DashboardScreenPreview() {
     GymberTheme {
         DashboardScreenContent(
             uiState = State(),
-            openPartnerDetail = {},
+            onDetailButtonClick = {},
         )
     }
 }

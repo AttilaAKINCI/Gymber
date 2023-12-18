@@ -21,8 +21,20 @@ private val BangersTypography = Typography(
         lineHeight = 52.sp,
         fontSize = 45.sp,
         letterSpacing = 0.sp,
-        fontWeight = FontWeight.W700,
-    )
+        fontWeight = FontWeight.W400,
+    ),
+    bodyLarge = bangers.copy(
+        lineHeight = 24.sp,
+        fontSize = 17.sp,
+        letterSpacing = 0.sp,
+        fontWeight = FontWeight.W400,
+    ),
+    titleLarge = bangers.copy(
+        lineHeight = 27.sp,
+        fontSize = 20.sp,
+        letterSpacing = 0.sp,
+        fontWeight = FontWeight.W400,
+    ),
 )
 
 val AppTypography = Typography(
@@ -120,3 +132,9 @@ val AppTypography = Typography(
 
 val Typography.displayMedium_bangers: TextStyle
     get() = BangersTypography.displayMedium
+
+val Typography.bodyLarge_bangers: TextStyle
+    get() = BangersTypography.bodyLarge
+
+val Typography.titleLarge_bangers: TextStyle
+    get() = BangersTypography.titleLarge

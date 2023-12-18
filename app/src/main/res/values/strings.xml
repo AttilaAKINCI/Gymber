@@ -14,9 +14,12 @@
 
 
     <!--  Dashboard Fragment   -->
+    <string name="dashboard_screen_welcome_text">Welcome, I am Gymber :) \nI have find best gyms for you. Swipe left or right and try to catch a match.</string>
+
+
+
     <string name="title_dashboard">Available Gyms</string>
     <string name="image_transition">ImageTransition</string>
-    <string name="dashboard_welcome_info_text">Welcome, I am Gymber :) I have find best gyms for you. Swipe left or right and try to catch a match.</string>
     <string name="gym_header_title">%1$s - only %2$s km away</string>
     <string name="match_title">It\'s a match</string>
     <string name="match_sub_title">You and %1$s have decide on each other!!</string>

@@ -4,18 +4,18 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
-val WhiteLight = Color(0xFFFFFFFF)
-val WhiteDark = Color(0xF2FFFFFF)
+private val WhiteLight = Color(0xFFFFFFFF)
+private val WhiteLight_85A = Color(0xD9FFFFFF)
+private val WhiteDark = Color(0xF2CCCCCC)
 
-val BlueLight = Color(0xFF337BE2)
-val BlueDark = Color(0xFF4189EF)
+private val BlueLight = Color(0xFF337BE2)
+private val BlueDark = Color(0xFF4189EF)
 
-val GreyLight = Color(0xFFDDDDDD)
-val GreyDark = Color(0xFF555555)
+private val GreyLight = Color(0xFFDDDDDD)
+private val GreyDark = Color(0xFF555555)
 
-val Teal = Color(0xD903DAC5)
-
-val Black = Color(0xFF131313)
+private val Black = Color(0xFF131313)
+private val Black_85A = Color(0xA6333333)
 
 val LightColorScheme = lightColorScheme(
     primary = BlueLight,
@@ -25,7 +25,7 @@ val LightColorScheme = lightColorScheme(
     onBackground = Black,
     surface = WhiteLight,
     onSurface = Black,
-    surfaceVariant = Teal,
+    surfaceVariant = WhiteLight_85A,
     onSurfaceVariant = Black,
 )
 
@@ -37,6 +37,15 @@ val DarkColorScheme = darkColorScheme(
     onBackground = WhiteDark,
     surface = Black,
     onSurface = WhiteDark,
-    surfaceVariant = Teal,
+    surfaceVariant = Black_85A,
     onSurfaceVariant = WhiteDark,
 )
+
+val Color.Companion.Purple: Color
+    get() = Color(0xFF9C27B0)
+
+val Color.Companion.Teal: Color
+    get() = Color(0xFF009688)
+
+val Color.Companion.RedDark: Color
+    get() = Color(0xFFE91E63)
