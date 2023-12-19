@@ -1,6 +1,7 @@
 package com.akinci.gymber.ui.features.dashboard
 
 import androidx.lifecycle.ViewModel
+import com.akinci.gymber.core.compose.reduce
 import com.akinci.gymber.core.coroutine.ContextProvider
 import com.akinci.gymber.domain.PartnerUseCase
 import com.akinci.gymber.ui.features.dashboard.DashboardScreenViewContract.State
@@ -23,7 +24,19 @@ class DashboardViewModel @Inject constructor(
     }
 
     private fun getPartners() {
-
+        _stateFlow.reduce {
+            copy(
+                images = listOf(
+                    "https://edge.one.fit/image/partner/image/16280/b7ad750d-8e00-40cb-b590-a6e9c4875d91.jpg?w=1680",
+                    "https://edge.one.fit/image/partner/image/17173/2a602be6-d7f1-4922-b669-5df0bb547191.jpg?w=1680"
+                )
+               /* images = listOf(
+                    "https://edge.one.fit/image/partner/image/16280/b7ad750d-8e00-40cb-b590-a6e9c4875d91.jpg?w=1680",
+                    ""
+                )
+                images = listOf("", "")*/
+            )
+        }
     }
 
 

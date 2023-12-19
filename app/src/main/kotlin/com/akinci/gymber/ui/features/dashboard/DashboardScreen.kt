@@ -31,6 +31,7 @@ import com.akinci.gymber.R
 import com.akinci.gymber.core.compose.UIModePreviews
 import com.akinci.gymber.ui.ds.components.ActionButton
 import com.akinci.gymber.ui.ds.components.InfiniteLottieAnimation
+import com.akinci.gymber.ui.ds.components.SwipeableImage
 import com.akinci.gymber.ui.ds.components.TiledBackground
 import com.akinci.gymber.ui.ds.theme.GymberTheme
 import com.akinci.gymber.ui.ds.theme.Purple
@@ -79,7 +80,12 @@ private fun DashboardScreenContent(
                 DashboardScreen.TopBar()
 
                 // Gym Cards
-                DashboardScreen.Cards(modifier = Modifier.weight(1f))
+                DashboardScreen.Cards(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    images = uiState.images,
+                )
 
                 // Action Buttons
                 DashboardScreen.Actions(
@@ -135,10 +141,17 @@ fun DashboardScreen.TopBar(
 
 @Composable
 fun DashboardScreen.Cards(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    images: List<String>,
 ) {
-    Box(modifier = modifier) {
-
+    // TODO if network is unavailable, placeholder? fallback ?
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center,
+    ) {
+        images.forEach {
+            SwipeableImage(imageUrl = it)
+        }
     }
 }
 
@@ -153,7 +166,7 @@ fun DashboardScreen.Actions(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 32.dp)
-            .padding(bottom = 64.dp),
+            .padding(top = 16.dp, bottom = 64.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {

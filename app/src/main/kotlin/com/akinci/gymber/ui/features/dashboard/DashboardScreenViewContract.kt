@@ -1,8 +1,10 @@
 package com.akinci.gymber.ui.features.dashboard
 
+import com.akinci.gymber.core.compose.UIState
+
 object DashboardScreenViewContract {
 
     data class State(
-        val s: String = "",
-    )
+        val images: List<String> = emptyList(),
+    ): UIState
 }
