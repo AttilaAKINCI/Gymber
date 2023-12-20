@@ -1,14 +1,17 @@
 package com.akinci.gymber.ui.features.dashboard
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.akinci.gymber.core.compose.reduce
 import com.akinci.gymber.core.coroutine.ContextProvider
+import com.akinci.gymber.domain.Image
 import com.akinci.gymber.domain.PartnerUseCase
 import com.akinci.gymber.ui.features.dashboard.DashboardScreenViewContract.State
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,19 +28,51 @@ class DashboardViewModel @Inject constructor(
     }
 
     private fun getPartners() {
-        _stateFlow.reduce {
-            copy(
-                images = persistentListOf(
-                    "https://edge.one.fit/image/partner/image/16280/b7ad750d-8e00-40cb-b590-a6e9c4875d91.jpg?w=1680",
-                    "https://edge.one.fit/image/partner/image/17173/2a602be6-d7f1-4922-b669-5df0bb547191.jpg?w=1680"
-                )
-               /* images = listOf(
-                    "https://edge.one.fit/image/partner/image/16280/b7ad750d-8e00-40cb-b590-a6e9c4875d91.jpg?w=1680",
-                    ""
-                )
-                images = listOf("", "")*/
-            )
+        viewModelScope.launch {
+            withContext(contextProvider.io) {
+                partnerUseCase.getPartners()
+            }.onSuccess {
+                _stateFlow.reduce {
+                    copy(
+                        partners = it,
+                        images = it.map {
+                            Image(
+                                id = it.id,
+                                name = it.name,
+                                imageUrl = it.imageUrl
+                            )
+                        }.reversed()
+                    )
+                }
+            }
         }
+    }
+
+    fun like(partnerId: Int) {
+        removePartner(partnerId)
+
+        // TODO randomize match logic. here.
+    }
+
+    fun dislike(partnerId: Int) = removePartner(partnerId)
+
+    private fun removePartner(id: Int) {
+        val partners = stateFlow.value.partners
+            .map { it.copy() }
+            .toMutableList()
+
+        partners.removeAll { it.id == id }
+
+        _stateFlow.value = State(
+            partners = partners,
+            images = partners.map {
+                Image(
+                    id = it.id,
+                    name = it.name,
+                    imageUrl = it.imageUrl
+                )
+            }.reversed()
+        )
     }
 
 

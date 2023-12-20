@@ -1,6 +1,7 @@
 package com.akinci.gymber.data
 
 import com.akinci.gymber.core.network.toResponse
+import com.akinci.gymber.data.mapper.toDomain
 import com.akinci.gymber.data.remote.PartnerListServiceResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get

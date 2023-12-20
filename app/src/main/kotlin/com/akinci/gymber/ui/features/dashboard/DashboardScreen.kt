@@ -29,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.akinci.gymber.R
 import com.akinci.gymber.core.compose.UIModePreviews
+import com.akinci.gymber.domain.Image
 import com.akinci.gymber.ui.ds.components.ActionButton
 import com.akinci.gymber.ui.ds.components.InfiniteLottieAnimation
 import com.akinci.gymber.ui.ds.components.SwipeableImage
@@ -43,16 +44,15 @@ import com.akinci.gymber.ui.features.destinations.DetailScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import kotlinx.collections.immutable.PersistentList
 
 @RootNavGraph
 @Destination
 @Composable
 fun DashboardScreen(
     navigator: DestinationsNavigator,
-    viewModel: DashboardViewModel = hiltViewModel(),
+    vm: DashboardViewModel = hiltViewModel(),
 ) {
-    val uiState: State by viewModel.stateFlow.collectAsStateWithLifecycle()
+    val uiState: State by vm.stateFlow.collectAsStateWithLifecycle()
 
     DashboardScreenContent(
         uiState = uiState,
@@ -60,6 +60,8 @@ fun DashboardScreen(
             // TODO pass data ?
             navigator.navigate(DetailScreenDestination)
         },
+        onGymLike = { vm.like(it) },
+        onGymDislike = { vm.dislike(it) }
     )
 }
 
@@ -67,6 +69,8 @@ fun DashboardScreen(
 private fun DashboardScreenContent(
     uiState: State,
     onDetailButtonClick: () -> Unit,
+    onGymLike: (Int) -> Unit,
+    onGymDislike: (Int) -> Unit,
 ) {
     Surface {
         TiledBackground(
@@ -86,6 +90,8 @@ private fun DashboardScreenContent(
                         .fillMaxWidth()
                         .weight(1f),
                     images = uiState.images,
+                    onDraggedRight = onGymLike,
+                    onDraggedLeft = onGymDislike,
                 )
 
                 // Action Buttons
@@ -102,7 +108,7 @@ private fun DashboardScreenContent(
 typealias DashboardScreen = Unit
 
 @Composable
-fun DashboardScreen.TopBar(
+private fun DashboardScreen.TopBar(
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -141,9 +147,11 @@ fun DashboardScreen.TopBar(
 }
 
 @Composable
-fun DashboardScreen.Cards(
+private fun DashboardScreen.Cards(
     modifier: Modifier = Modifier,
-    images: PersistentList<String>,
+    images: List<Image>,
+    onDraggedRight: (Int) -> Unit,
+    onDraggedLeft: (Int) -> Unit,
 ) {
     // TODO if network is unavailable, placeholder? fallback ?
     Box(
@@ -151,13 +159,17 @@ fun DashboardScreen.Cards(
         contentAlignment = Alignment.Center,
     ) {
         images.forEach {
-            SwipeableImage(imageUrl = it)
+            SwipeableImage(
+                image = it,
+                onDraggedRight = onDraggedRight,
+                onDraggedLeft = onDraggedLeft,
+            )
         }
     }
 }
 
 @Composable
-fun DashboardScreen.Actions(
+private fun DashboardScreen.Actions(
     modifier: Modifier = Modifier,
     onDetailButtonClick: () -> Unit,
     onLikeButtonClick: () -> Unit,
@@ -196,11 +208,13 @@ fun DashboardScreen.Actions(
 
 @UIModePreviews
 @Composable
-fun DashboardScreenPreview() {
+private fun DashboardScreenPreview() {
     GymberTheme {
         DashboardScreenContent(
             uiState = State(),
             onDetailButtonClick = {},
+            onGymLike = {},
+            onGymDislike = {},
         )
     }
 }

@@ -28,8 +28,8 @@ data class PartnerResponse(
     val category: Category,
     val categories: List<Category>,
     @SerialName("header_image")
-    val headerImage: List<Image>,
+    val headerImage: Image,
     @SerialName("location_groups")
-    val locationGroups: List<Image>,
+    val locationGroups: List<LocationGroup>,
     val awards: List<Award>,
 )

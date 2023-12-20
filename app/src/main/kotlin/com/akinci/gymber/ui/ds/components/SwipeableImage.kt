@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -34,15 +35,19 @@ import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.akinci.gymber.R
+import com.akinci.gymber.domain.Image
 import com.akinci.gymber.ui.ds.theme.RedDark
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
 @Composable
 fun SwipeableImage(
     modifier: Modifier = Modifier,
-    imageUrl: String,
+    image: Image,
+    onDraggedRight: (Int) -> Unit,
+    onDraggedLeft: (Int) -> Unit,
 ) {
     val context = LocalContext.current
     val density = LocalDensity.current
@@ -69,6 +74,15 @@ fun SwipeableImage(
         }
     }
 
+    var offsetXOnDragEnd by remember { mutableFloatStateOf(0f) }
+    LaunchedEffect(offsetXOnDragEnd) {
+        delay(500L)
+        when {
+            offsetXOnDragEnd > 0 -> onDraggedRight(image.id)
+            offsetXOnDragEnd < 0 -> onDraggedLeft(image.id)
+        }
+    }
+
     Box(
         modifier = modifier
             .offset { IntOffset(animatedOffset.roundToInt(), 0) }
@@ -83,6 +97,7 @@ fun SwipeableImage(
                             // we couldn't reach threshold, reset position
                             0f
                         }
+                        offsetXOnDragEnd = offsetX
                     },
                     onDrag = { change, dragAmount ->
                         change.consume()
@@ -93,10 +108,10 @@ fun SwipeableImage(
         contentAlignment = Alignment.Center,
     ) {
         val imageRequest = ImageRequest.Builder(context)
-            .data(imageUrl)
+            .data(image.imageUrl)
             .dispatcher(Dispatchers.IO)
-            .memoryCacheKey(imageUrl)
-            .diskCacheKey(imageUrl)
+            .memoryCacheKey(image.imageUrl)
+            .diskCacheKey(image.imageUrl)
             .diskCachePolicy(CachePolicy.ENABLED)
             .memoryCachePolicy(CachePolicy.ENABLED)
             .build()
