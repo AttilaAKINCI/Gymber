@@ -43,6 +43,7 @@ import com.akinci.gymber.ui.features.destinations.DetailScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.collections.immutable.PersistentList
 
 @RootNavGraph
 @Destination
@@ -142,7 +143,7 @@ fun DashboardScreen.TopBar(
 @Composable
 fun DashboardScreen.Cards(
     modifier: Modifier = Modifier,
-    images: List<String>,
+    images: PersistentList<String>,
 ) {
     // TODO if network is unavailable, placeholder? fallback ?
     Box(
