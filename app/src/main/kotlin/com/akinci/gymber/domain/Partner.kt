@@ -16,4 +16,5 @@ data class Partner(
     val firstComeFirstServe: Boolean,
     val imageUrl: String,
     val locations: List<Location>,
+    val distance: String,
 ) : Parcelable

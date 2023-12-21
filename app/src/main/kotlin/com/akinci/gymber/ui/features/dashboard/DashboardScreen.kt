@@ -4,7 +4,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -19,6 +18,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,11 +31,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.akinci.gymber.R
 import com.akinci.gymber.core.compose.UIModePreviews
-import com.akinci.gymber.domain.Image
 import com.akinci.gymber.ui.ds.components.ActionButton
 import com.akinci.gymber.ui.ds.components.InfiniteLottieAnimation
-import com.akinci.gymber.ui.ds.components.SwipeableImage
 import com.akinci.gymber.ui.ds.components.TiledBackground
+import com.akinci.gymber.ui.ds.components.swipecards.SwipeBox
+import com.akinci.gymber.ui.ds.components.swipecards.data.ForcedAction
+import com.akinci.gymber.ui.ds.components.swipecards.data.SwipeDirection
 import com.akinci.gymber.ui.ds.theme.GymberTheme
 import com.akinci.gymber.ui.ds.theme.Purple
 import com.akinci.gymber.ui.ds.theme.RedDark
@@ -84,21 +87,37 @@ private fun DashboardScreenContent(
                 // Top welcome bar
                 DashboardScreen.TopBar()
 
-                // Gym Cards
-                DashboardScreen.Cards(
+                // Swipe box
+                var forcedActions by remember { mutableStateOf(ForcedAction()) }
+                SwipeBox(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f),
+                    forcedAction = forcedActions,
                     images = uiState.images,
-                    onDraggedRight = onGymLike,
-                    onDraggedLeft = onGymDislike,
+                    onSwipe = { direction, id ->
+                        // TODO send actions to VM, in order to deliver to backend
+                        when (direction) {
+                            SwipeDirection.RIGHT -> onGymLike(id)
+                            SwipeDirection.LEFT -> onGymDislike(id)
+                        }
+                    }
                 )
 
-                // Action Buttons
                 DashboardScreen.Actions(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 32.dp)
+                        .padding(top = 16.dp, bottom = 64.dp),
                     onDetailButtonClick = {},
-                    onDislikeButtonClick = {},
-                    onLikeButtonClick = {},
+                    onLikeButtonClick = {
+                        // button click will force swipe card to fling away in direction
+                        forcedActions = forcedActions.swipeRight()
+                    },
+                    onDislikeButtonClick = {
+                        // button click will force swipe card to fling away in direction
+                        forcedActions = forcedActions.swipeLeft()
+                    }
                 )
             }
         }
@@ -147,28 +166,6 @@ private fun DashboardScreen.TopBar(
 }
 
 @Composable
-private fun DashboardScreen.Cards(
-    modifier: Modifier = Modifier,
-    images: List<Image>,
-    onDraggedRight: (Int) -> Unit,
-    onDraggedLeft: (Int) -> Unit,
-) {
-    // TODO if network is unavailable, placeholder? fallback ?
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center,
-    ) {
-        images.forEach {
-            SwipeableImage(
-                image = it,
-                onDraggedRight = onDraggedRight,
-                onDraggedLeft = onDraggedLeft,
-            )
-        }
-    }
-}
-
-@Composable
 private fun DashboardScreen.Actions(
     modifier: Modifier = Modifier,
     onDetailButtonClick: () -> Unit,
@@ -176,10 +173,7 @@ private fun DashboardScreen.Actions(
     onDislikeButtonClick: () -> Unit,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 32.dp)
-            .padding(top = 16.dp, bottom = 64.dp),
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {

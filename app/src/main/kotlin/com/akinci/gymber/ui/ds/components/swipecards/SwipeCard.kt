@@ -1,6 +1,7 @@
-package com.akinci.gymber.ui.ds.components
+package com.akinci.gymber.ui.ds.components.swipecards
 
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
@@ -14,6 +15,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -24,39 +27,46 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.CachePolicy
-import coil.request.ImageRequest
 import com.akinci.gymber.R
-import com.akinci.gymber.domain.Image
+import com.akinci.gymber.core.compose.UIModePreviews
+import com.akinci.gymber.ui.ds.components.CachedImage
+import com.akinci.gymber.ui.ds.components.swipecards.data.AnimationType
+import com.akinci.gymber.ui.ds.components.swipecards.data.ForcedAction
+import com.akinci.gymber.ui.ds.components.swipecards.data.SwipeDirection
+import com.akinci.gymber.ui.ds.components.swipecards.data.SwipeImage
+import com.akinci.gymber.ui.ds.theme.GymberTheme
 import com.akinci.gymber.ui.ds.theme.RedDark
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
 @Composable
-fun SwipeableImage(
+fun SwipeCard(
     modifier: Modifier = Modifier,
-    image: Image,
-    onDraggedRight: (Int) -> Unit,
-    onDraggedLeft: (Int) -> Unit,
+    forcedAction: ForcedAction = ForcedAction(),
+    image: SwipeImage,
+    onSwipe: (SwipeDirection, Int) -> Unit,
+    onLoad: () -> Unit,
 ) {
-    val context = LocalContext.current
     val density = LocalDensity.current
     val configuration = LocalConfiguration.current
     val threshold = with(density) { 100.dp.toPx() }
     val swipeValue = with(density) { (configuration.screenWidthDp * 1.1).dp.toPx() }
 
+    var animationType by remember { mutableStateOf(AnimationType.DEFAULT) }
+    var isVisible by remember { mutableStateOf(false) }
+
     var offsetX by remember { mutableFloatStateOf(0f) }
-    val animatedOffset: Float by animateFloatAsState(offsetX, label = "")
+    val animatedOffset: Float by animateFloatAsState(
+        targetValue = offsetX,
+        animationSpec = tween(durationMillis = animationType.duration.toInt()),
+        label = ""
+    )
 
     val animatedAngle by remember {
         derivedStateOf { (animatedOffset / 10).coerceIn(-10f, 10f) }
@@ -74,57 +84,84 @@ fun SwipeableImage(
         }
     }
 
-    var offsetXOnDragEnd by remember { mutableFloatStateOf(0f) }
-    LaunchedEffect(offsetXOnDragEnd) {
-        delay(500L)
-        when {
-            offsetXOnDragEnd > 0 -> onDraggedRight(image.id)
-            offsetXOnDragEnd < 0 -> onDraggedLeft(image.id)
+    var swipeCount by remember { mutableIntStateOf(0) }
+    LaunchedEffect(swipeCount) {
+        if (swipeCount > 0) {
+            // wait for component to complete swipe animation
+            delay(animationType.duration)
+            // detect which direction is component swiped
+            val swipeDirection = when {
+                offsetX > 0 -> SwipeDirection.RIGHT
+                offsetX < 0 -> SwipeDirection.LEFT
+                else -> null
+            }
+            // reset component states
+            animationType = AnimationType.INSTANT
+            isVisible = false
+            offsetX = 0f
+            // wait for component to restore initial state
+            delay(animationType.duration)
+            // send swipe feed back
+            swipeDirection?.let { onSwipe(it, image.id) }
+        }
+    }
+
+    LaunchedEffect(forcedAction.swipeRight) {
+        if (forcedAction.swipeRight > 0) {
+            animationType = AnimationType.DEFAULT
+            swipeCount++
+            offsetX = swipeValue
+        }
+    }
+
+    LaunchedEffect(forcedAction.swipeLeft) {
+        if (forcedAction.swipeLeft > 0) {
+            animationType = AnimationType.DEFAULT
+            swipeCount++
+            offsetX = -swipeValue
         }
     }
 
     Box(
         modifier = modifier
+            .alpha(if (isVisible) 1f else 0f)
             .offset { IntOffset(animatedOffset.roundToInt(), 0) }
             .rotate(animatedAngle)
             .pointerInput(Unit) {
                 detectDragGestures(
+                    onDragStart = { animationType = AnimationType.INSTANT },
                     onDragEnd = {
+                        animationType = AnimationType.DEFAULT
                         offsetX = if (offsetX.absoluteValue > threshold) {
                             // threshold is breached, swipe away.
+                            swipeCount++
                             if (offsetX > 0) swipeValue else -swipeValue
                         } else {
                             // we couldn't reach threshold, reset position
                             0f
                         }
-                        offsetXOnDragEnd = offsetX
                     },
                     onDrag = { change, dragAmount ->
                         change.consume()
-                        offsetX += dragAmount.x
+                        if (isVisible) {
+                            offsetX += dragAmount.x
+                        }
                     }
                 )
             },
         contentAlignment = Alignment.Center,
     ) {
-        val imageRequest = ImageRequest.Builder(context)
-            .data(image.imageUrl)
-            .dispatcher(Dispatchers.IO)
-            .memoryCacheKey(image.imageUrl)
-            .diskCacheKey(image.imageUrl)
-            .diskCachePolicy(CachePolicy.ENABLED)
-            .memoryCachePolicy(CachePolicy.ENABLED)
-            .build()
-
-        AsyncImage(
+        CachedImage(
             modifier = Modifier
                 .aspectRatio(1f)
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
                 .clip(shape = MaterialTheme.shapes.extraLarge),
-            model = imageRequest,
-            contentScale = ContentScale.Crop,
-            contentDescription = null,
+            imageUrl = image.imageUrl,
+            onLoad = {
+                isVisible = true
+                onLoad()
+            }
         )
 
         Image(
@@ -139,6 +176,19 @@ fun SwipeableImage(
             painter = painterResource(id = R.drawable.ic_nope),
             contentDescription = null,
             colorFilter = ColorFilter.tint(color = Color.RedDark)
+        )
+    }
+}
+
+
+@UIModePreviews
+@Composable
+fun SwipeCardPreview() {
+    GymberTheme {
+        SwipeCard(
+            image = SwipeImage(id = 100, imageUrl = "", label = ""),
+            onSwipe = { _, _ -> },
+            onLoad = {}
         )
     }
 }

@@ -15,6 +15,7 @@ fun PartnerListServiceResponse.toDomain() = data.map {
         reservableWorkouts = it.settlementOptions.reservableWorkouts,
         firstComeFirstServe = it.settlementOptions.firstComeFirstServe,
         imageUrl = it.headerImage.desktop,
-        locations = it.locationGroups.toDomain()
+        locations = it.locationGroups.toDomain(),
+        distance = "",
     )
 }
