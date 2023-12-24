@@ -1,8 +1,7 @@
 package com.akinci.gymber.data
 
 import com.akinci.gymber.core.network.toResponse
-import com.akinci.gymber.data.mapper.toDomain
-import com.akinci.gymber.data.remote.PartnerListServiceResponse
+import com.akinci.gymber.data.remote.GymServiceResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
@@ -10,17 +9,20 @@ import io.ktor.client.request.parameter
 import io.ktor.client.request.url
 import javax.inject.Inject
 
-class PartnerRepository @Inject constructor(
+class GymRepository @Inject constructor(
     private val httpClient: HttpClient,
 ) {
 
-    suspend fun getPartners() = runCatching {
-        httpClient.get {
-            url("v2/nl-nl/partners/search")
+    suspend fun getGyms() = runCatching {
+        httpClient.get(PATH_GYMS) {
             headers { append("X-Onefit-Client", "website/29.18.1") }
             parameter("city", "AMS")
         }
-            .toResponse<PartnerListServiceResponse>()
+            .toResponse<GymServiceResponse>()
             .getOrThrow()
+    }
+
+    companion object {
+        const val PATH_GYMS = "v2/nl-nl/partners/search"
     }
 }

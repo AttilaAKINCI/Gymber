@@ -2,19 +2,16 @@ package com.akinci.gymber.ui.features.match
 
 import androidx.compose.runtime.Composable
 import com.akinci.gymber.core.compose.UIModePreviews
-import com.akinci.gymber.data.remote.PartnerResponse
 import com.akinci.gymber.ui.ds.theme.GymberTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @RootNavGraph
 @Destination
 @Composable
 fun MatchScreen(
-    partner: PartnerResponse? = null,
-    animationCount: Int = Int.MAX_VALUE,
-    onClose: (() -> Unit)? = null,
-    onSnackBarMessage: ((String) -> Unit)? = null
+    navigator: DestinationsNavigator
 ) {
 
     MatchScreenContent()

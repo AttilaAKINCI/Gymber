@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.akinci.gymber.core.compose.reduce
 import com.akinci.gymber.core.coroutine.ContextProvider
 import com.akinci.gymber.domain.Location
-import com.akinci.gymber.domain.PartnerUseCase
+import com.akinci.gymber.domain.GymUseCase
 import com.akinci.gymber.ui.ds.components.swipecards.data.SwipeImage
-import com.akinci.gymber.ui.features.dashboard.DashboardScreenViewContract.State
+import com.akinci.gymber.ui.features.dashboard.DashboardViewContract.State
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,38 +19,38 @@ import javax.inject.Inject
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
     private val contextProvider: ContextProvider,
-    private val partnerUseCase: PartnerUseCase,
+    private val gymUseCase: GymUseCase,
 ) : ViewModel() {
 
     private val _stateFlow = MutableStateFlow(State())
     val stateFlow = _stateFlow.asStateFlow()
 
     init {
-        getPartners()
+        getGyms()
     }
 
-    private fun getPartners() {
+    private fun getGyms() {
         viewModelScope.launch {
             withContext(contextProvider.io) {
-                partnerUseCase.getPartners()
+                gymUseCase.getGyms()
             }.onSuccess {
-                val processedPartners = it.map { partner ->
-                    partner.copy(
-                        distance = calculateDistance(location = partner.locations.firstOrNull())
+                val processedGyms = it.map { gym ->
+                    gym.copy(
+                        distance = calculateDistance(location = gym.locations.firstOrNull())
                     )
                 }
 
                 _stateFlow.reduce {
                     copy(
-                        partners = processedPartners.toPersistentList(),
-                        images = processedPartners.map { partner ->
+                        gyms = processedGyms.toPersistentList(),
+                        images = processedGyms.map { gym ->
                             SwipeImage(
-                                id = partner.id,
-                                imageUrl = partner.imageUrl,
+                                id = gym.id,
+                                imageUrl = gym.imageUrl,
                                 label = buildString {
-                                    append(partner.name)
-                                    if (partner.distance.isNotBlank()) {
-                                        append(" - ${partner.distance}")
+                                    append(gym.name)
+                                    if (gym.distance.isNotBlank()) {
+                                        append(" - ${gym.distance}")
                                     }
                                 }
                             )
@@ -61,12 +61,12 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    fun like(partnerId: Int) {
+    fun like(gymId: Int) {
         // TODO: inform backend for like action on client.
         // TODO randomize match logic. here.
     }
 
-    fun dislike(partnerId: Int) {
+    fun dislike(gymId: Int) {
         // TODO: inform backend for dislike action on client.
     }
 

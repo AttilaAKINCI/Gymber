@@ -42,7 +42,7 @@ import com.akinci.gymber.ui.ds.theme.Purple
 import com.akinci.gymber.ui.ds.theme.RedDark
 import com.akinci.gymber.ui.ds.theme.Teal
 import com.akinci.gymber.ui.ds.theme.titleLarge_bangers
-import com.akinci.gymber.ui.features.dashboard.DashboardScreenViewContract.State
+import com.akinci.gymber.ui.features.dashboard.DashboardViewContract.State
 import com.akinci.gymber.ui.features.destinations.DetailScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
@@ -60,8 +60,12 @@ fun DashboardScreen(
     DashboardScreenContent(
         uiState = uiState,
         onDetailButtonClick = {
-            // TODO pass data ?
-            navigator.navigate(DetailScreenDestination)
+            // TODO pass selected gym details here..
+            navigator.navigate(
+                DetailScreenDestination(
+                    gym = uiState.gyms.first()
+                )
+            )
         },
         onGymLike = { vm.like(it) },
         onGymDislike = { vm.dislike(it) }

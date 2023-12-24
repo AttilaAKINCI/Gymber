@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 data class Location(
     val id: Int,
     @SerialName("partner_id")
-    val partnerId: Int,
+    val gymId: Int,
     @SerialName("street_name")
     val streetName: String,
     @SerialName("house_number")

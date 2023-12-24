@@ -1,10 +1,10 @@
 package com.akinci.gymber.data.mapper
 
-import com.akinci.gymber.data.remote.PartnerListServiceResponse
-import com.akinci.gymber.domain.Partner
+import com.akinci.gymber.data.remote.GymServiceResponse
+import com.akinci.gymber.domain.Gym
 
-fun PartnerListServiceResponse.toDomain() = data.map {
-    Partner(
+fun GymServiceResponse.toDomain() = data.map {
+    Gym(
         id = it.id,
         name = it.name,
         description = it.description,

@@ -6,18 +6,22 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.akinci.gymber.core.compose.UIModePreviews
 import com.akinci.gymber.ui.ds.theme.GymberTheme
-import com.akinci.gymber.ui.features.detail.DetailScreenViewContract.State
+import com.akinci.gymber.ui.features.detail.DetailViewContract.State
+import com.akinci.gymber.ui.features.detail.DetailViewContract.ScreenArgs
 import com.akinci.gymber.ui.navigation.animation.FadeInOutAnimation
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @RootNavGraph
-@Destination(style = FadeInOutAnimation::class)
+@Destination(
+    style = FadeInOutAnimation::class,
+    navArgsDelegate = ScreenArgs::class,
+)
 @Composable
 fun DetailScreen(
     navigator: DestinationsNavigator,
-    vm: DetailScreenViewModel = hiltViewModel(),
+    vm: DetailViewModel = hiltViewModel(),
 ) {
     val uiState: State by vm.stateFlow.collectAsStateWithLifecycle()
 

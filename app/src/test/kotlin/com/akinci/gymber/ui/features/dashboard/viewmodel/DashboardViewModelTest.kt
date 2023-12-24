@@ -1,8 +1,8 @@
 package com.akinci.gymber.ui.features.dashboard.viewmodel
 
 import com.akinci.gymber.coroutine.TestContextProvider
-import com.akinci.gymber.data.remote.PartnerListServiceResponse
-import com.akinci.gymber.data.PartnerRepository
+import com.akinci.gymber.data.remote.GymServiceResponse
+import com.akinci.gymber.data.GymRepository
 import com.akinci.gymber.jsonresponses.GetPartnerListResponse
 import com.akinci.gymber.ui.features.dashboard.DashboardViewModel
 import com.squareup.moshi.Moshi
@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test
 class DashboardViewModelTest {
 
     @MockK
-    lateinit var partnerRepository: PartnerRepository
+    lateinit var partnerRepository: GymRepository
 
     private lateinit var dashboardViewModel: DashboardViewModel
     private val moshi = Moshi.Builder().build()
@@ -30,7 +30,7 @@ class DashboardViewModelTest {
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true)
 
-        val data: PartnerListServiceResponse = moshi.adapter(PartnerListServiceResponse::class.java).fromJson(GetPartnerListResponse.partnerList)!!
+        val data: GymServiceResponse = moshi.adapter(GymServiceResponse::class.java).fromJson(GetPartnerListResponse.partnerList)!!
         coEvery { partnerRepository.getPartnerList() } returns flow { emit(NetworkResponse.Success(data)) }
 
         dashboardViewModel = DashboardViewModel(coroutineContextProvider, partnerRepository)

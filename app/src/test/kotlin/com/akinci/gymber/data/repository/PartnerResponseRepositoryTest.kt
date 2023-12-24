@@ -4,9 +4,9 @@ import com.akinci.gymber.common.network.NetworkChecker
 import com.akinci.gymber.common.network.NetworkResponse
 import com.akinci.gymber.common.network.NetworkState
 import com.akinci.gymber.common.repository.BaseRepository
-import com.akinci.gymber.data.PartnerRepository
+import com.akinci.gymber.data.GymRepository
 import com.akinci.gymber.data.api.PartnerServiceDao
-import com.akinci.gymber.data.remote.PartnerListServiceResponse
+import com.akinci.gymber.data.remote.GymServiceResponse
 import com.akinci.gymber.jsonresponses.GetPartnerListResponse
 import com.google.common.truth.Truth
 import com.squareup.moshi.Moshi
@@ -27,13 +27,13 @@ class PartnerResponseRepositoryTest {
     @MockK
     lateinit var networkChecker: NetworkChecker
 
-    private lateinit var repository : PartnerRepository
+    private lateinit var repository : GymRepository
     private val moshi = Moshi.Builder().build()
 
     @BeforeEach
     fun setUp() {
         MockKAnnotations.init(this, relaxUnitFun = true)
-        repository = PartnerRepository(
+        repository = GymRepository(
             partnerServiceDao,
             BaseRepository(networkChecker)
         )
@@ -44,7 +44,7 @@ class PartnerResponseRepositoryTest {
 
     @Test
     fun `Network is ok, getPartnerList function is called, returns NetworkResponse-Success for success`() = runBlockingTest {
-        val data =  moshi.adapter(PartnerListServiceResponse::class.java).fromJson(GetPartnerListResponse.partnerList)
+        val data =  moshi.adapter(GymServiceResponse::class.java).fromJson(GetPartnerListResponse.partnerList)
 
         every { networkChecker.networkState.value } returns NetworkState.Connected
         coEvery { partnerServiceDao.getPartnerList() } returns Response.success(data)
@@ -60,10 +60,10 @@ class PartnerResponseRepositoryTest {
                 Truth.assertThat(response).isInstanceOf(NetworkResponse.Success::class.java)
 
                 val fetchedResponse = (response as NetworkResponse.Success).data
-                Truth.assertThat(fetchedResponse).isInstanceOf(PartnerListServiceResponse::class.java)
+                Truth.assertThat(fetchedResponse).isInstanceOf(GymServiceResponse::class.java)
 
                 Truth.assertThat(
-                    (fetchedResponse as PartnerListServiceResponse).data.size
+                    (fetchedResponse as GymServiceResponse).data.size
                 ).isEqualTo(
                     data?.data?.size
                 )

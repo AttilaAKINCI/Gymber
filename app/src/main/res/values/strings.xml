@@ -1,19 +1,7 @@
 <resources>
     <string name="app_name">Gymber</string>
 
-    <string name="splash_page">Splash Page</string>
-    <string name="dashboard_page">Dashboard Page</string>
-    <string name="detail_page">Detail Page</string>
-
-    <string name="image_view_content_desc">Image View Content Description</string>
-    <string name="floating_button_content_desc">Floating Button Content Description</string>
-
-    <!-- Error messages -->
-    <string name="global_service_error">Unexpected service error. Please try again later....</string>
-    <string name="network_still_unavailable">Network still unavailable</string>
-
-
-    <!--  Dashboard Fragment   -->
+    <!-- Dashboard Screen -->
     <string name="dashboard_screen_welcome_text">Welcome, I am Gymber :) \nI have find best gyms for you. Swipe left or right and try to catch a match.</string>
 
 
@@ -32,7 +20,7 @@
     <string name="rationale_button_text">Grand Access</string>
 
 
-    <!--  Detail Fragment   -->
+    <!-- Detail Screen -->
     <string name="title_detail">Gym Details</string>
     <string name="partner_data_empty">Gym details could not be acquired....</string>
     <string name="drop_in">Drop in</string>
@@ -46,6 +34,10 @@
     <string name="gym_location">Location</string>
     <string name="gym_distance">Distance</string>
     <string name="open_map_message">Map view developments are in progress. This feature is coming soon :)</string>
+
+    <!-- Error messages -->
+    <string name="global_service_error">Unexpected service error. Please try again later....</string>
+    <string name="network_still_unavailable">Network still unavailable</string>
 
     <!--  Alert dialog  -->
     <string name="alert_title">Upppss..</string>
