@@ -1,7 +1,9 @@
 package com.akinci.gymber.ui.features.detail
 
 import android.os.Parcelable
+import com.akinci.gymber.core.compose.UIState
 import com.akinci.gymber.domain.Gym
+import com.akinci.gymber.ui.ds.components.snackbar.SnackBarState
 import kotlinx.parcelize.Parcelize
 
 object DetailViewContract {
@@ -12,6 +14,7 @@ object DetailViewContract {
     ) : Parcelable
 
     data class State(
-        val s: String = "",
-    )
+        val gym: Gym,
+        val snackBarState: SnackBarState = SnackBarState(message = ""),
+    ) : UIState
 }

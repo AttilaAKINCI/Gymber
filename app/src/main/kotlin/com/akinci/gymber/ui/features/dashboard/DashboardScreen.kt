@@ -40,7 +40,6 @@ import com.akinci.gymber.ui.ds.components.swipecards.data.SwipeDirection
 import com.akinci.gymber.ui.ds.theme.GymberTheme
 import com.akinci.gymber.ui.ds.theme.Purple
 import com.akinci.gymber.ui.ds.theme.RedDark
-import com.akinci.gymber.ui.ds.theme.Teal
 import com.akinci.gymber.ui.ds.theme.titleLarge_bangers
 import com.akinci.gymber.ui.features.dashboard.DashboardViewContract.State
 import com.akinci.gymber.ui.features.destinations.DetailScreenDestination
@@ -113,7 +112,7 @@ private fun DashboardScreenContent(
                         .fillMaxWidth()
                         .padding(horizontal = 32.dp)
                         .padding(top = 16.dp, bottom = 64.dp),
-                    onDetailButtonClick = {},
+                    onDetailButtonClick = onDetailButtonClick,
                     onLikeButtonClick = {
                         // button click will force swipe card to fling away in direction
                         forcedActions = forcedActions.swipeRight()
@@ -183,21 +182,21 @@ private fun DashboardScreen.Actions(
     ) {
         ActionButton(
             containerColor = Color.RedDark,
-            painter = painterResource(id = R.drawable.ic_cancel),
+            painter = painterResource(id = R.drawable.ic_cancel_24dp),
             tintColor = Color.White,
             onClick = onDislikeButtonClick
         )
 
         ActionButton(
             containerColor = Color.Purple,
-            painter = painterResource(id = R.drawable.ic_bag),
+            painter = painterResource(id = R.drawable.ic_bag_24dp),
             tintColor = Color.White,
             onClick = onDetailButtonClick
         )
 
         ActionButton(
-            containerColor = Color.Teal,
-            painter = painterResource(id = R.drawable.ic_check),
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+            painter = painterResource(id = R.drawable.ic_check_28dp),
             tintColor = Color.White,
             onClick = onLikeButtonClick
         )

@@ -1,7 +1,9 @@
 package com.akinci.gymber.ui.ds.theme
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 private val WhiteLight = Color(0xFFFFFFFF)
@@ -17,6 +19,9 @@ private val GreyDark = Color(0xFF555555)
 private val Black = Color(0xFF131313)
 private val Black_85A = Color(0xA6333333)
 
+private val Aqua = Color(0xFF00BCD4)
+private val Teal = Color(0xFF009688)
+
 val LightColorScheme = lightColorScheme(
     primary = BlueLight,
     onPrimary = WhiteLight,
@@ -27,6 +32,7 @@ val LightColorScheme = lightColorScheme(
     onSurface = Black,
     surfaceVariant = WhiteLight_85A,
     onSurfaceVariant = Black,
+    tertiaryContainer = Aqua
 )
 
 val DarkColorScheme = darkColorScheme(
@@ -39,13 +45,19 @@ val DarkColorScheme = darkColorScheme(
     onSurface = WhiteDark,
     surfaceVariant = Black_85A,
     onSurfaceVariant = WhiteDark,
+    tertiaryContainer = Teal
 )
 
 val Color.Companion.Purple: Color
     get() = Color(0xFF9C27B0)
 
-val Color.Companion.Teal: Color
-    get() = Color(0xFF009688)
+val Color.Companion.YellowDark: Color
+    get() = Color(0xFFFFC107)
 
 val Color.Companion.RedDark: Color
     get() = Color(0xFFE91E63)
+
+val Color.Companion.halfTransparentSurface: Color
+    @Composable
+    get() = MaterialTheme.colorScheme.surface.copy(alpha = 0.6f)
+

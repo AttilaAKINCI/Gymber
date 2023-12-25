@@ -18,26 +18,27 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.akinci.gymber.R
 import com.akinci.gymber.core.compose.UIModePreviews
 import com.akinci.gymber.ui.ds.theme.GymberTheme
 import com.akinci.gymber.ui.ds.theme.Purple
 import com.akinci.gymber.ui.ds.theme.RedDark
-import com.akinci.gymber.ui.ds.theme.Teal
 import com.akinci.gymber.ui.ds.theme.oval
 
 @Composable
 fun ActionButton(
     modifier: Modifier = Modifier,
-    containerColor: Color,
+    size: Dp = 64.dp,
     painter: Painter,
+    containerColor: Color,
     tintColor: Color,
     onClick: () -> Unit,
 ) {
     Box(
         modifier = modifier
-            .size(64.dp)
+            .size(size)
             .background(
                 color = containerColor,
                 shape = MaterialTheme.shapes.oval
@@ -51,6 +52,7 @@ fun ActionButton(
         contentAlignment = Alignment.Center,
     ) {
         Icon(
+            modifier = Modifier.size(size * 0.5f),
             painter = painter,
             contentDescription = null,
             tint = tintColor,
@@ -65,21 +67,21 @@ fun ActionButtonPreview() {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             ActionButton(
                 containerColor = Color.RedDark,
-                painter = painterResource(id = R.drawable.ic_cancel),
+                painter = painterResource(id = R.drawable.ic_cancel_24dp),
                 tintColor = Color.White,
                 onClick = {}
             )
 
             ActionButton(
                 containerColor = Color.Purple,
-                painter = painterResource(id = R.drawable.ic_bag),
+                painter = painterResource(id = R.drawable.ic_bag_24dp),
                 tintColor = Color.White,
                 onClick = {}
             )
 
             ActionButton(
-                containerColor = Color.Teal,
-                painter = painterResource(id = R.drawable.ic_check),
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                painter = painterResource(id = R.drawable.ic_check_28dp),
                 tintColor = Color.White,
                 onClick = {}
             )

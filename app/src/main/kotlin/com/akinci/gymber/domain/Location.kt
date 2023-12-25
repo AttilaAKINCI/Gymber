@@ -11,4 +11,8 @@ data class Location(
     val postCode: String,
     val street: String,
     val number: String,
+    val distance: Int? = null,
+    val distanceText: String = "",
 ) : Parcelable
+
+fun List<Location>.getNearest() = minByOrNull { it.distance ?: Int.MAX_VALUE }

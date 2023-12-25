@@ -1,13 +1,61 @@
 package com.akinci.gymber.ui.features.detail
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.akinci.gymber.R
 import com.akinci.gymber.core.compose.UIModePreviews
+import com.akinci.gymber.domain.Gym
+import com.akinci.gymber.domain.Location
+import com.akinci.gymber.ui.ds.components.ActionButton
+import com.akinci.gymber.ui.ds.components.Bubble
+import com.akinci.gymber.ui.ds.components.CachedImage
+import com.akinci.gymber.ui.ds.components.Rating
+import com.akinci.gymber.ui.ds.components.snackbar.SnackBarContainer
 import com.akinci.gymber.ui.ds.theme.GymberTheme
-import com.akinci.gymber.ui.features.detail.DetailViewContract.State
+import com.akinci.gymber.ui.ds.theme.halfTransparentSurface
+import com.akinci.gymber.ui.ds.theme.titleLarge_bangers
 import com.akinci.gymber.ui.features.detail.DetailViewContract.ScreenArgs
+import com.akinci.gymber.ui.features.detail.DetailViewContract.State
 import com.akinci.gymber.ui.navigation.animation.FadeInOutAnimation
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
@@ -27,273 +75,243 @@ fun DetailScreen(
 
     DetailScreenContent(
         uiState = uiState,
-        onBackPressed = { navigator.popBackStack() }
+        onBackPressed = { navigator.navigateUp() },
+        openMaps = { location, gymName ->
+            vm.openGoogleMaps(location = location, gymName = gymName)
+        }
     )
 }
 
 @Composable
 private fun DetailScreenContent(
     uiState: State,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
+    openMaps: (Location, String) -> Unit,
 ) {
+    val scrollState = rememberScrollState()
 
-    /* val scaffoldState = rememberScaffoldState()
-     val scope = rememberCoroutineScope()
+    // TODO update status bar color states with content scroll
 
-     Scaffold(
-         scaffoldState = scaffoldState,
-     ) {
-         Box(
-             modifier = Modifier
-                 .fillMaxSize()
-         ) {
-
-             */
-    /** Detail content **//*
+    Surface {
+        SnackBarContainer(
+            modifier = Modifier
+                .windowInsetsPadding(WindowInsets.navigationBars)
+                .fillMaxSize(),
+            snackBarState = uiState.snackBarState,
+        ) {
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
+                modifier = Modifier.verticalScroll(scrollState),
+                verticalArrangement = Arrangement.spacedBy(24.dp),
             ) {
-
-                */
-    /** Gym image container **//*
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(fraction = 0.3f)
-                ) {
-                    Image(
-                        painter = rememberImagePainter(
-                            data = vm.partnerState?.header_image?.get("desktop") ?: "",
-                            builder = {
-                                crossfade(true)
-                            }
-                        ),
-                        contentDescription = "",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
+                Box {
+                    DetailScreen.ImageHeader(
+                        modifier = Modifier.fillMaxWidth(),
+                        imageUrl = uiState.gym.imageUrl,
+                        gymName = uiState.gym.name
                     )
 
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(colorResource(R.color.white_60))
-                            .align(Alignment.BottomCenter),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = vm.partnerState?.name ?: "",
-                            color = colorResource(R.color.black_60),
-                            modifier = Modifier
-                                .padding(0.dp, 0.dp, 0.dp, 8.dp),
-                            style = MaterialTheme.typography.h2,
-                            fontSize = 24.sp,
-                            letterSpacing = TextUnit(0.1f, TextUnitType.Sp)
-                        )
-                    }
+                    // back button
+                    ActionButton(
+                        modifier = Modifier.padding(top = 48.dp, start = 16.dp),
+                        size = 48.dp,
+                        containerColor = Color.halfTransparentSurface,
+                        painter = rememberVectorPainter(image = Icons.Default.ArrowBack),
+                        tintColor = MaterialTheme.colorScheme.onSurface,
+                        onClick = onBackPressed
+                    )
                 }
 
-                */
-    /** Rating & Map button **//*
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    // Rating
-                    RatingBar(
-                        modifier = Modifier
-                            .align(Alignment.Center),
-                        value = vm.partnerState?.review_rating?.toFloat() ?: 0f,
-                        activeColor = colorResource(R.color.yellow),
-                        inactiveColor = colorResource(R.color.black_85),
-                        ratingBarStyle = RatingBarStyle.HighLighted,
-                        onValueChange = { },
-                        onRatingChanged = { }
-                    )
-
-                    // Map Button
-                    val mapButtonMessage = stringResource(R.string.open_map_message)
-                    FloatingActionButton(
-                        onClick = {
-                            scope.launch {
-                                scaffoldState.snackbarHostState.showSnackbar(
-                                    message = mapButtonMessage,
-                                    duration = SnackbarDuration.Short
-                                )
+                    Spacer(modifier = Modifier.weight(1f))
+                    Rating(rating = uiState.gym.rating)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = buildString {
+                            append("(${uiState.gym.rating})")
+                            if (uiState.gym.reviewCount > 0) {
+                                append(" / ${uiState.gym.reviewCount} Reviews")
                             }
                         },
-                        modifier = Modifier
-                            .scale(0.7f)
-                            .padding(0.dp, 0.dp, 20.dp, 0.dp)
-                            .align(Alignment.CenterEnd),
-                        backgroundColor = colorResource(R.color.teal_200)
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_pin),
-                            contentDescription = stringResource(R.string.floating_button_content_desc),
-                            modifier = Modifier
-                                .scale(1.2f),
-                            // .padding(5.dp, 0.dp, 0.dp, 0.dp),
-                            tint = colorResource(R.color.white_90)
-                        )
-                    }
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
                 }
 
-                val locationList = remember { mutableStateListOf<Address>() }
-                locationList.clear()
-                locationList.addAll(vm.partnerState?.locations ?: listOf())
-
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(0.dp, 10.dp, 0.dp, 30.dp)
-                ) {
-                    item {
-                        */
-    /** Description **//*
-                        var detailText = stringResource(
-                            R.string.gym_detail_info,
-                            vm.partnerState?.name ?: "",
-                            vm.partnerState?.category?.name ?: "",
-                            DateTimeProvider.findOpeningTime(vm.partnerState?.first_live_at ?: "")
-                        )
-                        if (vm.partnerState?.surplus?.surplus_allowed == true) {
-                            detailText += stringResource(
-                                R.string.gym_detail_surplus,
-                                vm.partnerState?.name ?: "",
-                                vm.partnerState?.surplus?.formatted_price ?: ""
-                            )
+                Text(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    text = buildString {
+                        append(uiState.gym.description)
+                        if (uiState.gym.reservableWorkouts) {
+                            append("\n\n ${stringResource(id = R.string.detail_screen_reservable_workouts_info)}")
                         }
-                        Text(
-                            text = detailText,
-                            modifier = Modifier
-                                .padding(20.dp, 0.dp, 20.dp, 30.dp),
-                            style = MaterialTheme.typography.body1
-                        )
-
-                        */
-    /** Bubble Specs **//*
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .wrapContentHeight()
-                                .padding(0.dp, 0.dp, 0.dp, 30.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceEvenly
-                        ) {
-                            */
-    /** Drop in **//*
-                            BubbleSpec(
-                                isEnabled = vm.partnerState?.settlement_options?.drop_in_enabled
-                                    ?: false,
-                                text = stringResource(R.string.drop_in)
-                            )
-                            */
-    /** Reservable **//*
-                            BubbleSpec(
-                                isEnabled = vm.partnerState?.settlement_options?.reservable_workouts
-                                    ?: false,
-                                text = stringResource(R.string.reservable)
-                            )
-                            */
-    /** In order **//*
-                            BubbleSpec(
-                                isEnabled = vm.partnerState?.settlement_options?.first_come_first_serve
-                                    ?: false,
-                                text = stringResource(R.string.first_come_first_serve)
-                            )
+                        if (uiState.gym.dropInEnabled) {
+                            append("\n\n ${stringResource(id = R.string.detail_screen_drop_in_info)}")
                         }
-
-                        */
-    /** Location List **//*
-                        Text(
-                            text = stringResource(R.string.gym_address),
-                            modifier = Modifier
-                                .padding(20.dp, 0.dp, 0.dp, 10.dp),
-                            style = MaterialTheme.typography.body1
-                        )
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .wrapContentHeight()
-                                .padding(20.dp, 0.dp, 0.dp, 10.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceEvenly
-                        ) {
-                            Text(
-                                text = stringResource(R.string.gym_location),
-                                style = MaterialTheme.typography.body1
-                            )
-                            Text(
-                                text = stringResource(R.string.gym_distance),
-                                style = MaterialTheme.typography.body1
-                            )
+                        if (uiState.gym.firstComeFirstServe) {
+                            append("\n\n ${stringResource(id = R.string.detail_screen_first_come_first_served_info)}")
                         }
-                    }
-                    items(locationList) { location ->
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(20.dp, 0.dp, 20.dp, 0.dp)
-                        ) {
-                            Text(
-                                text = "${location.street_name}, ${location.city}",
-                                modifier = Modifier
-                                    .align(Alignment.CenterStart),
-                                textAlign = TextAlign.Start,
-                                style = MaterialTheme.typography.body1
-                            )
-                            Text(
-                                text = if (location.distance.isNotBlank()) {
-                                    stringResource(R.string.distance, location.distance)
-                                } else {
-                                    stringResource(R.string.distance_unknown)
-                                },
-                                modifier = Modifier
-                                    .align(Alignment.CenterEnd),
-                                textAlign = TextAlign.Start,
-                                style = MaterialTheme.typography.body1
-                            )
-                        }
-                    }
-                }
-
-            } // end of Content
-
-            */
-    /** Back Button **//*
-            AnimatedVisibility(
-                visible = true,
-                enter = fadeIn(
-                    initialAlpha = 0f
-                ),
-                exit = fadeOut(
-                    targetAlpha = 0f
+                    },
+                    textAlign = TextAlign.Justify,
+                    style = MaterialTheme.typography.bodyLarge,
                 )
-            ) {
-                FloatingActionButton(
-                    onClick = { scope.launch { onBackPressed.invoke() } },
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .padding(10.dp, 10.dp, 0.dp, 0.dp)
-                        .scale(0.8f),
-                    backgroundColor = colorResource(R.color.white_75)
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_arrow_back),
-                        contentDescription = stringResource(R.string.floating_button_content_desc),
-                        modifier = Modifier
-                            .scale(1.2f)
-                            .padding(5.dp, 0.dp, 0.dp, 0.dp),
-                        tint = colorResource(R.color.gray_75)
+
+                DetailScreen.Chips(
+                    title = stringResource(id = R.string.detail_screen_categories_title),
+                    chips = uiState.gym.categories
+                )
+
+                DetailScreen.Chips(
+                    title = stringResource(id = R.string.detail_screen_facilities_title),
+                    chips = uiState.gym.facilities
+                )
+
+                if (uiState.gym.locations.isNotEmpty()) {
+                    DetailScreen.Locations(
+                        title = stringResource(id = R.string.detail_screen_locations_title),
+                        locations = uiState.gym.locations,
+                        onLocationClick = {
+                            openMaps(it, uiState.gym.name)
+                        }
                     )
                 }
-            }
 
-        } // end of Box
-    }*/
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+        }
+    }
+}
+
+typealias DetailScreen = Unit
+
+@Composable
+private fun DetailScreen.ImageHeader(
+    modifier: Modifier = Modifier,
+    imageUrl: String,
+    gymName: String,
+) {
+    Box(modifier = modifier) {
+        CachedImage(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1.2f),
+            imageUrl = imageUrl
+        )
+
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .background(color = Color.halfTransparentSurface),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                modifier = Modifier.padding(16.dp),
+                text = gymName,
+                style = MaterialTheme.typography.titleLarge_bangers,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun DetailScreen.Chips(
+    title: String,
+    chips: List<String>,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleLarge
+        )
+
+        FlowRow(
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            chips.forEach {
+                Bubble(title = it)
+            }
+        }
+    }
+}
+
+@Composable
+private fun DetailScreen.Locations(
+    title: String,
+    locations: List<Location>,
+    onLocationClick: (Location) -> Unit,
+) {
+    Column {
+        Text(
+            modifier = Modifier.padding(start = 16.dp),
+            text = title,
+            style = MaterialTheme.typography.titleLarge
+        )
+
+        locations.forEach { location ->
+            DetailScreen.Location(
+                address = "${location.street}, ${location.number}",
+                distance = location.distanceText,
+                onClick = { onLocationClick(location) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun DetailScreen.Location(
+    address: String,
+    distance: String,
+    onClick: () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(
+                indication = rememberRipple(),
+                interactionSource = remember { MutableInteractionSource() },
+                onClick = onClick
+            )
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                modifier = Modifier.padding(16.dp),
+                text = address,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Text(
+                modifier = Modifier.padding(16.dp),
+                text = distance,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+
+            Icon(
+                modifier = Modifier.padding(end = 16.dp),
+                imageVector = Icons.Default.KeyboardArrowRight,
+                contentDescription = null,
+            )
+        }
+
+        Divider(modifier = Modifier.padding(horizontal = 16.dp))
+    }
 }
 
 @UIModePreviews
@@ -301,8 +319,40 @@ private fun DetailScreenContent(
 private fun DetailScreenPreview() {
     GymberTheme {
         DetailScreenContent(
-            uiState = State(),
+            uiState = State(
+                gym = Gym(
+                    id = 100,
+                    name = "Rocycle Amsterdam",
+                    description = "Double Shift is meer dan een gym. Ervaar een complete 360 " +
+                            "gym experience in deze oude suikerfabriek. Plof na het sporten neer " +
+                            "in de lounge en geniet van een heerlijk kopje espresso. Alle " +
+                            "groepslessen worden gegeven door ervaren en enthousiaste trainers." +
+                            " Je kunt hier terecht voor vrije training, enorm veel workouts en " +
+                            "vooral veel Sweat and Joy!",
+                    categories = listOf("Yoga", "Gym", "Workout", "Marathon", "Cycling"),
+                    facilities = listOf("Airco", "Douche", "Kleedkamers", "Lockers"),
+                    rating = 4.73,
+                    reviewCount = 5881,
+                    dropInEnabled = false,
+                    reservableWorkouts = true,
+                    firstComeFirstServe = false,
+                    imageUrl = "https://edge.one.fit/image/partner/image/16280/b7ad750d-8e00-40cb-b590-a6e9c4875d91.jpg?w=1680",
+                    locations = listOf(
+                        Location(
+                            latitude = 52.366552,
+                            longitude = 4.878497,
+                            city = "Amsterdam",
+                            postCode = "1016 XP",
+                            street = "Nieuwe Passeerdersstraat",
+                            number = "12",
+                            distance = 100,
+                            distanceText = "100 KM",
+                        )
+                    ),
+                ),
+            ),
             onBackPressed = {},
+            openMaps = { _, _ -> },
         )
     }
 }

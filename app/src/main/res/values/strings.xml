@@ -4,6 +4,13 @@
     <!-- Dashboard Screen -->
     <string name="dashboard_screen_welcome_text">Welcome, I am Gymber :) \nI have find best gyms for you. Swipe left or right and try to catch a match.</string>
 
+    <!-- Detail Screen -->
+    <string name="detail_screen_categories_title">Categories</string>
+    <string name="detail_screen_facilities_title">Facilities</string>
+    <string name="detail_screen_locations_title">Locations</string>
+    <string name="detail_screen_reservable_workouts_info">- Gym provides reservable classes </string>
+    <string name="detail_screen_drop_in_info">- You can do free training in that gym</string>
+    <string name="detail_screen_first_come_first_served_info">- You may wait for your turn to workout</string>
 
 
     <string name="title_dashboard">Available Gyms</string>
@@ -20,7 +27,7 @@
     <string name="rationale_button_text">Grand Access</string>
 
 
-    <!-- Detail Screen -->
+
     <string name="title_detail">Gym Details</string>
     <string name="partner_data_empty">Gym details could not be acquired....</string>
     <string name="drop_in">Drop in</string>

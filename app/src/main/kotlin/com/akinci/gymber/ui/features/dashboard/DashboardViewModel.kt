@@ -4,8 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akinci.gymber.core.compose.reduce
 import com.akinci.gymber.core.coroutine.ContextProvider
-import com.akinci.gymber.domain.Location
 import com.akinci.gymber.domain.GymUseCase
+import com.akinci.gymber.domain.Location
+import com.akinci.gymber.domain.getNearest
 import com.akinci.gymber.ui.ds.components.swipecards.data.SwipeImage
 import com.akinci.gymber.ui.features.dashboard.DashboardViewContract.State
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
@@ -33,10 +35,11 @@ class DashboardViewModel @Inject constructor(
         viewModelScope.launch {
             withContext(contextProvider.io) {
                 gymUseCase.getGyms()
-            }.onSuccess {
-                val processedGyms = it.map { gym ->
-                    gym.copy(
-                        distance = calculateDistance(location = gym.locations.firstOrNull())
+            }.onSuccess { gyms ->
+                val processedGyms = gyms.map {
+                    val processedLocations = calculateDistance(locations = it.locations)
+                    it.copy(
+                        locations = processedLocations
                     )
                 }
 
@@ -49,8 +52,8 @@ class DashboardViewModel @Inject constructor(
                                 imageUrl = gym.imageUrl,
                                 label = buildString {
                                     append(gym.name)
-                                    if (gym.distance.isNotBlank()) {
-                                        append(" - ${gym.distance}")
+                                    gym.locations.getNearest()?.distanceText?.let {
+                                        append(" - $it")
                                     }
                                 }
                             )
@@ -70,9 +73,23 @@ class DashboardViewModel @Inject constructor(
         // TODO: inform backend for dislike action on client.
     }
 
-    private fun calculateDistance(location: Location?): String {
+    private fun calculateDistance(locations: List<Location>): List<Location> {
         // TODO fetch user's location and calculate distance between location and user.
-        return "100 km away"
+        //  move logics to utils.
+
+        return locations.map {
+
+            val distance = Random.nextInt(100, 10000)
+
+            it.copy(
+                distance = distance,
+                distanceText = if (distance > 1000) {
+                    "${distance.toFloat() / 1000f} km"
+                } else {
+                    "$distance m"
+                }
+            )
+        }
     }
 
 

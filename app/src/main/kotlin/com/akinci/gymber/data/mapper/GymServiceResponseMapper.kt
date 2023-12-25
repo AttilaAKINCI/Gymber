@@ -8,6 +8,10 @@ fun GymServiceResponse.toDomain() = data.map {
         id = it.id,
         name = it.name,
         description = it.description,
+        categories = buildList {
+            add(it.category.name)
+            addAll(it.categories.map { category -> category.name })
+        },
         facilities = it.facilities,
         rating = it.reviewRating,
         reviewCount = it.reviewCount,
@@ -16,6 +20,5 @@ fun GymServiceResponse.toDomain() = data.map {
         firstComeFirstServe = it.settlementOptions.firstComeFirstServe,
         imageUrl = it.headerImage.desktop,
         locations = it.locationGroups.toDomain(),
-        distance = "",
     )
 }

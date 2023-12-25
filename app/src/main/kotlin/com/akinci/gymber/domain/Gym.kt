@@ -8,6 +8,7 @@ data class Gym(
     val id: Int,
     val name: String,
     val description: String,
+    val categories: List<String>,
     val facilities: List<String>,
     val rating: Double,
     val reviewCount: Int,
@@ -16,5 +17,4 @@ data class Gym(
     val firstComeFirstServe: Boolean,
     val imageUrl: String,
     val locations: List<Location>,
-    val distance: String,
 ) : Parcelable
