@@ -15,6 +15,6 @@ object DetailViewContract {
 
     data class State(
         val gym: Gym,
-        val snackBarState: SnackBarState = SnackBarState(message = ""),
+        val snackBarState: SnackBarState? = null,
     ) : UIState
 }

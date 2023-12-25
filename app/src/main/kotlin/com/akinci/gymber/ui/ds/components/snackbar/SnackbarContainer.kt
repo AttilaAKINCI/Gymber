@@ -10,21 +10,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.launch
 
 @Composable
 fun SnackBarContainer(
-    snackBarState: SnackBarState,
+    snackBarState: SnackBarState?,
     modifier: Modifier = Modifier,
     content: @Composable BoxScope.() -> Unit
 ) {
     val snackState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(snackBarState.id) {
-        if (snackBarState.message.isNotBlank()) {
+    snackBarState?.let { state ->
+        val errorMessage = stringResource(id = state.messageId)
+        LaunchedEffect(state.id) {
             coroutineScope.launch {
-                snackState.showSnackbar(snackBarState.message)
+                snackState.showSnackbar(errorMessage)
             }
         }
     }

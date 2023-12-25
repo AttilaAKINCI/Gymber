@@ -2,6 +2,7 @@ package com.akinci.gymber.ui.features.detail
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.akinci.gymber.R
 import com.akinci.gymber.core.compose.reduce
 import com.akinci.gymber.core.maps.MapsManager
 import com.akinci.gymber.domain.Location
@@ -26,14 +27,7 @@ class DetailViewModel @Inject constructor(
     val stateFlow = _stateFlow.asStateFlow()
 
     fun openGoogleMaps(gymName: String, location: Location) {
-        _stateFlow.reduce {
-            copy(
-                snackBarState = SnackBarState(
-                    message = "Sample maps error"
-                )
-            )
-        }
-        /*mapsManager.open(
+        mapsManager.open(
             latitude = location.latitude,
             longitude = location.longitude,
             name = gymName,
@@ -42,10 +36,10 @@ class DetailViewModel @Inject constructor(
             _stateFlow.reduce {
                 copy(
                     snackBarState = SnackBarState(
-                        message = "Sample maps error"
+                        messageId = R.string.detail_screen_open_map_error
                     )
                 )
             }
-        }*/
+        }
     }
 }

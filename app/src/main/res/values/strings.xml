@@ -11,6 +11,7 @@
     <string name="detail_screen_reservable_workouts_info">- Gym provides reservable classes </string>
     <string name="detail_screen_drop_in_info">- You can do free training in that gym</string>
     <string name="detail_screen_first_come_first_served_info">- You may wait for your turn to workout</string>
+    <string name="detail_screen_open_map_error">Unable to open google maps on your device :( </string>
 
 
     <string name="title_dashboard">Available Gyms</string>
