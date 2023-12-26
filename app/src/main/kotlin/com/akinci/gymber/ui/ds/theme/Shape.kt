@@ -14,3 +14,9 @@ val Shapes = Shapes(
 
 val Shapes.oval: RoundedCornerShape
     get() = RoundedCornerShape(Int.MAX_VALUE.dp)
+
+val Shapes.bottomExtraLarge: RoundedCornerShape
+    get() = RoundedCornerShape(
+        bottomStart = 16.dp,
+        bottomEnd = 16.dp,
+    )

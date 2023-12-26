@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,6 +44,7 @@ import com.akinci.gymber.ui.ds.components.swipecards.data.SwipeDirection
 import com.akinci.gymber.ui.ds.components.swipecards.data.SwipeImage
 import com.akinci.gymber.ui.ds.theme.GymberTheme
 import com.akinci.gymber.ui.ds.theme.RedDark
+import com.akinci.gymber.ui.ds.theme.bottomExtraLarge
 import com.akinci.gymber.ui.ds.theme.halfTransparentSurface
 import com.akinci.gymber.ui.ds.theme.titleLarge_bangers
 import kotlinx.coroutines.delay
@@ -185,7 +187,9 @@ fun SwipeCard(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(horizontal = 16.dp)
                 .align(Alignment.BottomCenter)
+                .clip(MaterialTheme.shapes.bottomExtraLarge)
                 .background(color = Color.halfTransparentSurface),
             contentAlignment = Alignment.Center,
         ) {
