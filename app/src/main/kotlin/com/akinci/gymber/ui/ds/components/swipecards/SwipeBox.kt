@@ -1,10 +1,12 @@
 package com.akinci.gymber.ui.ds.components.swipecards
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -14,6 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.akinci.gymber.core.compose.UIModePreviews
 import com.akinci.gymber.ui.ds.components.CachedImage
@@ -21,6 +24,9 @@ import com.akinci.gymber.ui.ds.components.swipecards.data.ForcedAction
 import com.akinci.gymber.ui.ds.components.swipecards.data.SwipeDirection
 import com.akinci.gymber.ui.ds.components.swipecards.data.SwipeImage
 import com.akinci.gymber.ui.ds.theme.GymberTheme
+import com.akinci.gymber.ui.ds.theme.bottomExtraLarge
+import com.akinci.gymber.ui.ds.theme.halfTransparentSurface
+import com.akinci.gymber.ui.ds.theme.titleLarge_bangers
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -54,7 +60,7 @@ private fun SwipeBox.Content(
     var imageIndex by remember { mutableIntStateOf(0) }
 
     val currentImage = runCatching { images[imageIndex] }.getOrNull()
-    var nextImageUrl by remember { mutableStateOf<String?>(null) }
+    var nextImage by remember { mutableStateOf<SwipeImage?>(null) }
     var previousImage by remember { mutableStateOf<SwipeImage?>(null) }
 
     Box(
@@ -62,15 +68,33 @@ private fun SwipeBox.Content(
         contentAlignment = Alignment.Center,
     ) {
         // put next image as background image
-        nextImageUrl?.let {
-            CachedImage(
-                modifier = Modifier
-                    .aspectRatio(1f)
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .clip(shape = MaterialTheme.shapes.extraLarge),
-                imageUrl = it,
-            )
+        nextImage?.let {
+            Box {
+                CachedImage(
+                    modifier = Modifier
+                        .aspectRatio(1f)
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .clip(shape = MaterialTheme.shapes.extraLarge),
+                    imageUrl = it.imageUrl,
+                )
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .align(Alignment.BottomCenter)
+                        .clip(MaterialTheme.shapes.bottomExtraLarge)
+                        .background(color = Color.halfTransparentSurface),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        modifier = Modifier.padding(vertical = 12.dp),
+                        text = it.label,
+                        style = MaterialTheme.typography.titleLarge_bangers
+                    )
+                }
+            }
         }
 
         // put first image upfront as swipeable image
@@ -84,7 +108,7 @@ private fun SwipeBox.Content(
                     imageIndex++
                 },
                 onLoad = {
-                    nextImageUrl = runCatching { images[imageIndex.inc()].imageUrl }.getOrNull()
+                    nextImage = runCatching { images[imageIndex.inc()] }.getOrNull()
                     previousImage = runCatching { images[imageIndex.dec()] }.getOrNull()
                 }
             )
