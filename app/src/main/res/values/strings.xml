@@ -3,6 +3,9 @@
 
     <!-- Dashboard Screen -->
     <string name="dashboard_screen_welcome_text">Welcome, I am Gymber :) \nI have find best gyms for you. Swipe left or right and try to catch a match.</string>
+    <string name="dashboard_screen_location_permission_title">Permission Request</string>
+    <string name="dashboard_screen_location_permission_description">In order to calculate distance to gyms, we need your permission. You can change it via application settings</string>
+    <string name="dashboard_screen_location_permission_action_title">Close</string>
 
     <!-- Detail Screen -->
     <string name="detail_screen_categories_title">Categories</string>
@@ -24,8 +27,7 @@
     <string name="match_button_text_message">Leave a message</string>
     <string name="match_button_text_message_warning">Messaging feature is under development. Coming soon :)</string>
     <string name="match_button_text_swipe">Keep swiping</string>
-    <string name="rationale_message">In order to use the app, we need to take your permission. You can change it in settings</string>
-    <string name="rationale_button_text">Grand Access</string>
+
 
 
 

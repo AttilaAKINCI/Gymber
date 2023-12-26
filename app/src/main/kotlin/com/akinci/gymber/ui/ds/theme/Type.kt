@@ -5,6 +5,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontWeight.Companion.W700
 import androidx.compose.ui.unit.sp
 import com.akinci.gymber.R
 
@@ -129,6 +130,9 @@ val AppTypography = Typography(
         fontWeight = FontWeight.W400,
     ),
 )
+
+val Typography.bodyLarge_bold: TextStyle
+    get() = AppTypography.bodyLarge.copy(fontWeight = W700)
 
 val Typography.displayMedium_bangers: TextStyle
     get() = BangersTypography.displayMedium

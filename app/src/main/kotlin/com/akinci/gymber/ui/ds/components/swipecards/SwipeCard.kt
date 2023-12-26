@@ -3,6 +3,7 @@ package com.akinci.gymber.ui.ds.components.swipecards
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -41,6 +43,8 @@ import com.akinci.gymber.ui.ds.components.swipecards.data.SwipeDirection
 import com.akinci.gymber.ui.ds.components.swipecards.data.SwipeImage
 import com.akinci.gymber.ui.ds.theme.GymberTheme
 import com.akinci.gymber.ui.ds.theme.RedDark
+import com.akinci.gymber.ui.ds.theme.halfTransparentSurface
+import com.akinci.gymber.ui.ds.theme.titleLarge_bangers
 import kotlinx.coroutines.delay
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
@@ -177,6 +181,20 @@ fun SwipeCard(
             contentDescription = null,
             colorFilter = ColorFilter.tint(color = Color.RedDark)
         )
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .background(color = Color.halfTransparentSurface),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                modifier = Modifier.padding(vertical = 12.dp),
+                text = image.label,
+                style = MaterialTheme.typography.titleLarge_bangers
+            )
+        }
     }
 }
 

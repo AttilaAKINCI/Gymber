@@ -1,5 +1,7 @@
 package com.akinci.gymber.ui.features.dashboard
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -31,8 +35,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.akinci.gymber.R
 import com.akinci.gymber.core.compose.UIModePreviews
+import com.akinci.gymber.core.permission.PermissionManager
 import com.akinci.gymber.ui.ds.components.ActionButton
 import com.akinci.gymber.ui.ds.components.InfiniteLottieAnimation
+import com.akinci.gymber.ui.ds.components.InfoDialog
 import com.akinci.gymber.ui.ds.components.TiledBackground
 import com.akinci.gymber.ui.ds.components.swipecards.SwipeBox
 import com.akinci.gymber.ui.ds.components.swipecards.data.ForcedAction
@@ -46,6 +52,7 @@ import com.akinci.gymber.ui.features.destinations.DetailScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.delay
 
 @RootNavGraph
 @Destination
@@ -55,6 +62,11 @@ fun DashboardScreen(
     vm: DashboardViewModel = hiltViewModel(),
 ) {
     val uiState: State by vm.stateFlow.collectAsStateWithLifecycle()
+
+    DashboardScreen.LocationPermission(
+        requestPermission = uiState.isPermissionRequired,
+        onPermissionResult = { isGranted -> vm.onLocationPermissionResult(isGranted) }
+    )
 
     DashboardScreenContent(
         uiState = uiState,
@@ -66,8 +78,13 @@ fun DashboardScreen(
                 )
             )
         },
-        onGymLike = { vm.like(it) },
-        onGymDislike = { vm.dislike(it) }
+        hideLocationRationaleDialog = { vm.hideRationaleDialog() },
+        onGymLike = {
+            // TODO
+        },
+        onGymDislike = {
+            // TODO
+        }
     )
 }
 
@@ -77,7 +94,10 @@ private fun DashboardScreenContent(
     onDetailButtonClick: () -> Unit,
     onGymLike: (Int) -> Unit,
     onGymDislike: (Int) -> Unit,
+    hideLocationRationaleDialog: () -> Unit,
 ) {
+    val context = LocalContext.current
+
     Surface {
         TiledBackground(
             painter = painterResource(id = R.drawable.ic_pattern_bg)
@@ -123,6 +143,22 @@ private fun DashboardScreenContent(
                     }
                 )
             }
+        }
+
+        if (uiState.shouldShowRationale) {
+            InfoDialog(
+                title = stringResource(id = R.string.dashboard_screen_location_permission_title),
+                message = stringResource(
+                    id = R.string.dashboard_screen_location_permission_description
+                ),
+                buttonText = stringResource(
+                    id = R.string.dashboard_screen_location_permission_action_title
+                ),
+                onButtonClick = {
+                    hideLocationRationaleDialog()
+                },
+                onDismiss = { hideLocationRationaleDialog() }
+            )
         }
     }
 }
@@ -203,13 +239,39 @@ private fun DashboardScreen.Actions(
     }
 }
 
+@Composable
+fun DashboardScreen.LocationPermission(
+    requestPermission: Boolean,
+    onPermissionResult: (Boolean) -> Unit,
+) {
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissionResults ->
+        onPermissionResult(permissionResults.values.all { it })
+    }
+
+    LaunchedEffect(requestPermission) {
+        if (requestPermission) {
+            delay(500L)
+
+            permissionLauncher.launch(
+                arrayOf(
+                    PermissionManager.FINE_LOCATION,
+                    PermissionManager.COARSE_LOCATION,
+                )
+            )
+        }
+    }
+}
+
 @UIModePreviews
 @Composable
 private fun DashboardScreenPreview() {
     GymberTheme {
         DashboardScreenContent(
-            uiState = State(),
+            uiState = State(isPermissionRequired = true),
             onDetailButtonClick = {},
+            hideLocationRationaleDialog = {},
             onGymLike = {},
             onGymDislike = {},
         )

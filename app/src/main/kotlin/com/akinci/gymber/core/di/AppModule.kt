@@ -29,5 +29,4 @@ object AppModule {
         httpEngineFactory,
         appConfig,
     ).create()
-
 }

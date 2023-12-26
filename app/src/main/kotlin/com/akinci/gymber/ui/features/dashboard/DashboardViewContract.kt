@@ -9,6 +9,9 @@ import kotlinx.collections.immutable.persistentListOf
 object DashboardViewContract {
 
     data class State(
+        val isPermissionRequired: Boolean,
+        val shouldShowRationale: Boolean = false,
+
         val gyms: PersistentList<Gym> = persistentListOf(),
         val images: PersistentList<SwipeImage> = persistentListOf(),
     ) : UIState
