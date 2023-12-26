@@ -27,7 +27,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -63,9 +62,12 @@ fun DashboardScreen(
 ) {
     val uiState: State by vm.stateFlow.collectAsStateWithLifecycle()
 
+    // Location permission local component
     DashboardScreen.LocationPermission(
         requestPermission = uiState.isPermissionRequired,
-        onPermissionResult = { isGranted -> vm.onLocationPermissionResult(isGranted) }
+        requestRationale = uiState.shouldShowRationale,
+        onPermissionResult = { isGranted -> vm.onLocationPermissionResult(isGranted) },
+        hideLocationRationaleDialog = { vm.hideRationaleDialog() },
     )
 
     DashboardScreenContent(
@@ -78,7 +80,6 @@ fun DashboardScreen(
                 )
             )
         },
-        hideLocationRationaleDialog = { vm.hideRationaleDialog() },
         onGymLike = {
             // TODO
         },
@@ -94,10 +95,7 @@ private fun DashboardScreenContent(
     onDetailButtonClick: () -> Unit,
     onGymLike: (Int) -> Unit,
     onGymDislike: (Int) -> Unit,
-    hideLocationRationaleDialog: () -> Unit,
 ) {
-    val context = LocalContext.current
-
     Surface {
         TiledBackground(
             painter = painterResource(id = R.drawable.ic_pattern_bg)
@@ -143,22 +141,6 @@ private fun DashboardScreenContent(
                     }
                 )
             }
-        }
-
-        if (uiState.shouldShowRationale) {
-            InfoDialog(
-                title = stringResource(id = R.string.dashboard_screen_location_permission_title),
-                message = stringResource(
-                    id = R.string.dashboard_screen_location_permission_description
-                ),
-                buttonText = stringResource(
-                    id = R.string.dashboard_screen_location_permission_action_title
-                ),
-                onButtonClick = {
-                    hideLocationRationaleDialog()
-                },
-                onDismiss = { hideLocationRationaleDialog() }
-            )
         }
     }
 }
@@ -242,7 +224,9 @@ private fun DashboardScreen.Actions(
 @Composable
 fun DashboardScreen.LocationPermission(
     requestPermission: Boolean,
+    requestRationale: Boolean,
     onPermissionResult: (Boolean) -> Unit,
+    hideLocationRationaleDialog: () -> Unit,
 ) {
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
@@ -262,6 +246,22 @@ fun DashboardScreen.LocationPermission(
             )
         }
     }
+
+    if (requestRationale) {
+        InfoDialog(
+            title = stringResource(id = R.string.dashboard_screen_location_permission_title),
+            message = stringResource(
+                id = R.string.dashboard_screen_location_permission_description
+            ),
+            buttonText = stringResource(
+                id = R.string.dashboard_screen_location_permission_action_title
+            ),
+            onButtonClick = {
+                hideLocationRationaleDialog()
+            },
+            onDismiss = { hideLocationRationaleDialog() }
+        )
+    }
 }
 
 @UIModePreviews
@@ -271,7 +271,6 @@ private fun DashboardScreenPreview() {
         DashboardScreenContent(
             uiState = State(isPermissionRequired = true),
             onDetailButtonClick = {},
-            hideLocationRationaleDialog = {},
             onGymLike = {},
             onGymDislike = {},
         )
