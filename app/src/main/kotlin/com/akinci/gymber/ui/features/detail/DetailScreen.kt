@@ -269,7 +269,7 @@ private fun DetailScreen.Locations(
         }
     }
 }
-x
+
 @Composable
 private fun DetailScreen.Location(
     address: String,
