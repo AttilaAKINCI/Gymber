@@ -1,7 +1,7 @@
 package com.akinci.gymber.domain
 
 import com.akinci.gymber.data.GymRepository
-import com.akinci.gymber.data.mapper.toDomain
+import com.akinci.gymber.domain.mapper.toDomain
 import javax.inject.Inject
 
 class GymUseCase @Inject constructor(

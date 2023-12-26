@@ -263,17 +263,17 @@ private fun DetailScreen.Locations(
         locations.forEach { location ->
             DetailScreen.Location(
                 address = "${location.street}, ${location.number}",
-                distance = location.distanceText,
+                distanceText = location.distanceText,
                 onClick = { onLocationClick(location) }
             )
         }
     }
 }
-
+x
 @Composable
 private fun DetailScreen.Location(
     address: String,
-    distance: String,
+    distanceText: String,
     onClick: () -> Unit,
 ) {
     Column(
@@ -299,7 +299,7 @@ private fun DetailScreen.Location(
 
             Text(
                 modifier = Modifier.padding(16.dp),
-                text = distance,
+                text = distanceText,
                 style = MaterialTheme.typography.bodyLarge,
             )
 
@@ -345,7 +345,7 @@ private fun DetailScreenPreview() {
                             postCode = "1016 XP",
                             street = "Nieuwe Passeerdersstraat",
                             number = "12",
-                            distance = 100,
+                            distance = 100f,
                             distanceText = "100 KM",
                         )
                     ),

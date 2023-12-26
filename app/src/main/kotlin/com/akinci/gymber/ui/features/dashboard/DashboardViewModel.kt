@@ -4,6 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akinci.gymber.core.compose.reduce
 import com.akinci.gymber.core.coroutine.ContextProvider
+import com.akinci.gymber.core.location.LocationManager
+import com.akinci.gymber.core.permission.PermissionManager
+import com.akinci.gymber.core.utils.distance.DistanceUtils
 import com.akinci.gymber.domain.GymUseCase
 import com.akinci.gymber.domain.Location
 import com.akinci.gymber.domain.getNearest
@@ -16,12 +19,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.random.Random
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
     private val contextProvider: ContextProvider,
     private val gymUseCase: GymUseCase,
+    private val permissionManager: PermissionManager,
+    private val locationManager: LocationManager,
+    private val distanceUtils: DistanceUtils,
 ) : ViewModel() {
 
     private val _stateFlow = MutableStateFlow(State())
@@ -37,10 +42,7 @@ class DashboardViewModel @Inject constructor(
                 gymUseCase.getGyms()
             }.onSuccess { gyms ->
                 val processedGyms = gyms.map {
-                    val processedLocations = calculateDistance(locations = it.locations)
-                    it.copy(
-                        locations = processedLocations
-                    )
+                    it.copy(locations = calculateDistance(locations = it.locations))
                 }
 
                 _stateFlow.reduce {
@@ -73,101 +75,22 @@ class DashboardViewModel @Inject constructor(
         // TODO: inform backend for dislike action on client.
     }
 
-    private fun calculateDistance(locations: List<Location>): List<Location> {
-        // TODO fetch user's location and calculate distance between location and user.
-        //  move logics to utils.
+    private suspend fun calculateDistance(locations: List<Location>): List<Location> {
+        // get device location
+        val deviceLocation = locationManager.getCurrentLocation().getOrNull()
+        val isPermissionsGranted = permissionManager.isLocationPermissionGranted()
 
+        // verify requirements
+        if (!isPermissionsGranted || deviceLocation == null) return locations
+
+        // try to calculate distance to locations, in case of any malfunction skip that item
         return locations.map {
-
-            val distance = Random.nextInt(100, 10000)
-
-            it.copy(
-                distance = distance,
-                distanceText = if (distance > 1000) {
-                    "${distance.toFloat() / 1000f} km"
-                } else {
-                    "$distance m"
-                }
-            )
+            distanceUtils.calculateDistance(deviceLocation, it.toCoordinate())?.let { distance ->
+                it.copy(
+                    distance = distance.value,
+                    distanceText = distance.valueText,
+                )
+            } ?: it
         }
     }
-
-
-    /* fun getTopElement(): PartnerResponse? {
-         return if (partnerListState.isNotEmpty()) {
-             partnerListState[0]
-         } else {
-             null
-         }
-     }
-
-     fun findClosestLocation(partner: PartnerResponse): String {
-         return LocationProvider.findClosest(partner.locations)?.distance ?: ""
-     }
-
-     fun like() {
-         getTopElement()?.let {
-             if (it.isAMatch) {
-                 partnerState = it
-                 matchState = true
-             } else {
-                 partnerListState = partnerListState.toMutableList().apply { removeAt(0) }
-             }
-         }
-     }
-
-     fun dislike() {
-         partnerState = null
-         partnerListState = partnerListState.toMutableList().apply { removeAt(0) }
-     }
-
-     fun select() {
-         partnerState = getTopElement()
-     }
-
-     fun dismissMatchState() {
-         matchState = false
-         partnerListState = partnerListState.toMutableList().apply { removeAt(0) }
-     }
-
-     fun getPartnerList() {
-         Timber.d("DashboardViewModel:: getPartnerList called")
-         if (partnerListState.isEmpty()) {
-             viewModelScope.launch(coroutineContext.IO) {
-                 partnerRepository.getPartnerList().collect { networkResponse ->
-                     when (networkResponse) {
-                         is NetworkResponse.Loading -> {
-                             Timber.d("DashboardViewModel:: Partner list loading..")
-                             withContext(this@DashboardViewModel.coroutineContext.Main) {
-                                 informer = UIState.OnLoading
-                             }
-                         }
-
-                         is NetworkResponse.Error -> {
-                             Timber.d("DashboardViewModel:: Partner list service error..")
-                             withContext(this@DashboardViewModel.coroutineContext.Main) {
-                                 informer = UIState.OnServiceError
-                             }
-                         }
-
-                         is NetworkResponse.Success -> {
-                             networkResponse.data?.let {
-                                 delay(2000) // simulate network delay
-                                 Timber.d("Partner list fetched size:-> ${it.data.size}")
-
-                                 // match info inserted.
-                                 var partnerList = PartnerMatchProvider.createAMatchPattern(it.data)
-
-                                 // distance calculations inserted.
-                                 partnerList = LocationProvider.calculateDistances(partnerList)
-
-                                 // send data to UI
-                                 partnerListState = partnerList
-                             }
-                         }
-                     }
-                 }
-             }
-         }
-     }*/
 }

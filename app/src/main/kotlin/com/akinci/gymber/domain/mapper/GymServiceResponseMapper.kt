@@ -1,4 +1,4 @@
-package com.akinci.gymber.data.mapper
+package com.akinci.gymber.domain.mapper
 
 import com.akinci.gymber.data.remote.GymServiceResponse
 import com.akinci.gymber.domain.Gym

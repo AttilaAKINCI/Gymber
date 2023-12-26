@@ -87,17 +87,26 @@ dependencies {
     val lifecycleVersion = "2.6.2"
     val composeBomVersion = "2023.10.01"
     val jUnit5Version = "5.10.1"
-    val coroutinesVersion = "1.7.3"
     val hiltVersion = "2.50"
     val composeDestinationsVersion = "1.9.55"
     val ktorVersion = "2.3.7"
     val coilVersion = "2.5.0"
     val lottieVersion = "6.2.0"
+    val timberVersion = "5.0.1"
+    val coroutinesVersion = "1.7.3"
 
     // CORE
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
+
+    // JETBRAINS CORE
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$coroutinesVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+
+    // LOCATION
+    implementation("com.google.android.gms:play-services-location:21.0.1")
 
     // IMAGE LOADING
     implementation("io.coil-kt:coil-compose:$coilVersion")
@@ -112,9 +121,6 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
     implementation("io.ktor:ktor-client-logging:$ktorVersion")
     implementation("io.ktor:ktor-client-mock:$ktorVersion")
-
-    // COROUTINES
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
 
     // LIFECYCLE
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
@@ -144,13 +150,13 @@ dependencies {
     ksp("com.google.dagger:hilt-android-compiler:$hiltVersion")
 
     // LOGGING
-    implementation("com.jakewharton.timber:timber:5.0.1")
+    implementation("com.jakewharton.timber:timber:$timberVersion")
 
     // UNIT TESTING
     testImplementation("org.junit.jupiter:junit-jupiter-api:$jUnit5Version")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$jUnit5Version")
     testImplementation("org.junit.jupiter:junit-jupiter-params:$jUnit5Version")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     testImplementation("io.kotest:kotest-assertions-core:5.8.0")
     testImplementation("io.mockk:mockk:1.13.8")
     testImplementation("app.cash.turbine:turbine:1.0.0")

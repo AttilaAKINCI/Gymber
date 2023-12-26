@@ -1,9 +1,9 @@
-package com.akinci.gymber.data.mapper
+package com.akinci.gymber.domain.mapper
 
+import com.akinci.gymber.data.remote.LocationGroup
 import com.akinci.gymber.domain.Location
-import com.akinci.gymber.data.remote.LocationGroup as NetworkLocationGroup
 
-fun List<NetworkLocationGroup>.toDomain() = map { locationGroup ->
+fun List<LocationGroup>.toDomain() = map { locationGroup ->
     locationGroup.locations.map {
         Location(
             latitude = it.latitude,

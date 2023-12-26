@@ -1,6 +1,7 @@
 package com.akinci.gymber.domain
 
 import android.os.Parcelable
+import com.akinci.gymber.core.location.Coordinate
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -11,8 +12,10 @@ data class Location(
     val postCode: String,
     val street: String,
     val number: String,
-    val distance: Int? = null,
+    val distance: Float? = null,
     val distanceText: String = "",
-) : Parcelable
+) : Parcelable {
+    fun toCoordinate() = Coordinate(latitude = latitude, longitude = longitude)
+}
 
-fun List<Location>.getNearest() = minByOrNull { it.distance ?: Int.MAX_VALUE }
+fun List<Location>.getNearest() = minByOrNull { it.distance ?: Float.MAX_VALUE }
