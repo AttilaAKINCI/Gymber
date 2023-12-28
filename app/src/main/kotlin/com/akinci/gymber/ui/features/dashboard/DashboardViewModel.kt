@@ -7,9 +7,9 @@ import com.akinci.gymber.core.compose.reduce
 import com.akinci.gymber.core.coroutine.ContextProvider
 import com.akinci.gymber.core.location.LocationManager
 import com.akinci.gymber.core.permission.PermissionManager
-import com.akinci.gymber.core.utils.distance.DistanceUtils
+import com.akinci.gymber.core.utils.DistanceUtils
+import com.akinci.gymber.data.GymRepository
 import com.akinci.gymber.domain.Gym
-import com.akinci.gymber.domain.GymUseCase
 import com.akinci.gymber.domain.mapper.toImages
 import com.akinci.gymber.ui.ds.components.snackbar.SnackBarState
 import com.akinci.gymber.ui.features.dashboard.DashboardViewContract.State
@@ -26,9 +26,9 @@ import kotlin.random.Random
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
+    permissionManager: PermissionManager,
     private val contextProvider: ContextProvider,
-    private val gymUseCase: GymUseCase,
-    private val permissionManager: PermissionManager,
+    private val gymRepository: GymRepository,
     private val locationManager: LocationManager,
     private val distanceUtils: DistanceUtils,
 ) : ViewModel() {
@@ -60,7 +60,7 @@ class DashboardViewModel @Inject constructor(
             delay?.let { delay(it) }
 
             withContext(contextProvider.io) {
-                gymUseCase.getGyms()
+                gymRepository.getGyms()
             }.onSuccess { gyms ->
                 val processedGyms = processDistance(gyms)
                 val finalGyms = processedGyms ?: gyms

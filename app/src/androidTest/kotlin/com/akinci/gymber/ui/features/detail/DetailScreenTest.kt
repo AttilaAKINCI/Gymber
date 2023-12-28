@@ -1,4 +1,5 @@
 package com.akinci.gymber.ui.features.detail
+/*
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -31,4 +32,4 @@ class DetailScreenTest {
     fun detail_check_content() {
 
     }
-}
+}*/

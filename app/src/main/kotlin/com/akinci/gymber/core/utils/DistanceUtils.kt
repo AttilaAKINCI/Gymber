@@ -1,4 +1,4 @@
-package com.akinci.gymber.core.utils.distance
+package com.akinci.gymber.core.utils
 
 import android.location.Location
 import com.akinci.gymber.core.location.Coordinate

@@ -1,5 +1,10 @@
 package com.akinci.gymber.ui.ds.components.swipecards.data
 
+import com.akinci.gymber.ui.ds.components.swipecards.SwipeImage
+
+/**
+ * Swipe animation type of [SwipeImage] component's actions.
+ * **/
 enum class AnimationType(
     val duration: Int
 ) {

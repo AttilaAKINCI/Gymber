@@ -1,4 +1,4 @@
-package com.akinci.gymber.core.utils.distance
+package com.akinci.gymber.core.utils
 
 data class Distance(
     val value: Float,

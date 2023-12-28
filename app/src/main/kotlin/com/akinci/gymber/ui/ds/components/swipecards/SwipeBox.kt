@@ -36,6 +36,16 @@ import com.akinci.gymber.ui.ds.theme.RedDark
 import com.akinci.gymber.ui.ds.theme.YellowDark
 import kotlinx.collections.immutable.PersistentList
 
+/** TODO
+ * [SwipeBox] is container component
+ *
+ * @property [modifier] compose modifier
+ * @property [imageList]
+ * @property [actions]
+ * @property [onSwipe]
+ * @property [onDetailButtonClick]
+ *
+ * **/
 @Composable
 fun SwipeBox(
     modifier: Modifier = Modifier,

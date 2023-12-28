@@ -8,7 +8,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 /**
- *  MapsManager provides interaction with google maps.
+ *  MapsManager provides interaction with google maps app/web.
  *  Primary action is opening provided coordinates on google maps app
  *  in case of any malfunction Google maps web will be opened on Web Browser as fallback method
  *

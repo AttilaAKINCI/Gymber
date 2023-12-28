@@ -21,7 +21,7 @@ class PermissionManager @Inject constructor(
         ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
 
     /**
-     *  Expose permission checks via separated functions.
+     *  Expose permission checks via functions.
      * **/
     fun isLocationPermissionGranted() = isGranted(FINE_LOCATION) || isGranted(COARSE_LOCATION)
     fun isFineLocationPermissionGranted() = isGranted(FINE_LOCATION)

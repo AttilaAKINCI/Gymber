@@ -13,10 +13,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.launch
 
+/**
+ *  SnackBarContainer makes your composable content snackBar message aware without scaffold.
+ *
+ *  @property [modifier] compose modifier
+ *  @property [snackBarState] state of snackBar that holds unique id and message.
+ *  @property [content] compose content
+ * **/
 @Composable
 fun SnackBarContainer(
-    snackBarState: SnackBarState?,
     modifier: Modifier = Modifier,
+    snackBarState: SnackBarState?,
     content: @Composable BoxScope.() -> Unit
 ) {
     val snackState = remember { SnackbarHostState() }
