@@ -40,7 +40,7 @@ fun SwipeBox(
     modifier: Modifier = Modifier,
     images: PersistentList<Image>,
     actions: ActionButtons,
-    onSwipe: (Direction) -> Unit,
+    onSwipe: (Direction, Int) -> Unit,
     onDetailButtonClick: (Int) -> Unit,
 ) {
     // state of index is saved/remembered in terms of leave/return screen
@@ -91,7 +91,7 @@ fun SwipeBox(
                     swipeAction = currentImageAction,
                     onSwipe = { direction ->
                         // deliver swipe feedback parent ui level
-                        onSwipe(direction)
+                        onSwipe(direction, images[index].id)
 
                         // current card is swiped to [direction]. Update cards with new set.
                         index++
@@ -124,7 +124,7 @@ fun SwipeBox(
                     image = it,
                     type = Type.REVERSE,
                     swipeAction = previousImageAction,
-                    onSwipe = {
+                    onSwipe = { _ ->
                         // After reverse card swipe, clear reverse image & action
                         previousImage = null
                         previousImageAction = SwipeAction()

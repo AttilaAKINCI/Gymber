@@ -48,6 +48,9 @@ val DarkColorScheme = darkColorScheme(
     tertiaryContainer = Teal
 )
 
+val Color.Companion.WhiteDark: Color
+    get() = Color(0xF2CCCCCC)
+
 val Color.Companion.Purple: Color
     get() = Color(0xFF9C27B0)
 

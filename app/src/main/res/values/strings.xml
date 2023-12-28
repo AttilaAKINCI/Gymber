@@ -6,6 +6,16 @@
     <string name="dashboard_screen_location_permission_title">Permission Request</string>
     <string name="dashboard_screen_location_permission_description">In order to calculate distance to gyms, we need your permission. You can change it via application settings</string>
     <string name="dashboard_screen_location_permission_action_title">Close</string>
+    <string name="dashboard_screen_error_title">Service Error</string>
+    <string name="dashboard_screen_error_description">Initial network request is failed because of unknown problem. Please try again later</string>
+    <string name="dashboard_screen_error_button_title">Retry</string>
+    <string name="dashboard_screen_match_title">It\'s a match</string>
+    <string name="dashboard_screen_match_description">You and %s have a match each other !!</string>
+    <string name="dashboard_screen_match_call_button_title">Give it a call</string>
+    <string name="dashboard_screen_match_call_warning">Give it a call feature is under development. Coming soon :)</string>
+    <string name="dashboard_screen_match_message_button_title">Leave a message</string>
+    <string name="dashboard_screen_match_message_warning">Messaging feature is under development. Coming soon :)</string>
+    <string name="dashboard_screen_match_close_button_title">Keep swiping</string>
 
     <!-- Detail Screen -->
     <string name="detail_screen_categories_title">Categories</string>
@@ -15,55 +25,5 @@
     <string name="detail_screen_drop_in_info">- You can do free training in that gym</string>
     <string name="detail_screen_first_come_first_served_info">- You may wait for your turn to workout</string>
     <string name="detail_screen_open_map_error">Unable to open google maps on your device :( </string>
-
-
-    <string name="title_dashboard">Available Gyms</string>
-    <string name="image_transition">ImageTransition</string>
-    <string name="gym_header_title">%1$s - only %2$s km away</string>
-    <string name="match_title">It\'s a match</string>
-    <string name="match_sub_title">You and %1$s have decide on each other!!</string>
-    <string name="match_button_text_call">Take a call</string>
-    <string name="match_button_text_call_warning">Take a call feature is under development. Coming soon :)</string>
-    <string name="match_button_text_message">Leave a message</string>
-    <string name="match_button_text_message_warning">Messaging feature is under development. Coming soon :)</string>
-    <string name="match_button_text_swipe">Keep swiping</string>
-
-
-
-
-    <string name="title_detail">Gym Details</string>
-    <string name="partner_data_empty">Gym details could not be acquired....</string>
-    <string name="drop_in">Drop in</string>
-    <string name="reservable">Reservable</string>
-    <string name="first_come_first_serve">In Order</string>
-    <string name="gym_detail_info">%1$s is a sport center that operates in the field of %2$s. And also it has been working since %3$s after the institution.</string>
-    <string name="gym_detail_surplus">%1$s allows people to make some overtime in exchange for %2$s</string>
-    <string name="distance">%1$s KM</string>
-    <string name="distance_unknown">unavailable</string>
-    <string name="gym_address">Gym Addresses:</string>
-    <string name="gym_location">Location</string>
-    <string name="gym_distance">Distance</string>
-    <string name="open_map_message">Map view developments are in progress. This feature is coming soon :)</string>
-
-    <!-- Error messages -->
-    <string name="global_service_error">Unexpected service error. Please try again later....</string>
-    <string name="network_still_unavailable">Network still unavailable</string>
-
-    <!--  Alert dialog  -->
-    <string name="alert_title">Upppss..</string>
-    <string name="alert_message">We couldn\'t any data :( Please check your internet connection </string>
-    <string name="retry">Retry</string>
-
-
-    <!-- COMPONENTS -->
-    <!-- Offline Dialog -->
-    <string name="connection_error_title">Network Connection Error</string>
-    <string name="connection_error_message">This page requires network connection and we detect that your connection is lost. Please try again  </string>
-    <string name="retry_label">Retry</string>
-
-    <!-- Page Navigator -->
-    <string name="welcome_message">....Welcome....</string>
-    <string name="button_next_page">Navigate to Next Page</string>
-    <string name="button_prev_page">Navigate to Previous Page</string>
 
 </resources>

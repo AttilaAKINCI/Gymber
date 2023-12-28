@@ -16,4 +16,3 @@ fun Gym.toImage() = Image(
 )
 
 fun List<Gym>.toImages() = map { it.toImage() }
-fun List<Gym>.getImage(index: Int) = runCatching { get(index).toImage() }.getOrNull()
