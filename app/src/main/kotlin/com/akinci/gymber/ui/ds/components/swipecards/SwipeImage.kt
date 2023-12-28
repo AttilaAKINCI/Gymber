@@ -25,6 +25,7 @@ import com.akinci.gymber.ui.ds.components.swipecards.data.AnimationType
 import com.akinci.gymber.ui.ds.components.swipecards.data.Direction
 import com.akinci.gymber.ui.ds.components.swipecards.data.Image
 import com.akinci.gymber.ui.ds.components.swipecards.data.SwipeAction
+import com.akinci.gymber.ui.ds.components.swipecards.data.Type
 import com.akinci.gymber.ui.ds.theme.GymberTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -43,17 +44,22 @@ import kotlin.math.roundToInt
 @Composable
 fun SwipeImage(
     image: Image,
+    type: Type,
     swipeAction: SwipeAction,
     onRestore: () -> Unit,
     onSwipe: (Direction) -> Unit,
 ) {
+    val coroutineScope = rememberCoroutineScope()
     val density = LocalDensity.current
     val configuration = LocalConfiguration.current
     val threshold = with(density) { 100.dp.toPx() }
     val swipeValue = with(density) { (configuration.screenWidthDp * 1.1).dp.toPx() }
 
-    val coroutineScope = rememberCoroutineScope()
-    var offset by remember { mutableFloatStateOf(0f) }
+    val initialOffset = when (type) {
+        Type.CENTER -> 0f
+        Type.REVERSE -> -swipeValue
+    }
+    var offset by remember { mutableFloatStateOf(initialOffset) }
     var animation by remember { mutableStateOf(AnimationType.INSTANT) }
     val animatedOffset: Float by animateFloatAsState(
         targetValue = offset,
@@ -74,6 +80,7 @@ fun SwipeImage(
 
         swipeAction.direction?.let { direction ->
             val swipeOffset = when (direction) {
+                Direction.CENTER -> 0f
                 Direction.RIGHT -> swipeValue
                 Direction.LEFT -> -swipeValue
             }
@@ -91,7 +98,7 @@ fun SwipeImage(
     LaunchedEffect(image.imageUrl) {
         // when new image received, we need to restore swipe-able image location instantly.
         animation = AnimationType.INSTANT
-        offset = 0f
+        offset = initialOffset
 
         // animateFloatAsState always takes small bite of time even if we set animationDuration to 0
         //  in order to solve the Image loading glitch, we need to apply small amount of time delay
@@ -159,6 +166,7 @@ fun SwipeImagePreview() {
                 imageUrl = "https://edge.one.fit/image/partner/image/16280/b7ad750d-8e00-40cb-b590-a6e9c4875d91.jpg?w=1680",
                 label = "Rocycle Amsterdam - City",
             ),
+            type = Type.CENTER,
             swipeAction = SwipeAction(),
             onSwipe = { _ -> },
             onRestore = {},

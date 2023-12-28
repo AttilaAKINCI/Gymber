@@ -109,6 +109,7 @@ private fun DashboardScreenContent(
                             when (direction) {
                                 Direction.RIGHT -> onGymLike()
                                 Direction.LEFT -> onGymDislike()
+                                else -> Unit
                             }
                         },
                         onDetailButtonClick = onDetailButtonClick,

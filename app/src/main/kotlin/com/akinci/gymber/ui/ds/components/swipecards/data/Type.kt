@@ -1,7 +1,6 @@
 package com.akinci.gymber.ui.ds.components.swipecards.data
 
-enum class Direction {
+enum class Type {
     CENTER,
-    LEFT,
-    RIGHT,
+    REVERSE,
 }

@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.akinci.gymber.R
 import com.akinci.gymber.core.compose.UIModePreviews
@@ -72,8 +73,12 @@ fun SwipeContent(
             contentAlignment = Alignment.Center,
         ) {
             Text(
-                modifier = Modifier.padding(vertical = 12.dp),
+                modifier = Modifier.padding(
+                    horizontal = 16.dp,
+                    vertical = 12.dp
+                ),
                 text = label,
+                textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleLarge_bangers
             )
         }

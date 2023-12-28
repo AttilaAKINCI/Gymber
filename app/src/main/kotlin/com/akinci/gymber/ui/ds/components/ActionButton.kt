@@ -25,6 +25,7 @@ import com.akinci.gymber.core.compose.UIModePreviews
 import com.akinci.gymber.ui.ds.theme.GymberTheme
 import com.akinci.gymber.ui.ds.theme.Purple
 import com.akinci.gymber.ui.ds.theme.RedDark
+import com.akinci.gymber.ui.ds.theme.YellowDark
 import com.akinci.gymber.ui.ds.theme.oval
 
 @Composable
@@ -65,6 +66,13 @@ fun ActionButton(
 fun ActionButtonPreview() {
     GymberTheme {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            ActionButton(
+                containerColor = Color.YellowDark,
+                painter = painterResource(id = R.drawable.ic_reverse_24dp),
+                tintColor = Color.White,
+                onClick = {}
+            )
+
             ActionButton(
                 containerColor = Color.RedDark,
                 painter = painterResource(id = R.drawable.ic_cancel_24dp),
