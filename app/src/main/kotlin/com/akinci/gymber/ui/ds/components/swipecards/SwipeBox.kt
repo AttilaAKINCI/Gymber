@@ -179,7 +179,6 @@ private fun SwipeBox.Actions(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-
         val animatedSize: Int by animateIntAsState(
             targetValue = if (isReverseVisible) 64 else 0,
             animationSpec = tween(400),

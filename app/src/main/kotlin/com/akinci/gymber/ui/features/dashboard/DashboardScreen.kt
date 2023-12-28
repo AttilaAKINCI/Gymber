@@ -11,6 +11,7 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -46,6 +47,7 @@ import com.akinci.gymber.R
 import com.akinci.gymber.core.compose.UIModePreviews
 import com.akinci.gymber.core.permission.PermissionManager
 import com.akinci.gymber.ui.ds.components.CachedImage
+import com.akinci.gymber.ui.ds.components.DisableRipple
 import com.akinci.gymber.ui.ds.components.InfiniteLottieAnimation
 import com.akinci.gymber.ui.ds.components.InfoDialog
 import com.akinci.gymber.ui.ds.components.TiledBackground
@@ -277,94 +279,97 @@ private fun DashboardScreen.MatchOverlay(
     onMessageButtonClick: () -> Unit,
     onCloseButtonClick: () -> Unit,
 ) {
-    AnimatedVisibility(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color.Black.copy(alpha = 0.85f)),
-        visible = isVisible,
-        enter = scaleIn() + fadeIn(),
-        exit = scaleOut() + fadeOut(),
-    ) {
-        InfiniteLottieAnimation(
-            modifier = Modifier.fillMaxSize(),
-            animationId = R.raw.confetti,
-            contentScale = ContentScale.FillBounds,
-        )
-
-        Column(
+    DisableRipple {
+        AnimatedVisibility(
             modifier = Modifier
-                .fillMaxWidth()
-                .windowInsetsPadding(WindowInsets.systemBars),
-            horizontalAlignment = Alignment.CenterHorizontally,
+                .fillMaxSize()
+                .background(color = Color.Black.copy(alpha = 0.85f))
+                .clickable { /* Consume click events */ },
+            visible = isVisible,
+            enter = scaleIn() + fadeIn(),
+            exit = scaleOut() + fadeOut(),
         ) {
-            Spacer(modifier = Modifier.weight(1f))
-            Text(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                text = stringResource(id = R.string.dashboard_screen_match_title),
-                textAlign = TextAlign.Justify,
-                style = MaterialTheme.typography.headlineLarge,
-                color = Color.WhiteDark,
+            InfiniteLottieAnimation(
+                modifier = Modifier.fillMaxSize(),
+                animationId = R.raw.confetti,
+                contentScale = ContentScale.FillBounds,
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                modifier = Modifier.padding(horizontal = 32.dp),
-                text = stringResource(
-                    id = R.string.dashboard_screen_match_description,
-                    name,
-                ),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleLarge,
-                color = Color.WhiteDark,
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            CachedImage(
+
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .aspectRatio(1.3f)
-                    .border(
-                        border = BorderStroke(1.dp, color = Color.WhiteDark),
-                        shape = MaterialTheme.shapes.extraLarge,
+                    .fillMaxWidth()
+                    .windowInsetsPadding(WindowInsets.systemBars),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Spacer(modifier = Modifier.weight(1f))
+                Text(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    text = stringResource(id = R.string.dashboard_screen_match_title),
+                    textAlign = TextAlign.Justify,
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = Color.WhiteDark,
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    modifier = Modifier.padding(horizontal = 32.dp),
+                    text = stringResource(
+                        id = R.string.dashboard_screen_match_description,
+                        name,
+                    ),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = Color.WhiteDark,
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                CachedImage(
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f)
+                        .aspectRatio(1.3f)
+                        .border(
+                            border = BorderStroke(1.dp, color = Color.WhiteDark),
+                            shape = MaterialTheme.shapes.extraLarge,
+                        )
+                        .clip(MaterialTheme.shapes.extraLarge),
+                    imageUrl = imageUrl,
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    onClick = onCallButtonClick
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.dashboard_screen_match_call_button_title),
+                        style = MaterialTheme.typography.bodyMedium,
                     )
-                    .clip(MaterialTheme.shapes.extraLarge),
-                imageUrl = imageUrl,
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                onClick = onCallButtonClick
-            ) {
-                Text(
-                    text = stringResource(id = R.string.dashboard_screen_match_call_button_title),
-                    style = MaterialTheme.typography.bodyMedium,
-                )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    onClick = onMessageButtonClick
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.dashboard_screen_match_message_button_title),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    onClick = onCloseButtonClick
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.dashboard_screen_match_close_button_title),
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
             }
-            Spacer(modifier = Modifier.height(8.dp))
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                onClick = onMessageButtonClick
-            ) {
-                Text(
-                    text = stringResource(id = R.string.dashboard_screen_match_message_button_title),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                onClick = onCloseButtonClick
-            ) {
-                Text(
-                    text = stringResource(id = R.string.dashboard_screen_match_close_button_title),
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-            }
-            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }

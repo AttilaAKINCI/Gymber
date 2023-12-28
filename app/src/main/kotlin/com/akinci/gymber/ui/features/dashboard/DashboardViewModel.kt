@@ -139,16 +139,30 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun onLocationPermissionResult(isGranted: Boolean) {
-        /* if (isGranted) {
-             // now we have location permission, we need to calculate distances to locations.
-             viewModelScope.launch {
-                 sendUIState(gyms = stateFlow.value.gyms)
-             }
-         } else {
-             _stateFlow.reduce {
-                 copy(shouldShowRationale = true)
-             }
-         }*/
+        if (isGranted) {
+            // now we have location permission, we need to calculate distances to locations.
+            viewModelScope.launch {
+                val state = stateFlow.value
+                if (!state.isDistanceCalculated) {
+                    val processedGyms = processDistance(state.gyms)
+                    val finalGyms = processedGyms ?: state.gyms
+
+                    _stateFlow.reduce {
+                        copy(
+                            gyms = finalGyms,
+                            imageStates = finalGyms.toImages().toPersistentList(),
+                            isError = false,
+                            isDistanceCalculated = processedGyms != null,
+                        )
+                    }
+                }
+            }
+        } else {
+            // permission is denied, show rationale dialog
+            _stateFlow.reduce {
+                copy(shouldShowRationale = true)
+            }
+        }
     }
 
     private suspend fun processDistance(gyms: List<Gym>): List<Gym>? {

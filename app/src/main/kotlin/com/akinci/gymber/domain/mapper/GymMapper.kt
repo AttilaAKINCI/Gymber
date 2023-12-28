@@ -10,7 +10,9 @@ fun Gym.toImage() = Image(
     label = buildString {
         append(name)
         locations.getNearest()?.distanceText?.let {
-            append(" - $it")
+            if (it.isNotBlank()) {
+                append(" - $it")
+            }
         }
     }
 )

@@ -95,7 +95,7 @@ fun SwipeImage(
         }
     }
 
-    LaunchedEffect(image.imageUrl) {
+    LaunchedEffect(image) {
         // when new image received, we need to restore swipe-able image location instantly.
         animation = AnimationType.INSTANT
         offset = initialOffset
