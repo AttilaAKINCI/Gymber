@@ -142,7 +142,7 @@ private fun DashboardScreenContent(
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f),
-                        images = uiState.imageStates,
+                        imageList = uiState.imageStates,
                         actions = ActionButtons(
                             detailIcon = R.drawable.ic_bag_24dp,
                             approveIcon = R.drawable.ic_check_28dp,

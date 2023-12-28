@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -38,13 +39,14 @@ import kotlinx.collections.immutable.PersistentList
 @Composable
 fun SwipeBox(
     modifier: Modifier = Modifier,
-    images: PersistentList<Image>,
+    imageList: PersistentList<Image>,
     actions: ActionButtons,
     onSwipe: (Direction, Int) -> Unit,
     onDetailButtonClick: (Int) -> Unit,
 ) {
     // state of index is saved/remembered in terms of leave/return screen
     var index by rememberSaveable { mutableIntStateOf(0) }
+    var images by remember { mutableStateOf(listOf<Image>()) }
     var isShimmerVisible by remember { mutableStateOf(true) }
 
     var currentImageAction by remember { mutableStateOf(SwipeAction()) }
@@ -55,6 +57,9 @@ fun SwipeBox(
     // state of previous image is saved/remembered in terms of leave/return screen
     var previousImage by rememberSaveable { mutableStateOf<Image?>(null) }
     var previousImageAction by rememberSaveable { mutableStateOf(SwipeAction()) }
+
+    // Update remembered images otherwise composition receives multiple variant of provided data.
+    LaunchedEffect(imageList) { images = imageList }
 
     Column(
         modifier = modifier,
