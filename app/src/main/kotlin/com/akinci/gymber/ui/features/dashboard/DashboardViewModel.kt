@@ -112,7 +112,7 @@ class DashboardViewModel @Inject constructor(
         // We can send a feedback to backend in terms of LIKE action by user.
 
         // on this part we are simulating match chance by %20.
-        val matchChance = Random.nextInt(0, 20)
+        val matchChance = Random.nextInt(0, 100)
         if (matchChance < 20) {
             stateFlow.value.gyms.firstOrNull { it.id == gymId }?.let { matchedGym ->
                 _stateFlow.reduce {
