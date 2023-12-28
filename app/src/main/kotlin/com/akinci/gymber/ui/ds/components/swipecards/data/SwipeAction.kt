@@ -1,0 +1,8 @@
+package com.akinci.gymber.ui.ds.components.swipecards.data
+
+import java.util.UUID
+
+data class SwipeAction(
+    val actionId: UUID = UUID.randomUUID(),
+    val direction: Direction? = null,
+)

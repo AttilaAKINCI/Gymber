@@ -1,8 +1,9 @@
 package com.akinci.gymber.ui.ds.components.swipecards.data
 
 enum class AnimationType(
-    val duration: Long
+    val duration: Int
 ) {
-    DEFAULT(400L),
-    INSTANT(50L)
+    SOFT(0),
+    ANIMATED(400),
+    INSTANT(0),
 }

@@ -5,7 +5,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -21,12 +20,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -35,16 +30,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.akinci.gymber.R
 import com.akinci.gymber.core.compose.UIModePreviews
 import com.akinci.gymber.core.permission.PermissionManager
-import com.akinci.gymber.ui.ds.components.ActionButton
 import com.akinci.gymber.ui.ds.components.InfiniteLottieAnimation
 import com.akinci.gymber.ui.ds.components.InfoDialog
 import com.akinci.gymber.ui.ds.components.TiledBackground
+import com.akinci.gymber.ui.ds.components.swipecards.data.ActionButtons
+import com.akinci.gymber.ui.ds.components.swipecards.data.Direction
 import com.akinci.gymber.ui.ds.components.swipecards.SwipeBox
-import com.akinci.gymber.ui.ds.components.swipecards.data.ForcedAction
-import com.akinci.gymber.ui.ds.components.swipecards.data.SwipeDirection
 import com.akinci.gymber.ui.ds.theme.GymberTheme
-import com.akinci.gymber.ui.ds.theme.Purple
-import com.akinci.gymber.ui.ds.theme.RedDark
 import com.akinci.gymber.ui.ds.theme.titleLarge_bangers
 import com.akinci.gymber.ui.features.dashboard.DashboardViewContract.State
 import com.akinci.gymber.ui.features.destinations.DetailScreenDestination
@@ -72,29 +64,22 @@ fun DashboardScreen(
 
     DashboardScreenContent(
         uiState = uiState,
-        onDetailButtonClick = {
-            // TODO pass selected gym details here..
-            navigator.navigate(
-                DetailScreenDestination(
-                    gym = uiState.gyms.first()
-                )
-            )
+        onDetailButtonClick = { gymId ->
+            uiState.gyms.firstOrNull { it.id == gymId }?.let { gym ->
+                navigator.navigate(DetailScreenDestination(gym = gym))
+            }
         },
-        onGymLike = {
-            // TODO
-        },
-        onGymDislike = {
-            // TODO
-        }
+        onGymLike = { vm.onGymLike() },
+        onGymDislike = { vm.onGymDislike() }
     )
 }
 
 @Composable
 private fun DashboardScreenContent(
     uiState: State,
-    onDetailButtonClick: () -> Unit,
-    onGymLike: (Int) -> Unit,
-    onGymDislike: (Int) -> Unit,
+    onDetailButtonClick: (Int) -> Unit,
+    onGymLike: () -> Unit,
+    onGymDislike: () -> Unit,
 ) {
     Surface {
         TiledBackground(
@@ -108,38 +93,29 @@ private fun DashboardScreenContent(
                 // Top welcome bar
                 DashboardScreen.TopBar()
 
-                // Swipe box
-                var forcedActions by remember { mutableStateOf(ForcedAction()) }
-                SwipeBox(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
-                    forcedAction = forcedActions,
-                    images = uiState.images,
-                    onSwipe = { direction, id ->
-                        // TODO send actions to VM, in order to deliver to backend
-                        when (direction) {
-                            SwipeDirection.RIGHT -> onGymLike(id)
-                            SwipeDirection.LEFT -> onGymDislike(id)
-                        }
-                    }
-                )
-
-                DashboardScreen.Actions(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 32.dp)
-                        .padding(top = 16.dp, bottom = 64.dp),
-                    onDetailButtonClick = onDetailButtonClick,
-                    onLikeButtonClick = {
-                        // button click will force swipe card to fling away in direction
-                        forcedActions = forcedActions.swipeRight()
-                    },
-                    onDislikeButtonClick = {
-                        // button click will force swipe card to fling away in direction
-                        forcedActions = forcedActions.swipeLeft()
-                    }
-                )
+                if (!uiState.isError) {
+                    SwipeBox(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                        images = uiState.imageStates,
+                        actions = ActionButtons(
+                            detailIcon = R.drawable.ic_bag_24dp,
+                            approveIcon = R.drawable.ic_check_28dp,
+                            rejectIcon = R.drawable.ic_cancel_24dp,
+                            reverseIcon = R.drawable.ic_reverse_24dp,
+                        ),
+                        onSwipe = { direction ->
+                            when (direction) {
+                                Direction.RIGHT -> onGymLike()
+                                Direction.LEFT -> onGymDislike()
+                            }
+                        },
+                        onDetailButtonClick = onDetailButtonClick,
+                    )
+                } else {
+                    // todo show error view.
+                }
             }
         }
     }
@@ -182,41 +158,6 @@ private fun DashboardScreen.TopBar(
                 .weight(1f),
             text = stringResource(id = R.string.dashboard_screen_welcome_text),
             style = MaterialTheme.typography.titleLarge_bangers,
-        )
-    }
-}
-
-@Composable
-private fun DashboardScreen.Actions(
-    modifier: Modifier = Modifier,
-    onDetailButtonClick: () -> Unit,
-    onLikeButtonClick: () -> Unit,
-    onDislikeButtonClick: () -> Unit,
-) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly,
-    ) {
-        ActionButton(
-            containerColor = Color.RedDark,
-            painter = painterResource(id = R.drawable.ic_cancel_24dp),
-            tintColor = Color.White,
-            onClick = onDislikeButtonClick
-        )
-
-        ActionButton(
-            containerColor = Color.Purple,
-            painter = painterResource(id = R.drawable.ic_bag_24dp),
-            tintColor = Color.White,
-            onClick = onDetailButtonClick
-        )
-
-        ActionButton(
-            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-            painter = painterResource(id = R.drawable.ic_check_28dp),
-            tintColor = Color.White,
-            onClick = onLikeButtonClick
         )
     }
 }

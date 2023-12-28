@@ -9,9 +9,8 @@ import com.akinci.gymber.core.permission.PermissionManager
 import com.akinci.gymber.core.utils.distance.DistanceUtils
 import com.akinci.gymber.domain.Gym
 import com.akinci.gymber.domain.GymUseCase
-import com.akinci.gymber.domain.Location
-import com.akinci.gymber.domain.getNearest
-import com.akinci.gymber.ui.ds.components.swipecards.data.SwipeImage
+import com.akinci.gymber.domain.mapper.toImage
+import com.akinci.gymber.domain.mapper.toImages
 import com.akinci.gymber.ui.features.dashboard.DashboardViewContract.State
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toPersistentList
@@ -43,10 +42,27 @@ class DashboardViewModel @Inject constructor(
         viewModelScope.launch {
             withContext(contextProvider.io) {
                 gymUseCase.getGyms()
-            }.onSuccess {
-                sendUIState(gyms = it)
+            }.onSuccess { gyms ->
+                val processedGyms = processDistance(gyms)
+                val finalGyms = processedGyms ?: gyms
+
+                _stateFlow.reduce {
+                    copy(
+                        gyms = finalGyms,
+                        imageStates = finalGyms.toImages().toPersistentList(),
+                        isDistanceCalculated = processedGyms != null,
+                    )
+                }
             }
         }
+    }
+
+    fun onGymLike() {
+        // We can send a feedback to backend in terms of LIKE action by user.
+    }
+
+    fun onGymDislike() {
+        // We can send a feedback to backend in terms of DISLIKE action by user.
     }
 
     fun hideRationaleDialog() {
@@ -59,58 +75,34 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun onLocationPermissionResult(isGranted: Boolean) {
-        if (isGranted) {
-            // now we have location permission, we need to calculate distances to locations.
-            viewModelScope.launch {
-                sendUIState(gyms = stateFlow.value.gyms)
-            }
-        } else {
-            _stateFlow.reduce {
-                copy(shouldShowRationale = true)
-            }
-        }
+        /* if (isGranted) {
+             // now we have location permission, we need to calculate distances to locations.
+             viewModelScope.launch {
+                 sendUIState(gyms = stateFlow.value.gyms)
+             }
+         } else {
+             _stateFlow.reduce {
+                 copy(shouldShowRationale = true)
+             }
+         }*/
     }
 
-    private suspend fun sendUIState(gyms: List<Gym>) {
-        val processedGyms = if (permissionManager.isLocationPermissionGranted()) {
-            gyms.map {
-                it.copy(locations = calculateDistance(locations = it.locations))
-            }
-        } else {
-            gyms
-        }
-
-        _stateFlow.reduce {
-            copy(
-                isPermissionRequired = !permissionManager.isLocationPermissionGranted(),
-                gyms = processedGyms.toPersistentList(),
-                images = processedGyms.map { gym ->
-                    SwipeImage(
-                        id = gym.id,
-                        imageUrl = gym.imageUrl,
-                        label = buildString {
-                            append(gym.name)
-                            gym.locations.getNearest()?.distanceText?.let {
-                                append(" - $it")
-                            }
-                        }
-                    )
-                }.toPersistentList()
-            )
-        }
-    }
-
-    private suspend fun calculateDistance(locations: List<Location>): List<Location> {
+    private suspend fun processDistance(gyms: List<Gym>): List<Gym>? {
         // get device location
-        val deviceLocation = locationManager.getCurrentLocation().getOrNull() ?: return locations
+        val deviceLocation = locationManager.getCurrentLocation().getOrNull() ?: return null
 
-        return locations.map { location ->
-            distanceUtils.calculateDistance(deviceLocation, location.toCoordinate())?.let {
-                location.copy(
-                    distance = it.value,
-                    distanceText = it.valueText,
-                )
-            } ?: location
+        return gyms.map { gym ->
+            gym.copy(
+                locations = gym.locations.map { location ->
+                    distanceUtils.calculateDistance(deviceLocation, location.toCoordinate())
+                        ?.let {
+                            location.copy(
+                                distance = it.value,
+                                distanceText = it.valueText,
+                            )
+                        } ?: location
+                }
+            )
         }
     }
 }

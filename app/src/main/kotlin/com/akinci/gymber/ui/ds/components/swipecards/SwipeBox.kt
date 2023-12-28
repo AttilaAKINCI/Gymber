@@ -1,49 +1,123 @@
 package com.akinci.gymber.ui.ds.components.swipecards
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.akinci.gymber.core.compose.UIModePreviews
-import com.akinci.gymber.ui.ds.components.CachedImage
-import com.akinci.gymber.ui.ds.components.swipecards.data.ForcedAction
-import com.akinci.gymber.ui.ds.components.swipecards.data.SwipeDirection
-import com.akinci.gymber.ui.ds.components.swipecards.data.SwipeImage
-import com.akinci.gymber.ui.ds.theme.GymberTheme
-import com.akinci.gymber.ui.ds.theme.bottomExtraLarge
-import com.akinci.gymber.ui.ds.theme.halfTransparentSurface
-import com.akinci.gymber.ui.ds.theme.titleLarge_bangers
+import com.akinci.gymber.ui.ds.components.ActionButton
+import com.akinci.gymber.ui.ds.components.Shimmer
+import com.akinci.gymber.ui.ds.components.swipecards.data.ActionButtons
+import com.akinci.gymber.ui.ds.components.swipecards.data.Direction
+import com.akinci.gymber.ui.ds.components.swipecards.data.Image
+import com.akinci.gymber.ui.ds.components.swipecards.data.SwipeAction
+import com.akinci.gymber.ui.ds.theme.Purple
+import com.akinci.gymber.ui.ds.theme.RedDark
+import com.akinci.gymber.ui.ds.theme.YellowDark
 import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun SwipeBox(
     modifier: Modifier = Modifier,
-    forcedAction: ForcedAction = ForcedAction(),
-    images: PersistentList<SwipeImage>,
-    onSwipe: (SwipeDirection, Int) -> Unit,
+    images: PersistentList<Image>,
+    actions: ActionButtons,
+    onSwipe: (Direction) -> Unit,
+    onDetailButtonClick: (Int) -> Unit,
 ) {
-    when {
-        images.isEmpty() -> SwipeBox.Loading(modifier = modifier)
-        else -> SwipeBox.Content(
-            modifier = modifier,
-            forcedAction = forcedAction,
-            images = images,
-            onSwipe = onSwipe
+    // state of index is saved/remembered in terms of leave/return screen
+    var index by rememberSaveable { mutableIntStateOf(0) }
+    var isShimmerVisible by remember { mutableStateOf(true) }
+
+    val currentImage = runCatching { images[index] }.getOrNull()
+    var nextImage by remember { mutableStateOf<Image?>(null) }
+    var previousImage by remember { mutableStateOf<Image?>(null) }
+
+    var currentImageAction by remember { mutableStateOf(SwipeAction()) }
+
+    Column(
+        modifier = modifier,
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            contentAlignment = Alignment.Center,
+        ) {
+            if (isShimmerVisible) {
+                Shimmer(
+                    modifier = Modifier
+                        .aspectRatio(1f)
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .clip(shape = MaterialTheme.shapes.extraLarge),
+                )
+            }
+
+            // Background Image
+            nextImage?.let {
+                SwipeContent(
+                    imageUrl = it.imageUrl,
+                    label = it.label,
+                )
+            }
+
+            // Current Image - swipe-able
+            currentImage?.let {
+                SwipeImage(
+                    image = currentImage,
+                    swipeAction = currentImageAction,
+                    onSwipe = { direction ->
+                        // card moved to [direction] of the screen with animation.
+                        onSwipe(direction)
+                        index++
+                    },
+                    onRestore = {
+                        isShimmerVisible = false
+                        nextImage = runCatching { images[index + 1] }.getOrNull()
+                        previousImage = runCatching { images[index - 1] }.getOrNull()
+                    }
+                )
+            }
+
+            // Previous Image - reverse swipe-able
+            previousImage?.let {
+                // TODO complete.
+            }
+        }
+
+        SwipeBox.Actions(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp)
+                .padding(top = 16.dp, bottom = 64.dp),
+            actions = actions,
+            onDetailButtonClick = {
+                currentImage?.let { onDetailButtonClick(it.id) }
+            },
+            onApproveButtonClick = {
+                // approve button click will swipe image content right automatically
+                currentImageAction = SwipeAction(direction = Direction.RIGHT)
+            },
+            onRejectButtonClick = {
+                // approve button click will swipe image content right automatically
+                currentImageAction = SwipeAction(direction = Direction.LEFT)
+            },
+            onReplayButtonClick = {},
         )
     }
 }
@@ -51,91 +125,45 @@ fun SwipeBox(
 typealias SwipeBox = Unit
 
 @Composable
-private fun SwipeBox.Content(
+private fun SwipeBox.Actions(
     modifier: Modifier = Modifier,
-    forcedAction: ForcedAction,
-    images: PersistentList<SwipeImage>,
-    onSwipe: (SwipeDirection, Int) -> Unit,
+    actions: ActionButtons,
+    onDetailButtonClick: () -> Unit,
+    onApproveButtonClick: () -> Unit,
+    onRejectButtonClick: () -> Unit,
+    onReplayButtonClick: () -> Unit,
 ) {
-    var imageIndex by remember { mutableIntStateOf(0) }
-
-    val currentImage = runCatching { images[imageIndex] }.getOrNull()
-    var nextImage by remember { mutableStateOf<SwipeImage?>(null) }
-    var previousImage by remember { mutableStateOf<SwipeImage?>(null) }
-
-    Box(
+    Row(
         modifier = modifier,
-        contentAlignment = Alignment.Center,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly,
     ) {
-        // put next image as background image
-        nextImage?.let {
-            Box {
-                CachedImage(
-                    modifier = Modifier
-                        .aspectRatio(1f)
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .clip(shape = MaterialTheme.shapes.extraLarge),
-                    imageUrl = it.imageUrl,
-                )
+        ActionButton(
+            containerColor = Color.YellowDark,
+            painter = painterResource(id = actions.reverseIcon),
+            tintColor = Color.White,
+            onClick = onReplayButtonClick
+        )
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .align(Alignment.BottomCenter)
-                        .clip(MaterialTheme.shapes.bottomExtraLarge)
-                        .background(color = Color.halfTransparentSurface),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        modifier = Modifier.padding(vertical = 12.dp),
-                        text = it.label,
-                        style = MaterialTheme.typography.titleLarge_bangers
-                    )
-                }
-            }
-        }
+        ActionButton(
+            containerColor = Color.RedDark,
+            painter = painterResource(id = actions.rejectIcon),
+            tintColor = Color.White,
+            onClick = onRejectButtonClick
+        )
 
-        // put first image upfront as swipeable image
-        currentImage?.let {
-            SwipeCard(
-                image = it,
-                forcedAction = forcedAction,
-                onSwipe = { direction, id ->
-                    // pass action to screen level
-                    onSwipe(direction, id)
-                    imageIndex++
-                },
-                onLoad = {
-                    nextImage = runCatching { images[imageIndex.inc()] }.getOrNull()
-                    previousImage = runCatching { images[imageIndex.dec()] }.getOrNull()
-                }
-            )
-        }
-    }
-}
+        ActionButton(
+            containerColor = Color.Purple,
+            painter = painterResource(id = actions.detailIcon),
+            tintColor = Color.White,
+            onClick = onDetailButtonClick
+        )
 
-@Composable
-private fun SwipeBox.Loading(
-    modifier: Modifier = Modifier,
-) {
-    // TODO show shimmer loading here.
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center,
-    ) {
-
-    }
-}
-
-@UIModePreviews
-@Composable
-private fun SwipeBoxPreview() {
-    GymberTheme {
-        SwipeBox(
-            images = persistentListOf(),
-            onSwipe = { _, _ -> }
+        ActionButton(
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+            painter = painterResource(id = actions.approveIcon),
+            tintColor = Color.White,
+            onClick = onApproveButtonClick
         )
     }
 }
