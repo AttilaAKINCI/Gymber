@@ -7,7 +7,8 @@ import com.akinci.gymber.core.compose.reduce
 import com.akinci.gymber.core.coroutine.ContextProvider
 import com.akinci.gymber.core.location.LocationManager
 import com.akinci.gymber.core.permission.PermissionManager
-import com.akinci.gymber.core.utils.DistanceUtils
+import com.akinci.gymber.core.utils.GymMatchSimulator
+import com.akinci.gymber.core.utils.distance.DistanceUtils
 import com.akinci.gymber.data.GymRepository
 import com.akinci.gymber.domain.Gym
 import com.akinci.gymber.domain.mapper.toImages
@@ -31,6 +32,7 @@ class DashboardViewModel @Inject constructor(
     private val gymRepository: GymRepository,
     private val locationManager: LocationManager,
     private val distanceUtils: DistanceUtils,
+    private val gymMatchSimulator: GymMatchSimulator,
 ) : ViewModel() {
 
     private val _stateFlow = MutableStateFlow(
@@ -111,9 +113,7 @@ class DashboardViewModel @Inject constructor(
     fun onGymLike(gymId: Int) {
         // We can send a feedback to backend in terms of LIKE action by user.
 
-        // on this part we are simulating match chance by %20.
-        val matchChance = Random.nextInt(0, 100)
-        if (matchChance < 20) {
+        if (gymMatchSimulator.isItAMatch()) {
             stateFlow.value.gyms.firstOrNull { it.id == gymId }?.let { matchedGym ->
                 _stateFlow.reduce {
                     copy(

@@ -23,7 +23,7 @@ android {
         minSdk = 26
         targetSdk = 34
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "com.akinci.gymber.HiltTestRunner"
         vectorDrawables {
@@ -91,7 +91,7 @@ dependencies {
     val composeDestinationsVersion = "1.9.56"
     val ktorVersion = "2.3.7"
     val coilVersion = "2.5.0"
-    val lottieVersion = "6.2.0"
+    val lottieVersion = "6.3.0"
     val timberVersion = "5.0.1"
     val coroutinesVersion = "1.7.3"
 
@@ -156,7 +156,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:$jUnit5Version")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$jUnit5Version")
     testImplementation("org.junit.jupiter:junit-jupiter-params:$jUnit5Version")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
     testImplementation("io.kotest:kotest-assertions-core:5.8.0")
     testImplementation("io.mockk:mockk:1.13.8")
     testImplementation("app.cash.turbine:turbine:1.0.0")
