@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -220,7 +221,8 @@ private fun DashboardScreen.TopBar(
             modifier = Modifier
                 .padding(vertical = 8.dp)
                 .padding(end = 8.dp)
-                .weight(1f),
+                .weight(1f)
+                .testTag("welcome-text"),
             text = stringResource(id = R.string.dashboard_screen_welcome_text),
             style = MaterialTheme.typography.titleLarge_bangers,
         )
