@@ -36,14 +36,15 @@ import com.akinci.gymber.ui.ds.theme.RedDark
 import com.akinci.gymber.ui.ds.theme.YellowDark
 import kotlinx.collections.immutable.PersistentList
 
-/** TODO
- * [SwipeBox] is container component
+/**
+ * [SwipeBox] is container component of background, center and reverse swipe images and also
+ * action buttons
  *
  * @property [modifier] compose modifier
- * @property [imageList]
- * @property [actions]
- * @property [onSwipe]
- * @property [onDetailButtonClick]
+ * @property [imageList] list of [Image] to show / load
+ * @property [actions] resource state and content of action buttons
+ * @property [onSwipe] triggered when image swiped in a [Direction]
+ * @property [onDetailButtonClick] detail button click action
  *
  * **/
 @Composable

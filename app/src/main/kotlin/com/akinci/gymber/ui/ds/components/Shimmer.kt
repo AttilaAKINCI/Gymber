@@ -20,6 +20,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
 
+/**
+ *  Shimmer provides a shimmer animation (loading animation) for any given view size & shape.
+ *
+ *  @property [modifier] compose modifier
+ *
+ * **/
 @Composable
 fun Shimmer(
     modifier: Modifier = Modifier,

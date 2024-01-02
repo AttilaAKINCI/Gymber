@@ -7,6 +7,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 
+/**
+ *  DisableRipple is a local provider disables ripple effect inside it's scope
+ *
+ *  @property [content] compose content
+ *
+ * **/
 @Composable
 fun DisableRipple(content: @Composable () -> Unit) {
     CompositionLocalProvider(LocalRippleTheme provides NoRippleTheme) {

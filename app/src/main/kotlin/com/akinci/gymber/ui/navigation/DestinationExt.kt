@@ -13,7 +13,7 @@ val Destination.getSystemBarColorState
         is DetailScreenDestination -> {
             SystemBarColorState(
                 navigationBarColor = Color.halfTransparentSurface,
-                isLightStatusBarContent = true,
+                isLightStatusBarContent = false,
             )
         }
 

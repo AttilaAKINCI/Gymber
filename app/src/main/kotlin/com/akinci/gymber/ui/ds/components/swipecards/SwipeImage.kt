@@ -36,6 +36,7 @@ import kotlin.math.roundToInt
  * SwipeImage is a component which is capable of moving [SwipeContent] left or right by drag action
  *
  * @property [image] data of [SwipeContent]
+ * @property [type] swipe card type
  * @property [swipeAction] is action request for automatic swipe right or left
  * @property [onRestore] is an action that triggered when [SwipeImage] is in default position
  * @property [onSwipe] is an action that triggered when [SwipeImage] is swiped out

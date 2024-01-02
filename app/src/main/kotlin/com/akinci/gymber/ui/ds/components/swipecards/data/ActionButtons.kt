@@ -4,8 +4,8 @@ import androidx.annotation.DrawableRes
 import com.akinci.gymber.ui.ds.components.swipecards.SwipeBox
 
 /**
- * [SwipeBox] component is capable of managing 4 action buttons.
- * Icons of these buttons set by below fields.
+ * ActionButtons holds resourceIds of [SwipeBox] component's action buttons.
+ *
  * **/
 data class ActionButtons(
     @DrawableRes val detailIcon: Int,

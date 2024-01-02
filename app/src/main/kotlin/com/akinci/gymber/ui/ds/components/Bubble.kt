@@ -18,6 +18,13 @@ import com.akinci.gymber.core.compose.UIModePreviews
 import com.akinci.gymber.ui.ds.theme.GymberTheme
 import com.akinci.gymber.ui.ds.theme.oval
 
+/**
+ *  Bubble is a chips like tag display view component
+ *
+ *  @property [modifier] compose modifier
+ *  @property [title] title/tag to show in bubble like view
+ *
+ * **/
 @Composable
 fun Bubble(
     modifier: Modifier = Modifier,

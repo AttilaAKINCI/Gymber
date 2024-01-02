@@ -28,6 +28,16 @@ import com.akinci.gymber.ui.ds.theme.bottomExtraLarge
 import com.akinci.gymber.ui.ds.theme.halfTransparentSurface
 import com.akinci.gymber.ui.ds.theme.titleLarge_bangers
 
+/**
+ * SwipeContent is content of [SwipeImage]
+ *
+ * @property [modifier] compose modifier
+ * @property [imageUrl] image url to load
+ * @property [label] brief information on load image
+ * @property [likeAlpha] alpha state value of LIKE overlay
+ * @property [dislikeAlpha] alpha state value of DISLIKE overlay
+ *
+ * **/
 @Composable
 fun SwipeContent(
     modifier: Modifier = Modifier,

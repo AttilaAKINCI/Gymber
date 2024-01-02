@@ -11,6 +11,14 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 
+/**
+ *  InfiniteLottieAnimation is a composable component that shows lottie animations in infinite mode
+ *
+ *  @property [modifier] compose modifier
+ *  @property [animationId] lottie animation resource id
+ *  @property [contentScale] animation content scale value
+ *
+ * **/
 @Composable
 fun InfiniteLottieAnimation(
     modifier: Modifier = Modifier,

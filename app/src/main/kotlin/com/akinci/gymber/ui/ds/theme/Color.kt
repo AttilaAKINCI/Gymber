@@ -63,4 +63,3 @@ val Color.Companion.RedDark: Color
 val Color.Companion.halfTransparentSurface: Color
     @Composable
     get() = MaterialTheme.colorScheme.surface.copy(alpha = 0.6f)
-

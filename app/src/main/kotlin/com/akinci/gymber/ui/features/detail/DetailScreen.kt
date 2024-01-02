@@ -32,11 +32,14 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -51,6 +54,8 @@ import com.akinci.gymber.ui.ds.components.Bubble
 import com.akinci.gymber.ui.ds.components.CachedImage
 import com.akinci.gymber.ui.ds.components.Rating
 import com.akinci.gymber.ui.ds.components.snackbar.SnackBarContainer
+import com.akinci.gymber.ui.ds.components.systembarcontroller.SystemBarController
+import com.akinci.gymber.ui.ds.components.systembarcontroller.rememberSystemBarColors
 import com.akinci.gymber.ui.ds.theme.GymberTheme
 import com.akinci.gymber.ui.ds.theme.halfTransparentSurface
 import com.akinci.gymber.ui.ds.theme.titleLarge_bangers
@@ -89,8 +94,13 @@ private fun DetailScreenContent(
     openMaps: (Location, String) -> Unit,
 ) {
     val scrollState = rememberScrollState()
+    val statusBarColorStateChangeThreshold = remember { mutableIntStateOf(0) }
+    val systemBarColorState by rememberSystemBarColors(
+        threshold = statusBarColorStateChangeThreshold,
+        scrollState = scrollState
+    )
 
-    // TODO update status bar color states with content scroll
+    SystemBarController(systemBarColorState = systemBarColorState)
 
     Surface {
         SnackBarContainer(
@@ -107,7 +117,8 @@ private fun DetailScreenContent(
                     DetailScreen.ImageHeader(
                         modifier = Modifier.fillMaxWidth(),
                         imageUrl = uiState.gym.imageUrl,
-                        gymName = uiState.gym.name
+                        gymName = uiState.gym.name,
+                        onPositioned = { statusBarColorStateChangeThreshold.intValue = it }
                     )
 
                     // back button
@@ -143,6 +154,8 @@ private fun DetailScreenContent(
                 Text(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     text = buildString {
+                        append(uiState.gym.description)
+                        append(uiState.gym.description)
                         append(uiState.gym.description)
                         if (uiState.gym.reservableWorkouts) {
                             append("\n\n ${stringResource(id = R.string.detail_screen_reservable_workouts_info)}")
@@ -191,12 +204,16 @@ private fun DetailScreen.ImageHeader(
     modifier: Modifier = Modifier,
     imageUrl: String,
     gymName: String,
+    onPositioned: (Int) -> Unit,
 ) {
     Box(modifier = modifier) {
         CachedImage(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(1.2f),
+                .aspectRatio(1.2f)
+                .onGloballyPositioned {
+                    onPositioned(it.size.height)
+                },
             imageUrl = imageUrl
         )
 

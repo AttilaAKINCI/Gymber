@@ -13,11 +13,21 @@ import com.akinci.gymber.core.compose.UIModePreviews
 import com.akinci.gymber.ui.ds.theme.GymberTheme
 import com.akinci.gymber.ui.ds.theme.YellowDark
 
+/**
+ *  Rating is a component that adds stars in a row considering provided [rating] value.
+ *  Rating scale is between 0 to 5 and 0.1, tenth > 0 part is considered as half star.
+ *
+ *  @property [modifier] compose modifier
+ *  @property [rating] rating value, Expected double in range of [0.0,5.0]
+ *
+ * **/
 @Composable
 fun Rating(
     modifier: Modifier = Modifier,
     rating: Double,
 ) {
+    require(rating in 0.0..5.0)
+
     Row(modifier = modifier) {
         for (i in (0 until 5)) {
             val value = rating - i

@@ -9,6 +9,14 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import kotlinx.coroutines.Dispatchers
 
+/**
+ *  CachedImage is a variation of [AsyncImage] which automatically cache it's content.
+ *
+ *  @property [modifier] compose modifier
+ *  @property [imageUrl] image url to load
+ *  @property [onLoad] action that triggered when image content is load
+ *
+ * **/
 @Composable
 fun CachedImage(
     modifier: Modifier = Modifier,
@@ -22,9 +30,7 @@ fun CachedImage(
         .diskCacheKey(imageUrl)
         .diskCachePolicy(CachePolicy.ENABLED)
         .memoryCachePolicy(CachePolicy.ENABLED)
-        .listener(
-            onSuccess = { _, _ -> onLoad() }
-        )
+        .listener(onSuccess = { _, _ -> onLoad() })
         .build()
 
     AsyncImage(

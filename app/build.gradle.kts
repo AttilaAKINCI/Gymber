@@ -88,7 +88,7 @@ dependencies {
     val composeBomVersion = "2023.10.01"
     val jUnit5Version = "5.10.1"
     val hiltVersion = "2.50"
-    val composeDestinationsVersion = "1.9.55"
+    val composeDestinationsVersion = "1.9.56"
     val ktorVersion = "2.3.7"
     val coilVersion = "2.5.0"
     val lottieVersion = "6.2.0"

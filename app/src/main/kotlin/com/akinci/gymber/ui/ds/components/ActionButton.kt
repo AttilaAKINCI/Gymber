@@ -28,12 +28,23 @@ import com.akinci.gymber.ui.ds.theme.RedDark
 import com.akinci.gymber.ui.ds.theme.YellowDark
 import com.akinci.gymber.ui.ds.theme.oval
 
+/**
+ *  ActionButton is a circular action button with ripple effect.
+ *
+ *  @property [modifier] compose modifier
+ *  @property [size] diameter of circular button
+ *  @property [containerColor] background content color of action button
+ *  @property [painter] icon content painter
+ *  @property [tintColor] icon tint color
+ *  @property [onClick] button click action handler
+ *
+ * **/
 @Composable
 fun ActionButton(
     modifier: Modifier = Modifier,
     size: Dp = 64.dp,
-    painter: Painter,
     containerColor: Color,
+    painter: Painter,
     tintColor: Color,
     onClick: () -> Unit,
 ) {

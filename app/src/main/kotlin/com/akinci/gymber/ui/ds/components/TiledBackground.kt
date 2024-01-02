@@ -12,6 +12,14 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 
+/**
+ *  TiledBackground is a wrapper box layout which add tiled background image behind the content
+ *
+ *  @property [modifier] compose modifier
+ *  @property [painter] tiled background image painter
+ *  @property [content] composable content
+ *
+ * **/
 @Composable
 fun TiledBackground(
     modifier: Modifier = Modifier,

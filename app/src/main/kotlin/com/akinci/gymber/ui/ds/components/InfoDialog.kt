@@ -8,11 +8,20 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.window.DialogProperties
 import com.akinci.gymber.core.compose.UIModePreviews
 import com.akinci.gymber.ui.ds.theme.GymberTheme
 import com.akinci.gymber.ui.ds.theme.bodyLarge_bold
 
+/**
+ *  InfoDialog is a generic info/error dialog which is shown center of dimmed background.
+ *
+ *  @property [title] title
+ *  @property [message] main message
+ *  @property [buttonText] primary button text
+ *  @property [onButtonClick] primary button action
+ *  @property [onDismiss] on dismiss action
+ *
+ * **/
 @Composable
 fun InfoDialog(
     title: String,
