@@ -1,55 +1,91 @@
-# Gymber -- under development 
-Gymber is a searcher app for sports clubs using Jetpack compose way
+# Gymber
+Gymber is a tinder like gym club finder for your daily sports routine 🙌
 
-## Brief Description
-Gymber is a similar repository to [Gymber](https://github.com/AttilaAKINCI/Gymber) that wraps UI development part with Jetpack Compose!! 
+[APK Link (https://drive.google.com/file/d/1nB7PulUQSDBgPjQSAkYQkSs_y2FW3uCw/view?usp=sharing)](https://drive.google.com/file/d/1nB7PulUQSDBgPjQSAkYQkSs_y2FW3uCw/view?usp=sharing)
 
-[APK Link (https://drive.google.com/file/d/1YVQSlhfMWlEnrI48xwL1XqOLeE0T2Z92/view?usp=sharing)](https://drive.google.com/file/d/1YVQSlhfMWlEnrI48xwL1XqOLeE0T2Z92/view?usp=sharing)
+
+## How to run in your local
+In order to run project in your local be aware below points ->
+* Android Studio Iguana | 2023.2.1 Beta 1 | Build #AI-232.10227.8.2321.11231672, built on December 18, 2023
+* checkout master branch
+* add *SERVICE_ENDPOINT_BASE_URL=https://api.one.fit/* to your local.properties file.
+
 
 ## App Video
+    
+    Launch & Permission        Permission denial          Swipe Actions     Details & Map      Gym Match            
 
-         Like and Match              Detail Screen           
-
-<img src="https://user-images.githubusercontent.com/21987335/147857253-e1a926e6-9c98-411f-bc79-7ec39077f855.gif" width="200"/> <img 
-src="https://user-images.githubusercontent.com/21987335/147857260-aab0585a-e264-4f17-8298-5287650fe835.gif" width="200"/>   
+<img src="https://github.com/AttilaAKINCI/Gymber/assets/21987335/353f5110-d78c-49a5-9f60-98d0ec4c910f" width="160"/> <img 
+src="https://github.com/AttilaAKINCI/Gymber/assets/21987335/6b2254a6-9bde-414a-93a1-eb9d391ca500" width="160"/>  <img 
+src="https://github.com/AttilaAKINCI/Gymber/assets/21987335/c96fb0e7-22bc-44fe-962a-3df42ddb230c" width="160"/> <img
+src="https://github.com/AttilaAKINCI/Gymber/assets/21987335/bfcdd190-588b-4076-80cd-e21992dc35a6" width="160"/>  <img
+src="https://github.com/AttilaAKINCI/Gymber/assets/21987335/bafb34d7-5076-4637-8c04-b2e93fff4130" width="160"/> 
 
 
 ## 3rd party lib. usages & Tech Specs
+* Kotlin
+* [Kotlin Coroutines](https://kotlinlang.org/docs/coroutines-overview.html)
+* [Kotlin DSL](https://developer.android.com/build/migrate-to-kotlin-dsl)
 * Patterns
-    - MVVM design pattern
-    - Repository pattern for data management
-* JetPack Libs
-    - Compose
-    - Compose UI testing
-* Retrofit
-* Kotlin & Coroutines
-* Coil Image loading
-* Lottie compose animation Lib.
-* Moshi Json handler
-* Timber Client logging
-* Dependency Injection (HILT) 
-* Single Activity multiple Composable approach
-* Unit testing samples & HILT integrations for testing
-* MockK library for unit testing
+    - MVVM
+    - Clean Architecture
+    - Repository
+* [JetPack Compose](https://developer.android.com/jetpack/compose?gclid=Cj0KCQiAjMKqBhCgARIsAPDgWlyVg8bZaasX_bdQfYrAXsuDQ6vD-2SmFcTv34Fb-jLQxgGqPD7UxKgaAso5EALw_wcB&gclsrc=aw.ds)
+* [Edge to Edge UI design](https://developer.android.com/jetpack/compose/layouts/insets)
+* Shimmer Loading
+* Native/Custom Splash Screen
+* Dark/Light UI Mode
+* [App Permissions - Jetpack compose adjusted](https://developer.android.com/guide/topics/permissions/overview)
+* [GPS location- Jetpack compose adjusted](https://developer.android.com/develop/sensors-and-location/location/retrieve-current)
+* [Compose Destinations](https://github.com/raamcosta/compose-destinations) / [Documentation](https://composedestinations.rafaelcosta.xyz/)
+* [Ktor Client](https://ktor.io/docs/client-supported-platforms.html)
+* [Lottie Animations](https://github.com/airbnb/lottie-android)
+* [Coil](https://github.com/coil-kt/coil)
+    - Asynch image loading
+* [Timber Client logging](https://github.com/JakeWharton/timber)
+* [Dependency Injection (HILT)](https://developer.android.com/training/dependency-injection/hilt-android)
+* [Turbine](https://github.com/cashapp/turbine)
+* [MockK](https://mockk.io/)
+* Unit testing
+* Instrumentation & Compose UI Testing
 * Junit5
-* Thruth (assertions)
+
 
 #### UI Flow
-1- Gymber app starts with avocado animaion on Splash Screen, When animation end, user navigates to Dashboard Screen
+1- Gymber app starts with avocado animation on Splash Screen, When animation end, user navigates to Dashboard Screen
 
-2- in dashboard screen gym places are shown accordingly. this page can be managed by 3 buttons at the bottom.
+2- Considering user's location permissions, permission request buttons are appeared
 
-3- Like Button checks matching state if there is a match matchScreen is shown.
+3- In dashboard screen gym places are shown accordingly. this page can be managed by 4 buttons at the bottom.(Reverse / Dislike / Detail / Like)
 
-4- detail screen contains special details about gym
+4- Like Button checks matching state if there is a match, matchScreen is shown.
+
+5- Detail screen shows further details about gyms
+
+6- Detail screen can navigate users to Google Maps to view gyms on google maps 
+
 
 #### ScreenShots
-<img src="https://github.com/AttilaAKINCI/Gymber-Compose/blob/master/images/1.png" width="250">   <img
-src="https://github.com/AttilaAKINCI/Gymber-Compose/blob/master/images/2.png" width="250">   <img
-src="https://github.com/AttilaAKINCI/Gymber-Compose/blob/master/images/3.png" width="250">   <img
-src="https://github.com/AttilaAKINCI/Gymber-Compose/blob/master/images/4.png" width="250">   <img
-src="https://github.com/AttilaAKINCI/Gymber-Compose/blob/master/images/5.png" width="250">   <img
-src="https://github.com/AttilaAKINCI/Gymber-Compose/blob/master/images/6.png" width="250">   
+Light Mode:
+
+<img src="https://github.com/AttilaAKINCI/Gymber/blob/master/images/1-light.png" width="110">   <img
+src="https://github.com/AttilaAKINCI/Gymber/blob/master/images/2-light.png" width="110">   <img
+src="https://github.com/AttilaAKINCI/Gymber/blob/master/images/3-light.png" width="110">   <img
+src="https://github.com/AttilaAKINCI/Gymber/blob/master/images/4-light.png" width="110">   <img
+src="https://github.com/AttilaAKINCI/Gymber/blob/master/images/5-light.png" width="110">   <img
+src="https://github.com/AttilaAKINCI/Gymber/blob/master/images/6-light.png" width="110">   <img
+src="https://github.com/AttilaAKINCI/Gymber/blob/master/images/7-light.png" width="110">
+
+Dark Mode:
+
+<img src="https://github.com/AttilaAKINCI/Gymber/blob/master/images/1-dark.png" width="110">   <img
+src="https://github.com/AttilaAKINCI/Gymber/blob/master/images/2-dark.png" width="110">   <img
+src="https://github.com/AttilaAKINCI/Gymber/blob/master/images/3-dark.png" width="110">   <img
+src="https://github.com/AttilaAKINCI/Gymber/blob/master/images/4-dark.png" width="110">   <img
+src="https://github.com/AttilaAKINCI/Gymber/blob/master/images/5-dark.png" width="110">   <img
+src="https://github.com/AttilaAKINCI/Gymber/blob/master/images/6-dark.png" width="110">   <img
+src="https://github.com/AttilaAKINCI/Gymber/blob/master/images/7-dark.png" width="110">
+
 
 # License
 
