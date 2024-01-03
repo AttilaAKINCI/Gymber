@@ -41,7 +41,6 @@ src="https://github.com/AttilaAKINCI/Gymber/assets/21987335/bafb34d7-5076-4637-8
 * [Ktor Client](https://ktor.io/docs/client-supported-platforms.html)
 * [Lottie Animations](https://github.com/airbnb/lottie-android)
 * [Coil](https://github.com/coil-kt/coil)
-    - Asynch image loading
 * [Timber Client logging](https://github.com/JakeWharton/timber)
 * [Dependency Injection (HILT)](https://developer.android.com/training/dependency-injection/hilt-android)
 * [Turbine](https://github.com/cashapp/turbine)
