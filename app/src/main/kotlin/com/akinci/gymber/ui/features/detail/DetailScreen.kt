@@ -155,8 +155,6 @@ private fun DetailScreenContent(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     text = buildString {
                         append(uiState.gym.description)
-                        append(uiState.gym.description)
-                        append(uiState.gym.description)
                         if (uiState.gym.reservableWorkouts) {
                             append("\n\n ${stringResource(id = R.string.detail_screen_reservable_workouts_info)}")
                         }
