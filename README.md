@@ -13,7 +13,7 @@ In order to run project in your local be aware below points ->
 
 ## App Video
     
-    Launch & Permission        Permission denial          Swipe Actions     Details & Map      Gym Match            
+    Launch & Permission  Permission denial Swipe Actions     Details & Map      Gym Match            
 
 <img src="https://github.com/AttilaAKINCI/Gymber/assets/21987335/353f5110-d78c-49a5-9f60-98d0ec4c910f" width="160"/> <img 
 src="https://github.com/AttilaAKINCI/Gymber/assets/21987335/6b2254a6-9bde-414a-93a1-eb9d391ca500" width="160"/>  <img 
