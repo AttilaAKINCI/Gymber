@@ -1,4 +1,4 @@
-package com.akinci.gymber.data.remote
+package com.akinci.gymber.data.rest.gym
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

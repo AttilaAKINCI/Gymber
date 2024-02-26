@@ -11,7 +11,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -19,15 +18,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.akinci.gymber.R
 import com.akinci.gymber.core.compose.UIModePreviews
+import com.akinci.gymber.core.mvi.CollectEffect
 import com.akinci.gymber.ui.ds.components.InfiniteLottieAnimation
 import com.akinci.gymber.ui.ds.theme.GymberTheme
 import com.akinci.gymber.ui.ds.theme.displayMedium_bangers
 import com.akinci.gymber.ui.features.NavGraphs
 import com.akinci.gymber.ui.features.destinations.DashboardScreenDestination
-import com.akinci.gymber.ui.features.splash.SplashViewContract.State
+import com.akinci.gymber.ui.features.splash.SplashViewContract.Effect
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -40,12 +39,13 @@ fun SplashScreen(
     navigator: DestinationsNavigator,
     vm: SplashViewModel = hiltViewModel(),
 ) {
-    val uiState: State by vm.stateFlow.collectAsStateWithLifecycle()
 
-    if (uiState.isCompleted) {
-        navigator.navigate(DashboardScreenDestination) {
-            popUpTo(NavGraphs.root.route) {
-                inclusive = true
+    CollectEffect(effect = vm.effect) { effect ->
+        when (effect) {
+            Effect.Completed -> navigator.navigate(DashboardScreenDestination) {
+                popUpTo(NavGraphs.root.route) {
+                    inclusive = true
+                }
             }
         }
     }

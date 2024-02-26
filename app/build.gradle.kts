@@ -57,7 +57,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.4"
+        kotlinCompilerExtensionVersion = "1.5.9"
     }
     lint {
         abortOnError = true
@@ -84,16 +84,16 @@ android {
 }
 
 dependencies {
-    val lifecycleVersion = "2.6.2"
-    val composeBomVersion = "2023.10.01"
-    val jUnit5Version = "5.10.1"
+    val lifecycleVersion = "2.7.0"
+    val composeBomVersion = "2024.02.01"
+    val jUnit5Version = "5.10.2"
     val hiltVersion = "2.50"
-    val composeDestinationsVersion = "1.9.56"
-    val ktorVersion = "2.3.7"
-    val coilVersion = "2.5.0"
+    val composeDestinationsVersion = "1.10.1"
+    val ktorVersion = "2.3.8"
+    val coilVersion = "2.6.0"
     val lottieVersion = "6.3.0"
     val timberVersion = "5.0.1"
-    val coroutinesVersion = "1.7.3"
+    val coroutinesVersion = "1.8.0"
 
     // CORE
     implementation("androidx.core:core-ktx:1.12.0")
@@ -103,10 +103,10 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$coroutinesVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     // LOCATION
-    implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation("com.google.android.gms:play-services-location:21.1.0")
 
     // IMAGE LOADING
     implementation("io.coil-kt:coil-compose:$coilVersion")
@@ -138,15 +138,18 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     implementation("androidx.compose.material3:material3")
 
+    // PERMISSION
+    implementation("com.google.accompanist:accompanist-permissions:0.34.0")
+
     // NAVIGATION
-    implementation("androidx.navigation:navigation-compose:2.7.6")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("io.github.raamcosta.compose-destinations:core:$composeDestinationsVersion")
     implementation("io.github.raamcosta.compose-destinations:animations-core:$composeDestinationsVersion")
     ksp("io.github.raamcosta.compose-destinations:ksp:$composeDestinationsVersion")
 
     // DEPENDENCY INJECTION - HILT
     implementation("com.google.dagger:hilt-android:$hiltVersion")
-    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     ksp("com.google.dagger:hilt-android-compiler:$hiltVersion")
 
     // LOGGING
@@ -158,7 +161,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params:$jUnit5Version")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
     testImplementation("io.kotest:kotest-assertions-core:5.8.0")
-    testImplementation("io.mockk:mockk:1.13.8")
+    testImplementation("io.mockk:mockk:1.13.9")
     testImplementation("app.cash.turbine:turbine:1.0.0")
 
     // UI/INSTRUMENTATION TESTING

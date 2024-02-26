@@ -6,6 +6,6 @@ import io.ktor.http.HttpStatusCode
 
 suspend inline fun <reified T> HttpResponse.toResponse() =
     when (status) {
-        HttpStatusCode.OK -> Result.success(body<T>())
-        else -> Result.failure(Throwable("Serverside error with code: ${status.value}"))
+        HttpStatusCode.OK -> body<T>()
+        else -> throw Throwable("Serverside error with code: ${status.value}")
     }

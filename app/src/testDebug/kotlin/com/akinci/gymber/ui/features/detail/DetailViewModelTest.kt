@@ -5,8 +5,8 @@ import app.cash.turbine.test
 import com.akinci.gymber.R
 import com.akinci.gymber.core.coroutine.MainDispatcherRule
 import com.akinci.gymber.core.maps.MapsManager
-import com.akinci.gymber.domain.Gym
-import com.akinci.gymber.domain.Location
+import com.akinci.gymber.domain.data.Gym
+import com.akinci.gymber.domain.data.Location
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk

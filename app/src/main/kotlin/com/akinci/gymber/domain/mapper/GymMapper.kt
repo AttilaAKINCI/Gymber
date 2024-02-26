@@ -1,7 +1,6 @@
 package com.akinci.gymber.domain.mapper
 
-import com.akinci.gymber.domain.Gym
-import com.akinci.gymber.domain.getNearest
+import com.akinci.gymber.domain.data.Gym
 import com.akinci.gymber.ui.ds.components.swipecards.data.Image
 
 fun Gym.toImage() = Image(
@@ -9,12 +8,12 @@ fun Gym.toImage() = Image(
     imageUrl = imageUrl,
     label = buildString {
         append(name)
-        locations.getNearest()?.distanceText?.let {
-            if (it.isNotBlank()) {
-                append(" - $it")
+
+        locations.minByOrNull { it.distance ?: Float.MAX_VALUE }?.let { nearestLocation ->
+            val distance = nearestLocation.distanceText
+            if (distance.isNotBlank()) {
+                append(" - $distance")
             }
         }
     }
 )
-
-fun List<Gym>.toImages() = map { it.toImage() }

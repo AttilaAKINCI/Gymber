@@ -10,9 +10,9 @@ import com.akinci.gymber.core.permission.PermissionManager
 import com.akinci.gymber.core.utils.GymMatchSimulator
 import com.akinci.gymber.core.utils.distance.Distance
 import com.akinci.gymber.core.utils.distance.DistanceUtils
-import com.akinci.gymber.data.GymRepository
-import com.akinci.gymber.domain.Gym
-import com.akinci.gymber.domain.Location
+import com.akinci.gymber.data.repository.GymRepository
+import com.akinci.gymber.domain.data.Gym
+import com.akinci.gymber.domain.data.Location
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
@@ -241,7 +241,7 @@ class DashboardViewModelTest {
                 )
 
                 // location permission request is approved
-                testedClass.onLocationPermissionResult(isGranted = true)
+                testedClass.onLocationPermissionGranted(isGranted = true)
 
                 with(awaitItem()) {
                     isDistanceCalculated shouldBe true
@@ -259,7 +259,7 @@ class DashboardViewModelTest {
 
     @Test
     fun `should shouldShowRationale when permission is denied`() = runTest {
-        testedClass.onLocationPermissionResult(isGranted = false)
+        testedClass.onLocationPermissionGranted(isGranted = false)
 
         testedClass.stateFlow.test {
             with(awaitItem()) {

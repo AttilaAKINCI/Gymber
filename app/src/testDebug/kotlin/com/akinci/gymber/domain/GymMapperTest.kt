@@ -1,5 +1,7 @@
 package com.akinci.gymber.domain
 
+import com.akinci.gymber.domain.data.Gym
+import com.akinci.gymber.domain.data.Location
 import com.akinci.gymber.domain.mapper.toImage
 import com.akinci.gymber.ui.ds.components.swipecards.data.Image
 import io.kotest.matchers.shouldBe

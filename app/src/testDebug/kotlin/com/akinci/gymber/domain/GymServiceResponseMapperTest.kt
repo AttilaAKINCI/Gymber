@@ -1,16 +1,18 @@
 package com.akinci.gymber.domain
 
-import com.akinci.gymber.data.remote.Category
-import com.akinci.gymber.data.remote.GymResponse
-import com.akinci.gymber.data.remote.GymServiceResponse
-import com.akinci.gymber.data.remote.Image
-import com.akinci.gymber.data.remote.LocationGroup
-import com.akinci.gymber.data.remote.SettlementOption
-import com.akinci.gymber.domain.mapper.toDomain
+import com.akinci.gymber.data.rest.gym.Category
+import com.akinci.gymber.data.rest.gym.GymResponse
+import com.akinci.gymber.data.rest.gym.GymServiceResponse
+import com.akinci.gymber.data.rest.gym.Image
+import com.akinci.gymber.data.rest.gym.LocationGroup
+import com.akinci.gymber.data.rest.gym.SettlementOption
+import com.akinci.gymber.data.mapper.toDomain
+import com.akinci.gymber.domain.data.Gym
+import com.akinci.gymber.domain.data.Location
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
-import com.akinci.gymber.data.remote.Location as NetworkLocation
+import com.akinci.gymber.data.rest.gym.Location as NetworkLocation
 
 class GymServiceResponseMapperTest {
 
