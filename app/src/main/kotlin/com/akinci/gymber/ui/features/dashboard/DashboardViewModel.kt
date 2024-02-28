@@ -56,8 +56,7 @@ class DashboardViewModel @Inject constructor(
     init {
         getGyms()
 
-        // TODO permission kismini denemek lazim. Test et!!
-        // check permission on dashboard launch, ask permission if it's required.
+        //  check permission on dashboard launch, ask permission if it's required.
         viewModelScope.launch {
             if (!permissionManager.isLocationPermissionGranted()) {
                 delay(500L)
