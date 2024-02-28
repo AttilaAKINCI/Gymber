@@ -137,7 +137,7 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    fun onGymDislike(gymId: Int) {
+    private fun onGymDislike(gymId: Int) {
         // We can send a feedback to backend in terms of DISLIKE action by user.
     }
 
@@ -147,7 +147,7 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    fun onLocationPermissionGranted() {
+    private fun onLocationPermissionGranted() {
         // now we have location permission, we need to calculate distances to locations.
         viewModelScope.launch {
             val state = state.value

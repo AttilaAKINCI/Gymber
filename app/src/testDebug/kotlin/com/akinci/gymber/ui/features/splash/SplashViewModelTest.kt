@@ -2,12 +2,12 @@ package com.akinci.gymber.ui.features.splash
 
 import app.cash.turbine.test
 import com.akinci.gymber.core.coroutine.MainDispatcherRule
+import com.akinci.gymber.ui.features.splash.SplashViewContract.Effect
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import kotlin.time.Duration
 
 @ExtendWith(MainDispatcherRule::class)
 class SplashViewModelTest {
@@ -21,16 +21,10 @@ class SplashViewModelTest {
 
     @Test
     fun `should return completed state when initialisation is done`() = runTest {
-        val expectedState = SplashViewContract.State(
-            isCompleted = true
-        )
+        val expectedState = Effect.Completed
 
-        testedClass.stateFlow.test(timeout = Duration.INFINITE) {
-            skipItems(1)
-
+        testedClass.effect.test {
             awaitItem() shouldBe expectedState
-
-            ensureAllEventsConsumed()
         }
     }
 }

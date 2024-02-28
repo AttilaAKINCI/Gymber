@@ -12,9 +12,7 @@ object DashboardViewContract {
         val isErrorDialogVisible: Boolean = false,
         val isRationaleDialogVisible: Boolean = false,
         val isMatchOverlayVisible: Boolean = false,
-
         val isDistanceCalculated: Boolean = false,
-
         val gyms: List<Gym> = listOf(),
         val imageStates: PersistentList<Image> = persistentListOf(),
         val matchedGym: Gym? = null,
