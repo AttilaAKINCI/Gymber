@@ -3,54 +3,75 @@ package com.akinci.gymber.ui.features.dashboard
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akinci.gymber.R
-import com.akinci.gymber.core.compose.reduce
 import com.akinci.gymber.core.coroutine.ContextProvider
+import com.akinci.gymber.core.location.Coordinate
 import com.akinci.gymber.core.location.LocationManager
+import com.akinci.gymber.core.mvi.MVI
+import com.akinci.gymber.core.mvi.mvi
 import com.akinci.gymber.core.permission.PermissionManager
 import com.akinci.gymber.core.utils.GymMatchSimulator
 import com.akinci.gymber.core.utils.distance.DistanceUtils
-import com.akinci.gymber.data.GymRepository
-import com.akinci.gymber.domain.Gym
-import com.akinci.gymber.domain.mapper.toImages
-import com.akinci.gymber.ui.ds.components.snackbar.SnackBarState
+import com.akinci.gymber.data.repository.GymRepository
+import com.akinci.gymber.domain.data.Gym
+import com.akinci.gymber.domain.mapper.toImage
+import com.akinci.gymber.ui.features.dashboard.DashboardViewContract.Action
+import com.akinci.gymber.ui.features.dashboard.DashboardViewContract.Effect
 import com.akinci.gymber.ui.features.dashboard.DashboardViewContract.State
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.random.Random
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
-    permissionManager: PermissionManager,
+    private val permissionManager: PermissionManager,
     private val contextProvider: ContextProvider,
     private val gymRepository: GymRepository,
     private val locationManager: LocationManager,
     private val distanceUtils: DistanceUtils,
     private val gymMatchSimulator: GymMatchSimulator,
-) : ViewModel() {
+) : ViewModel(), MVI<State, Action, Effect> by mvi(State()) {
 
-    private val _stateFlow = MutableStateFlow(
-        State(isPermissionRequired = !permissionManager.isLocationPermissionGranted())
-    )
-    val stateFlow = _stateFlow.asStateFlow()
+    override fun onAction(action: Action) {
+        when (action) {
+            is Action.OnPermissionGranted -> onLocationPermissionGranted()
+            Action.ShowRationaleDialog -> updateState { copy(isRationaleDialogVisible = true) }
+            Action.HideRationaleDialog -> updateState { copy(isRationaleDialogVisible = false) }
+            is Action.OnLikeButtonClick -> onGymLike(action.gymId)
+            is Action.OnDislikeButtonClick -> onGymDislike(action.gymId)
+            Action.OnRefreshButtonClick -> refresh()
+            Action.OnDismissMatchButtonClick -> dismissMatch()
+            Action.OnCallMatchButtonClick -> callMatch()
+            Action.OnMessageMatchButtonClick -> messageMatch()
+            is Action.OnDetailButtonClick -> {
+                val gym = state.value.getGym(action.gymId) ?: return
+                viewModelScope.sendEffect(Effect.OpenDetailScreen(gym = gym))
+            }
+        }
+    }
 
     init {
         getGyms()
+
+        //  check permission on dashboard launch, ask permission if it's required.
+        viewModelScope.launch {
+            if (!permissionManager.isLocationPermissionGranted()) {
+                delay(500L)
+                sendEffect(Effect.RequestPermission)
+            }
+        }
     }
 
     fun refresh() {
         // reset ui state
-        _stateFlow.reduce {
+        updateState {
             copy(
                 gyms = listOf(),
                 imageStates = persistentListOf(),
-                isError = false,
+                isErrorDialogVisible = false,
             )
         }
 
@@ -67,55 +88,46 @@ class DashboardViewModel @Inject constructor(
                 val processedGyms = processDistance(gyms)
                 val finalGyms = processedGyms ?: gyms
 
-                _stateFlow.reduce {
+                updateState {
                     copy(
                         gyms = finalGyms,
-                        imageStates = finalGyms.toImages().toPersistentList(),
-                        isError = false,
+                        imageStates = finalGyms.map { it.toImage() }.toPersistentList(),
+                        isErrorDialogVisible = false,
                         isDistanceCalculated = processedGyms != null,
                     )
                 }
             }.onFailure {
                 // our network request is failed, show error state
-                _stateFlow.reduce {
-                    copy(isError = true)
+                updateState {
+                    copy(isErrorDialogVisible = true)
                 }
             }
         }
     }
 
     fun messageMatch() {
-        _stateFlow.reduce {
-            copy(
-                snackBarState = SnackBarState(
-                    messageId = R.string.dashboard_screen_match_message_warning,
-                )
-            )
-        }
+        viewModelScope.sendEffect(
+            Effect.ShowToastMessage(messageId = R.string.dashboard_screen_match_message_warning)
+        )
     }
 
     fun callMatch() {
-        _stateFlow.reduce {
-            copy(
-                snackBarState = SnackBarState(
-                    messageId = R.string.dashboard_screen_match_call_warning,
-                )
-            )
-        }
+        viewModelScope.sendEffect(
+            Effect.ShowToastMessage(messageId = R.string.dashboard_screen_match_call_warning)
+        )
     }
 
     fun dismissMatch() {
-        _stateFlow.reduce {
+        updateState {
             copy(isMatchOverlayVisible = false)
         }
     }
 
     fun onGymLike(gymId: Int) {
         // We can send a feedback to backend in terms of LIKE action by user.
-
         if (gymMatchSimulator.isItAMatch()) {
-            stateFlow.value.gyms.firstOrNull { it.id == gymId }?.let { matchedGym ->
-                _stateFlow.reduce {
+            state.value.getGym(id = gymId)?.let { matchedGym ->
+                updateState {
                     copy(
                         isMatchOverlayVisible = true,
                         matchedGym = matchedGym,
@@ -125,42 +137,32 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    fun onGymDislike(gymId: Int) {
+    private fun onGymDislike(gymId: Int) {
         // We can send a feedback to backend in terms of DISLIKE action by user.
     }
 
     fun hideRationaleDialog() {
-        _stateFlow.reduce {
-            copy(
-                isPermissionRequired = false,
-                shouldShowRationale = false
-            )
+        updateState {
+            copy(isRationaleDialogVisible = false)
         }
     }
 
-    fun onLocationPermissionResult(isGranted: Boolean) {
-        if (isGranted) {
-            // now we have location permission, we need to calculate distances to locations.
-            viewModelScope.launch {
-                val state = stateFlow.value
-                if (!state.isDistanceCalculated) {
-                    val processedGyms = processDistance(state.gyms)
-                    val finalGyms = processedGyms ?: state.gyms
+    private fun onLocationPermissionGranted() {
+        // now we have location permission, we need to calculate distances to locations.
+        viewModelScope.launch {
+            val state = state.value
+            if (!state.isDistanceCalculated) {
+                val processedGyms = processDistance(state.gyms)
+                val finalGyms = processedGyms ?: state.gyms
 
-                    _stateFlow.reduce {
-                        copy(
-                            gyms = finalGyms,
-                            imageStates = finalGyms.toImages().toPersistentList(),
-                            isError = false,
-                            isDistanceCalculated = processedGyms != null,
-                        )
-                    }
+                updateState {
+                    copy(
+                        gyms = finalGyms,
+                        imageStates = finalGyms.map { it.toImage() }.toPersistentList(),
+                        isErrorDialogVisible = false,
+                        isDistanceCalculated = processedGyms != null,
+                    )
                 }
-            }
-        } else {
-            // permission is denied, show rationale dialog
-            _stateFlow.reduce {
-                copy(shouldShowRationale = true)
             }
         }
     }
@@ -172,13 +174,18 @@ class DashboardViewModel @Inject constructor(
         return gyms.map { gym ->
             gym.copy(
                 locations = gym.locations.map { location ->
-                    distanceUtils.calculateDistance(deviceLocation, location.toCoordinate())
-                        ?.let {
-                            location.copy(
-                                distance = it.value,
-                                distanceText = it.valueText,
-                            )
-                        } ?: location
+                    distanceUtils.calculateDistance(
+                        from = deviceLocation,
+                        to = Coordinate(
+                            latitude = location.latitude,
+                            longitude = location.longitude
+                        ),
+                    )?.let {
+                        location.copy(
+                            distance = it.value,
+                            distanceText = it.valueText,
+                        )
+                    } ?: location
                 }
             )
         }

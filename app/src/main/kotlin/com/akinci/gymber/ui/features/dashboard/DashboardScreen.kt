@@ -1,8 +1,7 @@
 package com.akinci.gymber.ui.features.dashboard
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -30,13 +29,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -46,26 +45,31 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.akinci.gymber.R
 import com.akinci.gymber.core.compose.UIModePreviews
+import com.akinci.gymber.core.extensions.getAppSettingsIntent
+import com.akinci.gymber.core.mvi.CollectEffect
 import com.akinci.gymber.core.permission.PermissionManager
 import com.akinci.gymber.ui.ds.components.CachedImage
 import com.akinci.gymber.ui.ds.components.DisableRipple
 import com.akinci.gymber.ui.ds.components.InfiniteLottieAnimation
 import com.akinci.gymber.ui.ds.components.InfoDialog
 import com.akinci.gymber.ui.ds.components.TiledBackground
-import com.akinci.gymber.ui.ds.components.snackbar.SnackBarContainer
 import com.akinci.gymber.ui.ds.components.swipecards.SwipeBox
 import com.akinci.gymber.ui.ds.components.swipecards.data.ActionButtons
 import com.akinci.gymber.ui.ds.components.swipecards.data.Direction
 import com.akinci.gymber.ui.ds.theme.GymberTheme
 import com.akinci.gymber.ui.ds.theme.WhiteDark
 import com.akinci.gymber.ui.ds.theme.titleLarge_bangers
+import com.akinci.gymber.ui.features.dashboard.DashboardViewContract.Action
+import com.akinci.gymber.ui.features.dashboard.DashboardViewContract.Effect
 import com.akinci.gymber.ui.features.dashboard.DashboardViewContract.State
 import com.akinci.gymber.ui.features.destinations.DetailScreenDestination
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalPermissionsApi::class)
 @RootNavGraph
 @Destination
 @Composable
@@ -73,7 +77,8 @@ fun DashboardScreen(
     navigator: DestinationsNavigator,
     vm: DashboardViewModel = hiltViewModel(),
 ) {
-    val uiState: State by vm.stateFlow.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val uiState: State by vm.state.collectAsStateWithLifecycle()
 
     // if match screen visible, first navigationBar back action should be "close match screen"
     BackHandler(
@@ -81,113 +86,120 @@ fun DashboardScreen(
         onBack = { vm.dismissMatch() }
     )
 
-    // Location permission local component
-    DashboardScreen.LocationPermission(
-        requestPermission = uiState.isPermissionRequired,
-        requestRationale = uiState.shouldShowRationale,
-        onPermissionResult = { isGranted -> vm.onLocationPermissionResult(isGranted) },
-        hideLocationRationaleDialog = { vm.hideRationaleDialog() },
+    val permissionState = rememberMultiplePermissionsState(
+        permissions = listOf(
+            PermissionManager.FINE_LOCATION,
+            PermissionManager.COARSE_LOCATION,
+        ),
+        onPermissionsResult = { permissions ->
+            when {
+                permissions.values.all { it } -> vm.onAction(Action.OnPermissionGranted)
+                else -> vm.onAction(Action.ShowRationaleDialog)
+            }
+        }
     )
+
+    CollectEffect(effect = vm.effect) { effect ->
+        when (effect) {
+            Effect.RequestPermission -> permissionState.launchMultiplePermissionRequest()
+            is Effect.ShowToastMessage -> Toast.makeText(
+                context,
+                context.getString(effect.messageId),
+                Toast.LENGTH_SHORT,
+            ).show()
+
+            is Effect.OpenDetailScreen -> navigator.navigate(
+                DetailScreenDestination(gym = effect.gym)
+            )
+        }
+    }
 
     DashboardScreenContent(
         uiState = uiState,
-        onRetry = { vm.refresh() },
-        onDetailButtonClick = { gymId ->
-            uiState.gyms.firstOrNull { it.id == gymId }?.let { gym ->
-                navigator.navigate(DetailScreenDestination(gym = gym))
-            }
-        },
-        onGymLike = { vm.onGymLike(it) },
-        onGymDislike = { vm.onGymDislike(it) },
-        dismissMatch = { vm.dismissMatch() },
-        onCallButtonClick = { vm.callMatch() },
-        onMessageButtonClick = { vm.messageMatch() },
+        onAction = vm::onAction,
     )
+
+    if (uiState.isRationaleDialogVisible) {
+        InfoDialog(
+            title = stringResource(id = R.string.dashboard_screen_location_permission_title),
+            message = stringResource(
+                id = R.string.dashboard_screen_location_permission_description
+            ),
+            buttonText = stringResource(id = R.string.dashboard_screen_location_permission_action_title),
+            onButtonClick = {
+                context.startActivity(context.getAppSettingsIntent())
+                vm.onAction(Action.HideRationaleDialog)
+            },
+            onDismiss = { vm.onAction(Action.HideRationaleDialog) }
+        )
+    }
+
+    if (uiState.isErrorDialogVisible) {
+        InfoDialog(
+            title = stringResource(id = R.string.dashboard_screen_error_title),
+            message = stringResource(id = R.string.dashboard_screen_error_description),
+            buttonText = stringResource(id = R.string.dashboard_screen_error_button_title),
+            onButtonClick = { vm.onAction(Action.OnRefreshButtonClick) },
+            onDismiss = {},
+        )
+    }
 }
 
 @Composable
 private fun DashboardScreenContent(
     uiState: State,
-    onRetry: () -> Unit,
-    onDetailButtonClick: (Int) -> Unit,
-    onGymLike: (Int) -> Unit,
-    onGymDislike: (Int) -> Unit,
-    dismissMatch: () -> Unit,
-    onCallButtonClick: () -> Unit,
-    onMessageButtonClick: () -> Unit,
+    onAction: (Action) -> Unit,
 ) {
     Surface {
-        SnackBarContainer(
+        TiledBackground(
             modifier = Modifier
                 .windowInsetsPadding(WindowInsets.navigationBars)
                 .fillMaxSize(),
-            snackBarState = uiState.snackBarState,
+            painter = painterResource(id = R.drawable.ic_pattern_bg)
         ) {
-            TiledBackground(
-                painter = painterResource(id = R.drawable.ic_pattern_bg)
+            Column(
+                modifier = Modifier
+                    .windowInsetsPadding(WindowInsets.systemBars)
+                    .fillMaxWidth()
             ) {
+                // Top welcome bar
+                DashboardScreen.TopBar()
 
-                Column(
+                SwipeBox(
                     modifier = Modifier
-                        .windowInsetsPadding(WindowInsets.systemBars)
                         .fillMaxWidth()
-                ) {
-                    if (uiState.isError) {
-                        DashboardScreen.Error(onRetry = onRetry)
-                    }
-
-                    // Top welcome bar
-                    DashboardScreen.TopBar()
-
-                    SwipeBox(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f),
-                        imageList = uiState.imageStates,
-                        actions = ActionButtons(
-                            detailIcon = R.drawable.ic_bag_24dp,
-                            approveIcon = R.drawable.ic_check_28dp,
-                            rejectIcon = R.drawable.ic_cancel_24dp,
-                            reverseIcon = R.drawable.ic_reverse_24dp,
-                        ),
-                        onSwipe = { direction, gymId ->
-                            when (direction) {
-                                Direction.RIGHT -> onGymLike(gymId)
-                                Direction.LEFT -> onGymDislike(gymId)
-                                else -> Unit
-                            }
-                        },
-                        onDetailButtonClick = onDetailButtonClick,
-                    )
-                }
-
-                DashboardScreen.MatchOverlay(
-                    isVisible = uiState.isMatchOverlayVisible,
-                    imageUrl = uiState.matchedGym?.imageUrl.orEmpty(),
-                    name = uiState.matchedGym?.name.orEmpty(),
-                    onCallButtonClick = onCallButtonClick,
-                    onMessageButtonClick = onMessageButtonClick,
-                    onCloseButtonClick = dismissMatch,
+                        .weight(1f),
+                    imageList = uiState.imageStates,
+                    actions = ActionButtons(
+                        detailIcon = R.drawable.ic_bag_24dp,
+                        approveIcon = R.drawable.ic_check_28dp,
+                        rejectIcon = R.drawable.ic_cancel_24dp,
+                        reverseIcon = R.drawable.ic_reverse_24dp,
+                    ),
+                    onSwipe = { direction, gymId ->
+                        when (direction) {
+                            Direction.RIGHT -> onAction(Action.OnLikeButtonClick(gymId))
+                            Direction.LEFT -> onAction(Action.OnDislikeButtonClick(gymId))
+                            else -> Unit
+                        }
+                    },
+                    onDetailButtonClick = { onAction(Action.OnDetailButtonClick(gymId = it)) },
                 )
             }
+
+            DashboardScreen.MatchOverlay(
+                isVisible = uiState.isMatchOverlayVisible,
+                imageUrl = uiState.matchedGym?.imageUrl.orEmpty(),
+                name = uiState.matchedGym?.name.orEmpty(),
+                onCallButtonClick = { onAction(Action.OnCallMatchButtonClick) },
+                onMessageButtonClick = { onAction(Action.OnMessageMatchButtonClick) },
+                onCloseButtonClick = { onAction(Action.OnDismissMatchButtonClick) },
+            )
         }
     }
 }
 
 typealias DashboardScreen = Unit
-
-@Composable
-private fun DashboardScreen.Error(
-    onRetry: () -> Unit,
-) {
-    InfoDialog(
-        title = stringResource(id = R.string.dashboard_screen_error_title),
-        message = stringResource(id = R.string.dashboard_screen_error_description),
-        buttonText = stringResource(id = R.string.dashboard_screen_error_button_title),
-        onButtonClick = onRetry,
-        onDismiss = {},
-    )
-}
 
 @Composable
 private fun DashboardScreen.TopBar(
@@ -225,49 +237,6 @@ private fun DashboardScreen.TopBar(
                 .testTag("welcome-text"),
             text = stringResource(id = R.string.dashboard_screen_welcome_text),
             style = MaterialTheme.typography.titleLarge_bangers,
-        )
-    }
-}
-
-@Composable
-fun DashboardScreen.LocationPermission(
-    requestPermission: Boolean,
-    requestRationale: Boolean,
-    onPermissionResult: (Boolean) -> Unit,
-    hideLocationRationaleDialog: () -> Unit,
-) {
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissionResults ->
-        onPermissionResult(permissionResults.values.all { it })
-    }
-
-    LaunchedEffect(requestPermission) {
-        if (requestPermission) {
-            delay(500L)
-
-            permissionLauncher.launch(
-                arrayOf(
-                    PermissionManager.FINE_LOCATION,
-                    PermissionManager.COARSE_LOCATION,
-                )
-            )
-        }
-    }
-
-    if (requestRationale) {
-        InfoDialog(
-            title = stringResource(id = R.string.dashboard_screen_location_permission_title),
-            message = stringResource(
-                id = R.string.dashboard_screen_location_permission_description
-            ),
-            buttonText = stringResource(
-                id = R.string.dashboard_screen_location_permission_action_title
-            ),
-            onButtonClick = {
-                hideLocationRationaleDialog()
-            },
-            onDismiss = { hideLocationRationaleDialog() }
         )
     }
 }
@@ -381,14 +350,8 @@ private fun DashboardScreen.MatchOverlay(
 private fun DashboardScreenPreview() {
     GymberTheme {
         DashboardScreenContent(
-            uiState = State(isPermissionRequired = true),
-            onDetailButtonClick = {},
-            onRetry = {},
-            onGymLike = {},
-            onGymDislike = {},
-            dismissMatch = {},
-            onCallButtonClick = {},
-            onMessageButtonClick = {},
+            uiState = State(),
+            onAction = {},
         )
     }
 }

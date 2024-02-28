@@ -2,29 +2,36 @@ package com.akinci.gymber.ui.features.detail
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.akinci.gymber.R
-import com.akinci.gymber.core.compose.reduce
 import com.akinci.gymber.core.maps.MapsManager
-import com.akinci.gymber.domain.Location
-import com.akinci.gymber.ui.ds.components.snackbar.SnackBarState
+import com.akinci.gymber.core.mvi.MVI
+import com.akinci.gymber.core.mvi.mvi
+import com.akinci.gymber.domain.data.Location
+import com.akinci.gymber.ui.features.detail.DetailViewContract.Action
+import com.akinci.gymber.ui.features.detail.DetailViewContract.Effect
 import com.akinci.gymber.ui.features.detail.DetailViewContract.ScreenArgs
 import com.akinci.gymber.ui.features.detail.DetailViewContract.State
 import com.akinci.gymber.ui.features.navArgs
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val mapsManager: MapsManager,
-) : ViewModel() {
+) : ViewModel(),
+    MVI<State, Action, Effect> by mvi(State(savedStateHandle.navArgs<ScreenArgs>().gym)) {
 
-    private val screenArgs by lazy { savedStateHandle.navArgs<ScreenArgs>() }
-
-    private val _stateFlow = MutableStateFlow(State(gym = screenArgs.gym))
-    val stateFlow = _stateFlow.asStateFlow()
+    override fun onAction(action: Action) {
+        when (action) {
+            Action.OnBackPressed -> viewModelScope.sendEffect(Effect.Close)
+            is Action.OpenMaps -> openGoogleMaps(
+                location = action.location,
+                gymName = action.gymName
+            )
+        }
+    }
 
     fun openGoogleMaps(gymName: String, location: Location) {
         mapsManager.open(
@@ -33,13 +40,9 @@ class DetailViewModel @Inject constructor(
             name = gymName,
         ).onFailure {
             // send error message to UI layer.
-            _stateFlow.reduce {
-                copy(
-                    snackBarState = SnackBarState(
-                        messageId = R.string.detail_screen_open_map_error
-                    )
-                )
-            }
+            viewModelScope.sendEffect(
+                Effect.ShowToastMessage(messageId = R.string.detail_screen_open_map_error)
+            )
         }
     }
 }

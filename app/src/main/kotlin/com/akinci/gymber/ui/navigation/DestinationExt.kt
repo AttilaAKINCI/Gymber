@@ -10,12 +10,10 @@ import com.akinci.gymber.ui.features.destinations.DetailScreenDestination
 val Destination.getSystemBarColorState
     @Composable
     get() = when (this) {
-        is DetailScreenDestination -> {
-            SystemBarColorState(
-                navigationBarColor = Color.halfTransparentSurface,
-                isLightStatusBarContent = false,
-            )
-        }
+        is DetailScreenDestination -> SystemBarColorState(
+            navigationBarColor = Color.halfTransparentSurface,
+            isLightStatusBarContent = false,
+        )
 
         else -> SystemBarColorState(
             statusBarColor = Color.halfTransparentSurface,

@@ -1,7 +1,7 @@
-package com.akinci.gymber.domain.mapper
+package com.akinci.gymber.data.mapper
 
-import com.akinci.gymber.data.remote.LocationGroup
-import com.akinci.gymber.domain.Location
+import com.akinci.gymber.data.rest.gym.LocationGroup
+import com.akinci.gymber.domain.data.Location
 
 fun List<LocationGroup>.toDomain() = map { locationGroup ->
     locationGroup.locations.map {

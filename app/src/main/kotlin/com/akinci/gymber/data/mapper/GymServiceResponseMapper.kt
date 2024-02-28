@@ -1,7 +1,7 @@
-package com.akinci.gymber.domain.mapper
+package com.akinci.gymber.data.mapper
 
-import com.akinci.gymber.data.remote.GymServiceResponse
-import com.akinci.gymber.domain.Gym
+import com.akinci.gymber.data.rest.gym.GymServiceResponse
+import com.akinci.gymber.domain.data.Gym
 
 fun GymServiceResponse.toDomain() = data.map {
     Gym(

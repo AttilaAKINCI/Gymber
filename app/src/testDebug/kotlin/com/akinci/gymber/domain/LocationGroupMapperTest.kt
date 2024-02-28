@@ -1,8 +1,8 @@
 package com.akinci.gymber.domain
 
-import com.akinci.gymber.data.remote.Location
-import com.akinci.gymber.data.remote.LocationGroup
-import com.akinci.gymber.domain.mapper.toDomain
+import com.akinci.gymber.data.rest.gym.Location
+import com.akinci.gymber.data.rest.gym.LocationGroup
+import com.akinci.gymber.data.mapper.toDomain
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
@@ -19,7 +19,7 @@ class LocationGroupMapperTest {
     }
 
     private fun getExpectedDomainModel() = listOf(
-        Location(
+        com.akinci.gymber.domain.data.Location(
             latitude = 52.366552,
             longitude = 4.878497,
             city = "Amsterdam",

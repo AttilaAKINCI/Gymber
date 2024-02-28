@@ -5,7 +5,7 @@
     <string name="dashboard_screen_welcome_text">Welcome, I am Gymber :) \nI have find best gyms for you. Swipe left or right and try to catch a match.</string>
     <string name="dashboard_screen_location_permission_title">Permission Request</string>
     <string name="dashboard_screen_location_permission_description">In order to calculate distance to gyms, we need your permission. You can change it via application settings</string>
-    <string name="dashboard_screen_location_permission_action_title">Close</string>
+    <string name="dashboard_screen_location_permission_action_title">Settings</string>
     <string name="dashboard_screen_error_title">Service Error</string>
     <string name="dashboard_screen_error_description">Initial network request is failed because of unknown problem. Please try again later</string>
     <string name="dashboard_screen_error_button_title">Retry</string>

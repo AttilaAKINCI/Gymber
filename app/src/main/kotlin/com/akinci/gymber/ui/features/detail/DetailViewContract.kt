@@ -1,9 +1,9 @@
 package com.akinci.gymber.ui.features.detail
 
 import android.os.Parcelable
-import com.akinci.gymber.core.compose.UIState
-import com.akinci.gymber.domain.Gym
-import com.akinci.gymber.ui.ds.components.snackbar.SnackBarState
+import androidx.annotation.StringRes
+import com.akinci.gymber.domain.data.Gym
+import com.akinci.gymber.domain.data.Location
 import kotlinx.parcelize.Parcelize
 
 object DetailViewContract {
@@ -15,6 +15,18 @@ object DetailViewContract {
 
     data class State(
         val gym: Gym,
-        val snackBarState: SnackBarState? = null,
-    ) : UIState
+    )
+
+    sealed interface Action {
+        data object OnBackPressed : Action
+        data class OpenMaps(
+            val location: Location,
+            val gymName: String,
+        ) : Action
+    }
+
+    sealed interface Effect {
+        data object Close : Effect
+        data class ShowToastMessage(@StringRes val messageId: Int): Effect
+    }
 }

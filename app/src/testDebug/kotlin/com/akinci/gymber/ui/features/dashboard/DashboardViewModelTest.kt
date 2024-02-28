@@ -10,9 +10,11 @@ import com.akinci.gymber.core.permission.PermissionManager
 import com.akinci.gymber.core.utils.GymMatchSimulator
 import com.akinci.gymber.core.utils.distance.Distance
 import com.akinci.gymber.core.utils.distance.DistanceUtils
-import com.akinci.gymber.data.GymRepository
-import com.akinci.gymber.domain.Gym
-import com.akinci.gymber.domain.Location
+import com.akinci.gymber.data.repository.GymRepository
+import com.akinci.gymber.domain.data.Gym
+import com.akinci.gymber.domain.data.Location
+import com.akinci.gymber.ui.features.dashboard.DashboardViewContract.Action
+import com.akinci.gymber.ui.features.dashboard.DashboardViewContract.Effect
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
@@ -53,60 +55,31 @@ class DashboardViewModelTest {
     }
 
     @Test
-    fun `should return isPermissionRequired true when location permission provided`() = runTest {
-        every { permissionManagerMock.isLocationPermissionGranted() } returns true
-
-        initTestClass()
-
-        testedClass.stateFlow.test {
-            with(awaitItem()) {
-                isPermissionRequired shouldBe false
-            }
-        }
-    }
-
-    @Test
-    fun `should return isPermissionRequired false when location permission rejected`() = runTest {
-        every { permissionManagerMock.isLocationPermissionGranted() } returns false
-
-        initTestClass()
-
-        testedClass.stateFlow.test {
-            with(awaitItem()) {
-                isPermissionRequired shouldBe true
-            }
-        }
-    }
-
-    @Test
     fun `should return error when initial service call is failed`() = runTest {
         coEvery { gymRepositoryMock.getGyms() } returns Result.failure(Throwable())
 
         initTestClass()
 
-        testedClass.stateFlow.test {
+        testedClass.state.test {
             with(awaitItem()) {
-                isPermissionRequired shouldBe false
-                shouldShowRationale shouldBe false
+                isRationaleDialogVisible shouldBe false
                 isDistanceCalculated shouldBe false
-                isError shouldBe true
+                isMatchOverlayVisible shouldBe false
+                isErrorDialogVisible shouldBe true
                 gyms shouldBe listOf()
                 imageStates shouldBe persistentListOf()
-                isMatchOverlayVisible shouldBe false
                 matchedGym shouldBe null
-                snackBarState shouldBe null
             }
         }
     }
 
     @Test
     fun `should return gyms with calculated distance when device location is known`() = runTest {
-        testedClass.stateFlow.test {
+        testedClass.state.test {
             with(awaitItem()) {
-                isPermissionRequired shouldBe false
-                shouldShowRationale shouldBe false
+                isRationaleDialogVisible shouldBe false
                 isDistanceCalculated shouldBe true
-                isError shouldBe false
+                isErrorDialogVisible shouldBe false
                 gyms.size shouldBeGreaterThan 0
                 gyms.all { gym ->
                     gym.locations.all { it.distance != null && it.distanceText.isNotBlank() }
@@ -114,7 +87,6 @@ class DashboardViewModelTest {
                 imageStates.size shouldBeGreaterThan 0
                 isMatchOverlayVisible shouldBe false
                 matchedGym shouldBe null
-                snackBarState shouldBe null
             }
         }
     }
@@ -125,12 +97,11 @@ class DashboardViewModelTest {
 
         initTestClass()
 
-        testedClass.stateFlow.test {
+        testedClass.state.test {
             with(awaitItem()) {
-                isPermissionRequired shouldBe false
-                shouldShowRationale shouldBe false
+                isRationaleDialogVisible shouldBe false
                 isDistanceCalculated shouldBe false
-                isError shouldBe false
+                isErrorDialogVisible shouldBe false
                 gyms.size shouldBeGreaterThan 0
                 imageStates.size shouldBeGreaterThan 0
                 gyms.all { gym ->
@@ -138,7 +109,6 @@ class DashboardViewModelTest {
                 } shouldBe true
                 isMatchOverlayVisible shouldBe false
                 matchedGym shouldBe null
-                snackBarState shouldBe null
             }
         }
     }
@@ -148,17 +118,15 @@ class DashboardViewModelTest {
 
         testedClass.refresh()
 
-        testedClass.stateFlow.test {
+        testedClass.state.test {
             with(awaitItem()) {
-                isPermissionRequired shouldBe false
-                shouldShowRationale shouldBe false
+                isRationaleDialogVisible shouldBe false
                 isDistanceCalculated shouldBe true
-                isError shouldBe false
+                isErrorDialogVisible shouldBe false
                 gyms.size shouldBe 0
                 imageStates.size shouldBe 0
                 isMatchOverlayVisible shouldBe false
                 matchedGym shouldBe null
-                snackBarState shouldBe null
             }
         }
     }
@@ -167,9 +135,10 @@ class DashboardViewModelTest {
     fun `should send correct message on match when message action selected`() = runTest {
         testedClass.messageMatch()
 
-        testedClass.stateFlow.test {
+        testedClass.effect.test {
             with(awaitItem()) {
-                snackBarState?.messageId shouldBe R.string.dashboard_screen_match_message_warning
+                assert(this is Effect.ShowToastMessage)
+                (this as Effect.ShowToastMessage).messageId shouldBe R.string.dashboard_screen_match_message_warning
             }
         }
     }
@@ -178,9 +147,10 @@ class DashboardViewModelTest {
     fun `should send correct message on match when call action selected`() = runTest {
         testedClass.callMatch()
 
-        testedClass.stateFlow.test {
+        testedClass.effect.test {
             with(awaitItem()) {
-                snackBarState?.messageId shouldBe R.string.dashboard_screen_match_call_warning
+                assert(this is Effect.ShowToastMessage)
+                (this as Effect.ShowToastMessage).messageId shouldBe R.string.dashboard_screen_match_call_warning
             }
         }
     }
@@ -189,7 +159,7 @@ class DashboardViewModelTest {
     fun `should send isMatchOverlayVisible false when skip match action`() = runTest {
         testedClass.dismissMatch()
 
-        testedClass.stateFlow.test {
+        testedClass.state.test {
             with(awaitItem()) {
                 isMatchOverlayVisible shouldBe false
             }
@@ -202,7 +172,7 @@ class DashboardViewModelTest {
 
         testedClass.onGymLike(16280)
 
-        testedClass.stateFlow.test {
+        testedClass.state.test {
             with(awaitItem()) {
                 isMatchOverlayVisible shouldBe true
                 matchedGym shouldBe gyms.firstOrNull { it.id == 16280 }
@@ -216,10 +186,9 @@ class DashboardViewModelTest {
 
             testedClass.hideRationaleDialog()
 
-            testedClass.stateFlow.test {
+            testedClass.state.test {
                 with(awaitItem()) {
-                    isPermissionRequired shouldBe false
-                    shouldShowRationale shouldBe false
+                    isRationaleDialogVisible shouldBe false
                 }
             }
         }
@@ -232,7 +201,7 @@ class DashboardViewModelTest {
 
             initTestClass()
 
-            testedClass.stateFlow.test {
+            testedClass.state.test {
                 // skip initial state
                 skipItems(1)
 
@@ -241,11 +210,11 @@ class DashboardViewModelTest {
                 )
 
                 // location permission request is approved
-                testedClass.onLocationPermissionResult(isGranted = true)
+                testedClass.onAction(Action.OnPermissionGranted)
 
                 with(awaitItem()) {
                     isDistanceCalculated shouldBe true
-                    isError shouldBe false
+                    isErrorDialogVisible shouldBe false
                     gyms.size shouldBeGreaterThan 0
                     imageStates.size shouldBeGreaterThan 0
                     gyms.all { gym ->
@@ -256,17 +225,6 @@ class DashboardViewModelTest {
                 expectNoEvents()
             }
         }
-
-    @Test
-    fun `should shouldShowRationale when permission is denied`() = runTest {
-        testedClass.onLocationPermissionResult(isGranted = false)
-
-        testedClass.stateFlow.test {
-            with(awaitItem()) {
-                shouldShowRationale shouldBe true
-            }
-        }
-    }
 
     private fun initTestClass() {
         testedClass = DashboardViewModel(

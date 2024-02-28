@@ -5,8 +5,9 @@ import app.cash.turbine.test
 import com.akinci.gymber.R
 import com.akinci.gymber.core.coroutine.MainDispatcherRule
 import com.akinci.gymber.core.maps.MapsManager
-import com.akinci.gymber.domain.Gym
-import com.akinci.gymber.domain.Location
+import com.akinci.gymber.domain.data.Gym
+import com.akinci.gymber.domain.data.Location
+import com.akinci.gymber.ui.features.detail.DetailViewContract.Effect
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
@@ -14,6 +15,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+
 
 @ExtendWith(MainDispatcherRule::class)
 class DetailViewModelTest {
@@ -36,9 +38,8 @@ class DetailViewModelTest {
         every { mapsManagerMock.open(any(), any(), any()) } returns Result.success(Unit)
         val expectedGym = getGym()
 
-        testedClass.stateFlow.test {
+        testedClass.state.test {
             with(awaitItem()) {
-                snackBarState shouldBe null
                 gym shouldBe expectedGym
             }
         }
@@ -49,7 +50,7 @@ class DetailViewModelTest {
         val gym = getGym()
         every { mapsManagerMock.open(any(), any(), any()) } returns Result.success(Unit)
 
-        testedClass.stateFlow.test {
+        testedClass.state.test {
             // skip initial state
             skipItems(1)
 
@@ -67,17 +68,15 @@ class DetailViewModelTest {
         val gym = getGym()
         every { mapsManagerMock.open(any(), any(), any()) } returns Result.failure(Throwable(""))
 
-        testedClass.stateFlow.test {
-            // skip initial state
-            skipItems(1)
+        testedClass.openGoogleMaps(
+            gymName = gym.name,
+            location = gym.locations.first()
+        )
 
-            testedClass.openGoogleMaps(
-                gymName = gym.name,
-                location = gym.locations.first()
-            )
-
+        testedClass.effect.test {
             with(awaitItem()) {
-                snackBarState?.messageId shouldBe R.string.detail_screen_open_map_error
+                assert(this is Effect.ShowToastMessage)
+                (this as Effect.ShowToastMessage).messageId shouldBe R.string.detail_screen_open_map_error
             }
         }
     }

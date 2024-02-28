@@ -3,8 +3,9 @@ package com.akinci.gymber.data
 import com.akinci.gymber.core.application.AppConfig
 import com.akinci.gymber.core.network.HttpClientFactory
 import com.akinci.gymber.core.network.HttpEngineFactoryMock
-import com.akinci.gymber.domain.Gym
-import com.akinci.gymber.domain.Location
+import com.akinci.gymber.data.repository.GymRepository
+import com.akinci.gymber.domain.data.Gym
+import com.akinci.gymber.domain.data.Location
 import io.kotest.matchers.shouldBe
 import io.ktor.http.HttpStatusCode
 import io.mockk.mockk

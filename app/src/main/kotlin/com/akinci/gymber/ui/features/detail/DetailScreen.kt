@@ -1,5 +1,6 @@
 package com.akinci.gymber.ui.features.detail
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -22,10 +23,11 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -34,12 +36,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -47,18 +49,20 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.akinci.gymber.R
 import com.akinci.gymber.core.compose.UIModePreviews
-import com.akinci.gymber.domain.Gym
-import com.akinci.gymber.domain.Location
+import com.akinci.gymber.core.mvi.CollectEffect
+import com.akinci.gymber.domain.data.Gym
+import com.akinci.gymber.domain.data.Location
 import com.akinci.gymber.ui.ds.components.ActionButton
 import com.akinci.gymber.ui.ds.components.Bubble
 import com.akinci.gymber.ui.ds.components.CachedImage
 import com.akinci.gymber.ui.ds.components.Rating
-import com.akinci.gymber.ui.ds.components.snackbar.SnackBarContainer
 import com.akinci.gymber.ui.ds.components.systembarcontroller.SystemBarController
 import com.akinci.gymber.ui.ds.components.systembarcontroller.rememberSystemBarColors
 import com.akinci.gymber.ui.ds.theme.GymberTheme
 import com.akinci.gymber.ui.ds.theme.halfTransparentSurface
 import com.akinci.gymber.ui.ds.theme.titleLarge_bangers
+import com.akinci.gymber.ui.features.detail.DetailViewContract.Action
+import com.akinci.gymber.ui.features.detail.DetailViewContract.Effect
 import com.akinci.gymber.ui.features.detail.DetailViewContract.ScreenArgs
 import com.akinci.gymber.ui.features.detail.DetailViewContract.State
 import com.akinci.gymber.ui.navigation.animation.FadeInOutAnimation
@@ -76,22 +80,30 @@ fun DetailScreen(
     navigator: DestinationsNavigator,
     vm: DetailViewModel = hiltViewModel(),
 ) {
-    val uiState: State by vm.stateFlow.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val uiState: State by vm.state.collectAsStateWithLifecycle()
+
+    CollectEffect(effect = vm.effect) { effect ->
+        when (effect) {
+            Effect.Close -> navigator.navigateUp()
+            is Effect.ShowToastMessage -> Toast.makeText(
+                context,
+                context.getString(effect.messageId),
+                Toast.LENGTH_SHORT,
+            ).show()
+        }
+    }
 
     DetailScreenContent(
         uiState = uiState,
-        onBackPressed = { navigator.navigateUp() },
-        openMaps = { location, gymName ->
-            vm.openGoogleMaps(location = location, gymName = gymName)
-        }
+        onAction = vm::onAction,
     )
 }
 
 @Composable
 private fun DetailScreenContent(
     uiState: State,
-    onBackPressed: () -> Unit,
-    openMaps: (Location, String) -> Unit,
+    onAction: (Action) -> Unit,
 ) {
     val scrollState = rememberScrollState()
     val statusBarColorStateChangeThreshold = remember { mutableIntStateOf(0) }
@@ -103,94 +115,95 @@ private fun DetailScreenContent(
     SystemBarController(systemBarColorState = systemBarColorState)
 
     Surface {
-        SnackBarContainer(
+        Column(
             modifier = Modifier
                 .windowInsetsPadding(WindowInsets.navigationBars)
-                .fillMaxSize(),
-            snackBarState = uiState.snackBarState,
+                .fillMaxSize()
+                .verticalScroll(scrollState),
+            verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
-            Column(
-                modifier = Modifier.verticalScroll(scrollState),
-                verticalArrangement = Arrangement.spacedBy(24.dp),
-            ) {
-                Box {
-                    DetailScreen.ImageHeader(
-                        modifier = Modifier.fillMaxWidth(),
-                        imageUrl = uiState.gym.imageUrl,
-                        gymName = uiState.gym.name,
-                        onPositioned = { statusBarColorStateChangeThreshold.intValue = it }
-                    )
-
-                    // back button
-                    ActionButton(
-                        modifier = Modifier.padding(top = 48.dp, start = 16.dp),
-                        size = 48.dp,
-                        containerColor = Color.halfTransparentSurface,
-                        painter = rememberVectorPainter(image = Icons.Default.ArrowBack),
-                        tintColor = MaterialTheme.colorScheme.onSurface,
-                        onClick = onBackPressed
-                    )
-                }
-
-                Row(
+            Box {
+                DetailScreen.ImageHeader(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Spacer(modifier = Modifier.weight(1f))
-                    Rating(rating = uiState.gym.rating)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = buildString {
-                            append("(${uiState.gym.rating})")
-                            if (uiState.gym.reviewCount > 0) {
-                                append(" / ${uiState.gym.reviewCount} Reviews")
-                            }
-                        },
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                    Spacer(modifier = Modifier.weight(1f))
-                }
+                    imageUrl = uiState.gym.imageUrl,
+                    gymName = uiState.gym.name,
+                    onPositioned = { statusBarColorStateChangeThreshold.intValue = it }
+                )
 
+                // back button
+                ActionButton(
+                    modifier = Modifier.padding(top = 48.dp, start = 16.dp),
+                    size = 48.dp,
+                    containerColor = Color.halfTransparentSurface,
+                    painter = rememberVectorPainter(image = Icons.AutoMirrored.Filled.ArrowBack),
+                    tintColor = MaterialTheme.colorScheme.onSurface,
+                    onClick = { onAction(Action.OnBackPressed) }
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Spacer(modifier = Modifier.weight(1f))
+                Rating(rating = uiState.gym.rating)
+                Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    modifier = Modifier.padding(horizontal = 16.dp),
                     text = buildString {
-                        append(uiState.gym.description)
-                        if (uiState.gym.reservableWorkouts) {
-                            append("\n\n ${stringResource(id = R.string.detail_screen_reservable_workouts_info)}")
-                        }
-                        if (uiState.gym.dropInEnabled) {
-                            append("\n\n ${stringResource(id = R.string.detail_screen_drop_in_info)}")
-                        }
-                        if (uiState.gym.firstComeFirstServe) {
-                            append("\n\n ${stringResource(id = R.string.detail_screen_first_come_first_served_info)}")
+                        append("(${uiState.gym.rating})")
+                        if (uiState.gym.reviewCount > 0) {
+                            append(" / ${uiState.gym.reviewCount} Reviews")
                         }
                     },
-                    textAlign = TextAlign.Justify,
                     style = MaterialTheme.typography.bodyLarge,
                 )
-
-                DetailScreen.Chips(
-                    title = stringResource(id = R.string.detail_screen_categories_title),
-                    chips = uiState.gym.categories
-                )
-
-                DetailScreen.Chips(
-                    title = stringResource(id = R.string.detail_screen_facilities_title),
-                    chips = uiState.gym.facilities
-                )
-
-                if (uiState.gym.locations.isNotEmpty()) {
-                    DetailScreen.Locations(
-                        title = stringResource(id = R.string.detail_screen_locations_title),
-                        locations = uiState.gym.locations,
-                        onLocationClick = {
-                            openMaps(it, uiState.gym.name)
-                        }
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.weight(1f))
             }
+
+            Text(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                text = buildString {
+                    append(uiState.gym.description)
+                    if (uiState.gym.reservableWorkouts) {
+                        append("\n\n ${stringResource(id = R.string.detail_screen_reservable_workouts_info)}")
+                    }
+                    if (uiState.gym.dropInEnabled) {
+                        append("\n\n ${stringResource(id = R.string.detail_screen_drop_in_info)}")
+                    }
+                    if (uiState.gym.firstComeFirstServe) {
+                        append("\n\n ${stringResource(id = R.string.detail_screen_first_come_first_served_info)}")
+                    }
+                },
+                textAlign = TextAlign.Justify,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+
+            DetailScreen.Chips(
+                title = stringResource(id = R.string.detail_screen_categories_title),
+                chips = uiState.gym.categories
+            )
+
+            DetailScreen.Chips(
+                title = stringResource(id = R.string.detail_screen_facilities_title),
+                chips = uiState.gym.facilities
+            )
+
+            if (uiState.gym.locations.isNotEmpty()) {
+                DetailScreen.Locations(
+                    title = stringResource(id = R.string.detail_screen_locations_title),
+                    locations = uiState.gym.locations,
+                    onLocationClick = {
+                        onAction(
+                            Action.OpenMaps(
+                                location = it,
+                                gymName = uiState.gym.name,
+                            )
+                        )
+                    }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
@@ -320,12 +333,12 @@ private fun DetailScreen.Location(
 
             Icon(
                 modifier = Modifier.padding(end = 16.dp),
-                imageVector = Icons.Default.KeyboardArrowRight,
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = null,
             )
         }
 
-        Divider(modifier = Modifier.padding(horizontal = 16.dp))
+        HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
     }
 }
 
@@ -366,8 +379,7 @@ private fun DetailScreenPreview() {
                     ),
                 ),
             ),
-            onBackPressed = {},
-            openMaps = { _, _ -> },
+            onAction = {},
         )
     }
 }

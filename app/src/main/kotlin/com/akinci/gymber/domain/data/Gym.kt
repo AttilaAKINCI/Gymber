@@ -1,4 +1,4 @@
-package com.akinci.gymber.domain
+package com.akinci.gymber.domain.data
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
